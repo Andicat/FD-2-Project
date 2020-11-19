@@ -1,0 +1,58 @@
+.popup-menu {
+    
+    &__container {
+        display: flex;
+        justify-content: center;
+    }
+
+    &__list {
+        @include transition(all);
+        list-style: none;
+        display: flex;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: bold;
+	    text-transform: uppercase;
+	    margin: 0;
+        padding: 0;
+        
+
+        &--sub {
+            display: none;
+            top: calc(100% - 5px);
+            left: 5px;
+            display: none;
+            position: absolute;
+            z-index: 1;
+            min-width: 250px;
+
+            &-second {
+                top: 5px;
+                left: calc(100% - 5px);
+            }
+        }
+
+        &--show {
+            display: block;
+        }
+    }
+    
+    &__item {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        padding: 10px 20px;
+        background-color: rgb(159, 176, 177);
+        border: 1px solid gray;
+        cursor: pointer;
+
+        a {
+            display: block;
+            color: black;
+            &:hover,
+            &:focus {
+                color: brown;
+            }
+        }
+    }
+}

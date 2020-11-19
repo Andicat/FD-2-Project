@@ -1,0 +1,186 @@
+.picture {
+    width: 1000px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 50px;
+
+    &__container {
+        box-sizing: border-box;
+        position: relative;
+        height: 700px;
+        box-sizing: border-box;
+        outline: 1px solid rgb(105, 129, 57);
+    }
+
+    &__title {
+        display: block;
+		font-size: 24px;
+		line-height: normal;
+		font-weight: 600;
+		margin: 10px;
+    }
+
+    &__image {
+        box-sizing: border-box;
+        position: absolute;
+        width: 400px;
+        height: 300px;
+        top: 100px;
+        left: 300px;
+        outline: 1px solid rgb(105, 129, 57);
+
+        &::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0%;
+            z-index: -1;
+            background-image: url("../img/shiba.jpg");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &--mirrorX {
+            &::before {
+                transform: scaleX(-1);
+            }
+        }
+
+        &--mirrorY {
+            &::before {
+                transform: scaleY(-1);
+            }
+        }
+
+        &--mirrorX.picture__image--mirrorY {
+            &::before {
+                transform: scale(-1,-1);
+            }
+        }
+    }
+
+    &__control {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgb(105, 129, 57);
+        position: absolute;
+        border: 1px solid black;
+        
+        &::before {
+            display: none;
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;  
+            top: 50%;
+            left: 50%;
+            background-image: url("../img/arrows.svg");
+            background-size: cover;
+            transform: translate(-50%,-50%);  
+        }
+
+        &:hover,
+        &:active,
+        &--active {
+            width: 0;
+            height: 0;
+            &::before {
+                display: block;
+            }
+        }
+
+        &--non-active:active,
+        &--non-active:hover {
+            width: 12px;
+            height: 12px;
+            &::before {
+                display: none;
+            }
+        }
+
+        &--left-top {
+            top: 0;
+            left: 0;
+            transform: translate(-50%,-50%);
+            &::before {
+                transform:  translate(-50%,-50%) rotate(45deg);
+            }
+        }
+
+        &--top {
+            top: 0;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            &::before {
+                transform:  translate(-50%,-50%) rotate(90deg);
+            }
+        }
+
+        &--right-top {
+            top: 0;
+            right: 0;
+            transform: translate(50%,-50%);
+            &::before {
+                transform:  translate(-50%,-50%) rotate(-45deg);
+            }
+        }
+
+        &--right {
+            top: 50%;
+            right: 0;
+            transform: translate(50%,-50%);
+        }
+
+        &--right-bottom {
+            bottom: 0;
+            right: 0;
+            transform: translate(50%,50%);
+            &::before {
+                transform:  translate(-50%,-50%) rotate(45deg);
+            }
+        }
+
+        &--bottom {
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%,50%);
+            &::before {
+                transform:  translate(-50%,-50%) rotate(90deg);
+            }
+        }
+
+        &--left-bottom {
+            bottom: 0;
+            left: 0;
+            transform: translate(-50%,50%);
+            &::before {
+                transform:  translate(-50%,-50%) rotate(-45deg);
+            }
+        }
+
+        &--left {
+            top: 50%;
+            left: 0;
+            transform: translate(-50%,-50%);
+        }
+    }
+}
+
+@include tablet {
+    .picture {
+        height: 600px;
+        &__image {
+            width: 200px;
+            height: 150px;
+            top: 50px;
+            left: 150px;
+        }
+    }
+}

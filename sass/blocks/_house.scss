@@ -1,0 +1,222 @@
+.elevator {
+    &__container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-left: 20px;
+    }
+
+    &__button {
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid gray;
+        font-size: 20px;
+        font-style: normal;
+        border-radius: 50%;
+        margin: 5px;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            outline: none;
+            background-color: rgb(221, 198, 198);
+        }
+
+        &.active {
+            background-color: rgb(211, 65, 65);
+        }
+    }
+
+    &__create-house,
+    &__create-passengers {
+        min-width: 250px;
+    }
+
+    &__create-passengers:disabled {
+        background-color: gray;
+        cursor: wait;
+    } 
+}
+
+
+.house {
+    display: flex;
+    border: 1px solid gray;
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__flats {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid gray;
+    }
+    
+
+    &__shaft {
+        position: relative;
+        background-color: #cacaca;
+        width: 30px;
+    }
+
+    &__elevator {
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        position: absolute;
+        bottom: 0;
+        height: 50px;
+        width: 30px;
+        outline: 1px solid gray;
+        background-color: #f2f2f2;
+        margin: 0;
+        
+        &:before,
+        &:after {
+            content: "";
+            position: absolute;
+            box-sizing: border-box;
+            height: 100%;
+            width: 50%;
+            background-color: #cacaca;
+            border: 1px solid gray;
+            top: 0;
+            z-index: 1;
+        }
+
+        &:before {
+            left: 0;
+        }
+
+        &:after {
+            right: 0;
+        }
+
+        &--open {
+            &:before,
+            &:after {
+                animation: elevator-doors 1s;
+            }
+        }
+    }
+}
+
+
+.flat {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid gray;
+    height: 50px;
+    width: 300px;
+    padding: 0 5px 0 10px;
+
+    &:last-child {
+        border: none;
+    }
+
+    &__number {
+        font-size: 25px;
+        margin-right: 10px;
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: auto;
+        background-color:#f2f2f2;
+        margin-right: auto;
+    }
+
+    &__button {
+        display: inline-block;
+        vertical-align: middle;
+        width: 0;
+        height: 0;
+        border: 20px solid #cacaca;
+        border-left-width: 10px;
+        border-right-width: 10px;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            outline: none;
+            border-bottom-color: rgb(221, 198, 198);
+            border-top-color: rgb(221, 198, 198);
+        }
+
+        &--up {
+            border-top-width: 0;
+            &.active {
+                border-bottom-color: rgb(211, 65, 65);
+            }
+        }
+
+        &--down {
+            border-bottom-width: 0;
+            &.active {
+                border-top-color: rgb(113, 98, 180);
+            }
+        }   
+    }
+}
+
+.person {
+    position: relative;
+    height: 40px;
+    width: 20px;
+    background-image: url("../img/man.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-top: 10px;
+
+    &__dest {
+        font-size: 8px;
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes elevator-doors {
+    0% { 
+        width: 50%;
+    }
+    25% {
+        width: 25%;
+    }
+    50% {
+        width: 0%;
+    }
+    75% {
+        width: 25%;
+    }
+    100% {
+        width: 50%;
+    }
+}

@@ -1,0 +1,25 @@
+.hashStorage {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+
+	&__title,
+	&__recipe {
+		width: 100%;
+		font-size: 24px;
+		line-height: normal;
+		font-weight: 600;
+		margin: 10px;;
+	}
+
+	&__add,
+	&__get,
+	&__delete,
+	&__show {
+		font-size: 20px;
+		text-transform: none;
+		font-weight: 400;
+		margin: 10px;;
+	}
+}

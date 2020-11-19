@@ -1,2 +1,3 @@
-Дипломный проект курса JavaScript
-COLOR_PUZZLE
+# Обучение "Разработка веб-приложений на JavaScript" от It-Academy
+# Дипломный проект
+# COLOR-PUZZLE
