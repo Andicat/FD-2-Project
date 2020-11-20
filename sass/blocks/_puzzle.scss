@@ -5,7 +5,13 @@
 
     &__container {
         display: flex;
+        flex-direction: column;
         flex-wrap: wrap;
         border: 1px solid gray;
+    }
+
+    &__row {
+        display: flex;
+        //width: 100%;
     }
 }

@@ -77,7 +77,12 @@ button:hover, button:focus {
 
 .puzzle__container {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   border: 1px solid gray;
+}
+
+.puzzle__row {
+  display: flex;
 }
 /*# sourceMappingURL=style.css.map */
