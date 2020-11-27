@@ -12,36 +12,36 @@
 
     var timer;
     const puzzle_SIZE = window.matchMedia("(max-width: 768px)").matches?300:500;
-    const SIZES = {
-        rows: 10,
-        cols: 10,
-    };
     
-    function renderPuzzle (cnt) {
+    function renderPuzzle (cnt, colors, size) {
+
+        const SIZES = {
+            rows: size,
+            cols: size,
+        };
 
         cnt.style.width = puzzle_SIZE + "px";
         cnt.style.height = puzzle_SIZE + "px";
 
-        var colorLeftTop = {
-            red: 100,
-            green: 60,
-            blue: 60,
-        };
-        var colorRightTop = {
-            red: 200,
-            green: 200,
-            blue: 70,
-        };
-        var colorLeftBottom = {
-            red: 40,
-            green: 170,
-            blue: 160,
-        };
-        var colorRightBottom = {
-            red: 240,
-            green: 40,
-            blue: 90,
-        };
+        var colorLeftTop = convertColor(colors[0]);
+        var colorRightTop = convertColor(colors[1]);
+        var colorLeftBottom = convertColor(colors[2]);
+        var colorRightBottom = convertColor(colors[3]);
+
+        function convertColor(color) {
+          
+            if(color.substring(0,1) == '#') {
+                color = color.substring(1);
+            }
+          
+            var rgbColor = {};
+          
+            rgbColor.red = parseInt(color.substring(0,2),16);
+            rgbColor.green = parseInt(color.substring(2,4),16);
+            rgbColor.blue = parseInt(color.substring(4),16);
+          
+            return rgbColor;
+           }
 
         /*console.log("left top " + colorLeftTop.red);
         console.log("right top " + colorRightTop.red);
@@ -104,9 +104,11 @@
     }
 
     blockPuzzle.addEventListener('click', function() {
+        var colors = ["#f5e1bf","#b44f1e","#1a1918","#d4a752"];
+        var size = 10;
         clearInterval(timer);
         cntPuzzle.innerHTML = "";
-        renderPuzzle(cntPuzzle);
+        renderPuzzle(cntPuzzle,colors,size);
     });
 
 })();
