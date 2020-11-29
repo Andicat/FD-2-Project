@@ -81,14 +81,24 @@ button:hover, button:focus {
   flex-direction: column;
   flex-wrap: wrap;
   border: 1px solid gray;
+  padding: 20px;
+}
+
+.game__start {
+  float: right;
+}
+
+.game__field {
+  border: 1px solid gray;
 }
 
 .game__blade {
-  background-color: gray;
+  background-color: black;
   border: 1px solid gray;
+  border-radius: 10px;
   position: absolute;
-  top: 55%;
-  left: 40%;
+  top: 50%;
+  left: 50%;
   z-index: 1;
   width: 60px;
   height: 60px;

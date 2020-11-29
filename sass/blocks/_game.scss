@@ -9,14 +9,29 @@
         flex-direction: column;
         flex-wrap: wrap;
         border: 1px solid gray;
+        padding: 20px;
+    }
+
+    &__footer {
+        //position: relative;
+    }
+
+    &__start {
+        float: right;
+    }
+
+    &__field {
+        border: 1px solid gray;
     }
 
     &__blade {
-        background-color: gray;
+        background-color: black;
         border: 1px solid gray;
+        border-radius: 10px;
         position: absolute;
-        top: 55%;
-        left: 40%;
+        top: 50%;
+        left: 50%;
+        //transform: translate(-50%,-50%);
         z-index: 1;
         width: 60px;
         height: 60px;

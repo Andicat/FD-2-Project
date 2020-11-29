@@ -1,6 +1,6 @@
 'use strict';
 
-//======================================FD-2 PROJECT==================================
+//======================================FD-2 SCALE-GAME==================================
 /*
 */
 
@@ -8,8 +8,10 @@
 
     try {
         var blockGame = document.querySelector('.game');
-        var btnGame = blockGame.querySelector('.game__button');
         var cntGame = blockGame.querySelector('.game__container');
+        var cntHeader = blockGame.querySelector('.game__header');
+        var cntField = blockGame.querySelector('.game__field');
+        var cntFooter = blockGame.querySelector('.game__footer');
     } catch {
         return;
     }
@@ -19,7 +21,7 @@
     const SPEED = 5;
     const SIZES = {
         playgroundWidth: GAME_SIZE,
-        playgroundHeight: GAME_SIZE/1.5,
+        playgroundHeight: GAME_SIZE,
         playerWidth: GAME_SIZE*0.02,
         playerHeight: GAME_SIZE*(0.2-0.02),
         ball: GAME_SIZE*0.025,
@@ -109,52 +111,15 @@
         var gameCanvas = document.createElement("canvas");
         gameCanvas.setAttribute("width",pgWidth);
         gameCanvas.setAttribute("height",pgHeight);
-        cnt.appendChild(gameCanvas);
+        cntField.appendChild(gameCanvas);
         var context = gameCanvas.getContext("2d");
 
         //создаем кнопку старта
         var btnStart = document.createElement("button");
         btnStart.classList.add("game__start");
         btnStart.textContent = "Start";
-        cnt.appendChild(btnStart);
+        cntFooter.appendChild(btnStart);
         btnStart.addEventListener("click", startGame);
-
-        //создаем фигурку-лезвие
-        var blade = document.createElement("div");
-        blade.classList.add("game__blade");
-        blade.setAttribute("width",pgWidth/10 + "px");
-        blade.setAttribute("height",pgHeight/10 + "px");
-        cnt.appendChild(blade);
-        //вешаем обработчики событий на контэйнер
-        blade.addEventListener("mousedown", startMove);
-        blade.addEventListener('touchstart',startMove);
-
-        function startMove(evt) {
-            evt.preventDefault();
-            if (evt instanceof TouchEvent) {
-                evt = evt.changedTouches[0];
-            }
-        
-            window.addEventListener('mousemove', move);
-            window.addEventListener('touchmove', move,{ passive: false });
-            window.addEventListener('mouseup', endMove);
-            window.addEventListener('touchend', endMove);
-            //начальные координаты мышки/пальца
-        
-            mouseStart = {
-                x: evt.clientX,
-                y: evt.clientY
-            };
-            //пределы
-            leftMax = cnt.offsetLeft + cnt.offsetWidth;
-            topMax = cnt.offsetTop + cnt.offsetHeight;
-            rightMin = cntImages.offsetWidth - cnt.offsetLeft;
-            bottomMin = cntImages.offsetHeight - cnt.offsetTop;
-            limits = {
-                bottom: cntImages.offsetHeight - image.offsetHeight,
-                right: cntImages.offsetWidth - image.offsetWidth,
-            };
-        }
 
         //создаем поле
         var startPoints = [
@@ -164,14 +129,14 @@
             {x:600,y:50},
             {x:600,y:250},
             {x:500,y:250},
-            {x:500,y:400},
+            {x:500,y:600},
+            {x:300,y:600},
             {x:300,y:400},
-            {x:300,y:300},
-            {x:200,y:300},
-            {x:200,y:120},
-            {x:0,y:120},
-            {x:0,y:50},
-            {x:200,y:50},
+            {x:150,y:400},
+            {x:150,y:250},
+            {x:0,y:250},
+            {x:0,y:100},
+            {x:200,y:100},
         ];
         var field = new Field(context,COLORS.field,startPoints);
         field.draw();
@@ -189,30 +154,36 @@
             ball.draw();
         }
 
-
-        function findRects(pointsArr) {
+        function createRects(pointsArr) {
             var rect;
             var left;
             var right;
             var top;
             var bottom;
+            var leftPrev;
+            var rightPrev;
             var sortY = Array.from(new Set(pointsArr.map(p => p.y).sort((a,b) => {return a-b})));
            
             for (var i = 0; i < sortY.length-1; i++) {
                 top = sortY[i];
                 bottom = sortY[i+1];
                 var pointsX = pointsArr.filter(p => {return p.y===top}).map(p => p.x).sort((a,b) => {return a-b});
-                if (pointsX[0]===left) {
+                var left = pointsX[0];
+                var right = pointsX[pointsX.length-1];
+                if (left===leftPrev) {
                     left = pointsX[1];
                 } else {
-                    left = (pointsX[pointsX.length-1]!==right)?pointsX[0]:left;
+                    left = (left!==rightPrev&&left!==leftPrev)?left:leftPrev;
                 }
-                if (pointsX[pointsX.length-1]===right) {
+                if (right===rightPrev) {
                     right = pointsX[pointsX.length-2];
                 } else {
-                    right = (pointsX[pointsX.length-1]===left)?right:pointsX[pointsX.length-1];
+                    right = (right!==rightPrev&&right!==leftPrev&&right!==left)?right:rightPrev;
                 }
+                leftPrev = left;
+                rightPrev = right;
                 rect = new Rect(context,COLORS.rect,top,bottom,left,right);
+                rect.draw();
                 rects.push(rect);
             }
             return rects;
@@ -223,21 +194,18 @@
         }
 
         function startGame() {
+            window.startBlade();
             clearInterval(timer);
-            rects = findRects(field.points);
+            rects = createRects(field.points);
             draw();
             var actualRect = rects.filter(r => {return (r.top<ball.y&&r.bottom>ball.y&&r.left<ball.x&&r.right>ball.x)})[0];
             var nextRect;
-            //ball.speedY = -ball.speedY;
-            //ball.speedX = -ball.speedX;
             //запускаем мяч
             function move() {
                 //движения мячика
                 ball.x += ball.speedX;
                 ball.y += ball.speedY;
                                 
-                //var ballLimitX = ball.x + ball.radius*Math.sign(ball.speedX);
-                //var ballLimitY = ball.y + ball.radius*Math.sign(ball.speedY);
                 var ballDirectionX = (ball.speedX>0 ? "right" : "left");
                 var ballDirectionY = (ball.speedY>0 ? "bottom" : "top");
                 var ballTop = ball.y - ball.radius;
@@ -293,11 +261,8 @@
 
     
 
-    renderGameSVG(cntGame);
+    renderGameSVG(cntField);
 
-    btnGame.addEventListener('click', function() {
-        clearInterval(timer);
-        cntGame.innerHTML = "";
-        
-    });
+    //эскпорт
+    window.cntGame = cntGame;
 })();
