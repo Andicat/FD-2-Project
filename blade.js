@@ -24,30 +24,46 @@
     var centerY;
 
     function startBlade() {
-        window.addEventListener("mousedown", startMove);
-        window.addEventListener('touchstart', startMove,{passive: false});
-        document.addEventListener("drop", dropBlade);
+        
+        window.addEventListener("mousedown", startMoveBlade);
+        window.addEventListener('touchstart', startMoveBlade,{passive: false});
+        
+        //blade.addEventListener("dragstart", startMoveBlade);       
+        
+        cntField.addEventListener("dragover", dragOver);
+        cntField.addEventListener("drop", dropBlade);
+    }
+
+    function dragOver(evt) {
+        evt = evt||window.event;
+        evt.preventDefault();
     }
     
-    function startMove(evt) {
+    function startMoveBlade(evt) {
+        //debugger
         if (evt.target!==blade) {
             return;
         }
-        evt.preventDefault();
+        //evt.preventDefault();
         if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
         }
     
-        window.addEventListener('mousemove', move);
-        window.addEventListener('touchmove', move,{ passive: false });
-        window.addEventListener('mouseup', endMove);
-        window.addEventListener('touchend', endMove);
+        window.addEventListener('mousemove', moveBlade);
+        window.addEventListener('mouseup', endMoveBlade);
+        
+        window.addEventListener('touchmove', moveBlade,{ passive: false });
+        window.addEventListener('touchend', endMoveBlade);
+        
+        //blade.addEventListener("drag", moveBlade);
+        //blade.addEventListener("dragend", endMoveBlade);
+        
         //начальные координаты мышки/пальца
-    
         mouseStart = {
             x: evt.clientX,
             y: evt.clientY
         };
+
         //пределы
         leftMax = blade.offsetLeft + blade.offsetWidth;
         topMax = blade.offsetTop + blade.offsetHeight;
@@ -59,7 +75,7 @@
         };
     }
 
-    function move(evt) {
+    function moveBlade(evt) {
         evt.preventDefault();
         if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
@@ -77,24 +93,35 @@
         //показатели смещения
         var leftShift = Math.max(blade.offsetLeft + mouseShift.x,0);
         var topShift = Math.max(blade.offsetTop + mouseShift.y,0);
+
         //перемещаем объект
         blade.style.top = Math.min(topShift, limits.bottom) + "px";
         blade.style.left = Math.min(leftShift, limits.right) + "px";
     }
 
-    function endMove(evt) {
+    function endMoveBlade(evt) {
         evt.preventDefault();
         centerX = blade.offsetTop + blade.offsetHeight/2;
         centerY = blade.offsetLeft + blade.offsetWidth/2;
-        console.log("point is x " + centerX + " y " + centerY);
-        window.removeEventListener('mousemove', move);
-        window.removeEventListener('touchmove', move);
-        window.removeEventListener('mouseup', endMove);
-        window.removeEventListener('touchend', endMove);
+        console.log("end drag point is x " + centerX + " y " + centerY);
+
+        window.removeEventListener('mousemove', moveBlade);
+        window.removeEventListener('mouseup', endMoveBlade);
+        
+        window.removeEventListener('touchmove', moveBlade);
+        window.removeEventListener('touchend', endMoveBlade);
+
+        //blade.removeEventListener("drag", moveBlade);
+        //blade.removeEventListener("dragend", endMoveBlade);
     } 
 
     function dropBlade(evt) {
-        debugger;
+        evt = evt||window.event;
+        evt.preventDefault();
+        centerX = blade.offsetTop + blade.offsetHeight/2;
+        centerY = blade.offsetLeft + blade.offsetWidth/2;
+        console.log("drop point is x " + centerX + " y " + centerY);
+        //debugger;
     }
 
     // экспорт
