@@ -1,5 +1,6 @@
 .main {
-    background-image: linear-gradient(to bottom, rgb(51, 63, 196), rgb(89, 28, 64));
+    //background-image: linear-gradient(to bottom, rgb(51, 63, 196), rgb(89, 28, 64));
+    background-color: cadetblue;
     height: 100vh;
 }
 
@@ -21,7 +22,8 @@
     }
 
     &__footer {
-        //position: relative;
+        display: flex;
+        margin-top: 20px;
     }
 
     &__start {
@@ -31,20 +33,22 @@
     &__field {
         display: flex;
         position: relative;
-        //border: 1px solid gray;
     }
 
     &__blade {
-        background-color: black;
-        border: 1px solid gray;
+        background-image: url("img/blade.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
         border-radius: 10px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        //transform: translate(-50%,-50%);
         z-index: 1;
         width: 60px;
         height: 60px;
-        opacity: 0.7;
+        opacity: 0.8;
+        position: absolute;
+        left: calc(50% - 30px);
+    }
+
+    &__start {
+        margin: 0 10px 0 auto;
     }
 }
