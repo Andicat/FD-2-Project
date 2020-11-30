@@ -85,7 +85,7 @@
             {x:600,y:600},
             {x:600,y:0},
         ];
-        var points = [
+        /*window.points = [
             {x:200,y:0},
             {x:400,y:0},
             {x:400,y:50},
@@ -100,6 +100,12 @@
             {x:0,y:250},
             {x:0,y:100},
             {x:200,y:100},
+        ];*/
+        window.points = [
+            {x:0,y:0},
+            {x:600,y:0},
+            {x:600,y:600},
+            {x:0,y:600},
         ];
         
         //создаем мяч
@@ -116,13 +122,15 @@
             clearInterval(timer);
             window.startBlade();
             rectsStart = window.createRects(pointsStart);
-            window.rects = window.createRects(points);
+            window.rects = window.createRects(window.points);
+            //console.log(window.rects);
             draw();
             //debugger
-            var actualRect = window.findActualRect(ball.x,ball.y);
+            window.actualRect = window.findActualRect(ball.x,ball.y);
             var nextRect;
             //запускаем мяч
             function move() {
+                //window.actualRect = window.findActualRect(ball.x,ball.y);
                 //движения мячика
                 ball.x += ball.speedX;
                 ball.y += ball.speedY;
@@ -186,4 +194,5 @@
     window.cntGame = cntGame;
     window.cntField = cntField;
     window.rects = rects;
+    window.points = points;
 })();

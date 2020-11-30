@@ -20,7 +20,7 @@
             this.cnt.fillStyle = this.color;
             this.cnt.fillRect(this.left,this.top,this.right-this.left,this.bottom-this.top);
         };
-    }
+    };
 
     function drawField(context,rectsArr,color) {
         context.fillStyle = color;
@@ -30,7 +30,7 @@
             r.color = color;
             r.draw();
         });
-    }
+    };
 
     function createRects(pointsArr) {
         var rect;
@@ -62,20 +62,58 @@
             leftPrev = left;
             rightPrev = right;
             rect = new Rect(top,bottom,left,right);
-            //rect.draw();
             rects.push(rect);
         }
         return rects;
-    }
+    };
 
     function findActualRect(posX,posY) {
         return window.rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];
-    }
+    };
+
+    function cutField(type,x,y) {
+        var pointsNew = [];
+        var pointsToDel = [];
+        var pointNewX = {};
+        var pointNewY = {};
+        var pointNewCenter = {x:x,y:y};
+        switch(type) {
+            case "top-right":
+                window.points.forEach(function(point) {
+                    if (!(point.x>=x&&point.y<=y)) {
+                        pointsNew.push(point);
+                    } else {
+                        pointsToDel.push(point);
+                    }
+                });
+                pointsNew.push(pointNewCenter);
+                pointNewX.x = pointsToDel.sort((a,b) => {return b.x-a.x})[0].x;
+                pointNewX.y = y;
+                pointNewY.x = x;
+                pointNewY.y = pointsToDel.sort((a,b) => {return a.y-b.y})[0].y;
+                pointsNew.push(pointNewX);
+                pointsNew.push(pointNewY);
+            case "top-left":
+                //pointsNew = window.points.filter(function(point) {return !(point.x<=x&&point.y<=y)});
+            case "bottom-right":
+                //pointsNew = window.points.filter(function(point) {return !(point.x>=x&&point.y>=y)});
+            case "bottom-left":
+                //pointsNew = window.points.filter(function(point) {return !(point.x<=x&&point.y>=y)});
+            default:
+                break;
+        }
+        console.log(window.points);
+        console.log(pointsNew);
+        window.points = pointsNew;
+        window.rects = createRects(window.points);
+        console.log(window.rects);
+    };
 
     //экспорт
     window.findActualRect = findActualRect;
     window.createRects = createRects;
     window.drawField = drawField;
+    window.cutField = cutField;
 })();
 
 
