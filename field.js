@@ -69,7 +69,7 @@
     }
 
     function findActualRect(posX,posY) {
-        return rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];
+        return window.rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];
     }
 
     //экспорт

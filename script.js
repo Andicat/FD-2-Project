@@ -108,7 +108,7 @@
         //создание рисунка на канвасе
         function draw() {
             window.drawField(context,rectsStart,COLORS.backgound);
-            window.drawField(context,rects,COLORS.rect);
+            window.drawField(context,window.rects,COLORS.rect);
             ball.draw();
         }
 
@@ -116,10 +116,10 @@
             clearInterval(timer);
             window.startBlade();
             rectsStart = window.createRects(pointsStart);
-            rects = window.createRects(points);
+            window.rects = window.createRects(points);
             draw();
             //debugger
-            var actualRect = rects.filter(r => {return (r.top<ball.y&&r.bottom>ball.y&&r.left<ball.x&&r.right>ball.x)})[0];
+            var actualRect = window.findActualRect(ball.x,ball.y);
             var nextRect;
             //запускаем мяч
             function move() {
