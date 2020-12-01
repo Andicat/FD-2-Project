@@ -24,7 +24,6 @@
 
     function drawField(context,rectsArr,color) {
         context.fillStyle = color;
-        //context.fillRect(0,0,pgWidth,pgWidth);
         rectsArr.forEach(function(r) {
             r.cnt = context;
             r.color = color;
@@ -72,41 +71,83 @@
     };
 
     function cutField(type,x,y) {
-        var pointsNew = [];
-        var pointsToDel = [];
-        var pointNewX = {};
-        var pointNewY = {};
-        var pointNewCenter = {x:x,y:y};
+        var pointsArrNew = [];
+        var pointsArrNew2 = [];
+        var pointNew1 = {};
+        var pointNew2 = {};
         switch(type) {
             case "top-right":
                 window.points.forEach(function(point) {
                     if (!(point.x>=x&&point.y<=y)) {
-                        pointsNew.push(point);
+                        pointsArrNew.push(point);
                     } else {
-                        pointsToDel.push(point);
+                        pointsArrNew2.push(point);
                     }
                 });
-                pointsNew.push(pointNewCenter);
-                pointNewX.x = pointsToDel.sort((a,b) => {return b.x-a.x})[0].x;
-                pointNewX.y = y;
-                pointNewY.x = x;
-                pointNewY.y = pointsToDel.sort((a,b) => {return a.y-b.y})[0].y;
-                pointsNew.push(pointNewX);
-                pointsNew.push(pointNewY);
+                pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                break;
             case "top-left":
-                //pointsNew = window.points.filter(function(point) {return !(point.x<=x&&point.y<=y)});
+                window.points.forEach(function(point) {
+                    if (!(point.x<=x&&point.y<=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                break;
             case "bottom-right":
-                //pointsNew = window.points.filter(function(point) {return !(point.x>=x&&point.y>=y)});
+                window.points.forEach(function(point) {
+                    if (!(point.x>=x&&point.y>=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                break;
             case "bottom-left":
-                //pointsNew = window.points.filter(function(point) {return !(point.x<=x&&point.y>=y)});
+                window.points.forEach(function(point) {
+                    if (!(point.x<=x&&point.y>=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                break;
+            case "right-left":
+                window.points.forEach(function(point) {
+                    if (point.y>y) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                pointsArrNew2.sort((a,b) => {return a.x-b.x});
+                pointNew1.x = pointsArrNew2[0].x;
+                pointNew1.y = y;
+                pointNew2.x = pointsArrNew2[pointsArr2.length-1].x;
+                pointNew2.y = y;
+                break;
+            case "top-bottom":
             default:
                 break;
         }
-        console.log(window.points);
-        console.log(pointsNew);
-        window.points = pointsNew;
-        window.rects = createRects(window.points);
-        console.log(window.rects);
+
+        return {pointsArrNew:pointsArrNew, pointsArrNew2:pointsArrNew2, pointNew1:pointNew1, pointNew2:pointNew2, pointBlade: {x:x,y:y}};
     };
 
     //экспорт

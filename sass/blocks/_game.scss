@@ -36,7 +36,7 @@
     }
 
     &__blade {
-        background-image: url("img/blade.svg");
+        background-color: black;
         background-repeat: no-repeat;
         background-size: cover;
         border-radius: 10px;
@@ -47,6 +47,34 @@
         position: absolute;
         left: calc(50% - 30px);
         //transition: all 3s;
+
+        &--top-right {
+            background-image: url("img/blade-angle.svg");
+        }
+
+        &--top-left {
+            background-image: url("img/blade-angle.svg");
+            transform: rotate(-90deg);
+        }
+
+        &--bottom-right {
+            background-image: url("img/blade-angle.svg");
+            transform: rotate(90deg);
+        }
+
+        &--bottom-left {
+            background-image: url("img/blade-angle.svg");
+            transform: rotate(180deg);
+        }
+
+        &--right-left {
+            background-image: url("img/blade-line.svg");
+        }
+
+        &--top-bottom {
+            background-image: url("img/blade-line.svg");
+            transform: rotate(90deg);
+        }
     }
 
     &__start {

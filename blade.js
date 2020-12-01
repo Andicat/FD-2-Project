@@ -10,9 +10,36 @@
         return;
     }
 
+    class bladeSlit {
+
+        constructor(cnt,color,width) {
+            this.cnt = cnt;
+            this.width = width;
+            this.color = color;
+        };
+
+        setSettings(startX,startY,finishX,finishY,speedX,speedY) {
+            this.startX = startX;
+            this.startY = startY;
+            this.finishX = finishX;
+            this.finishY = finishY;
+            this.speedX = speedX;
+            this.speedY = speedY;
+        }
+
+        draw = function() {
+            this.cnt.strokeStyle = this.color;
+            this.cnt.lineWidth = this.width;
+            this.cnt.beginPath();
+            this.cnt.moveTo(this.startX,this.startY);
+            this.cnt.lineTo(this.finishX,this.finishY);
+            this.cnt.stroke();
+        };
+    }
+
     const TOUCH_SHIFT = 100;
-    const bladeTypes = ["top-right","top-left","bottom-right","bottom-left"]; 
-    blade.setAttribute("data-type",bladeTypes[0]);
+    //const bladeTypes = ["top-right","top-left","bottom-right","bottom-left","right-left","top-bottom"]; 
+    const bladeTypes = ["top-right","top-left"]; 
 
     var mouseStart;
     var mouseShift;
@@ -27,9 +54,13 @@
 
     var fieldCoords = getElementCoords(cntField);
     var bladeCoords = getElementCoords(blade);
+    var bladeType;
 
     function startBlade() {
-        
+        blade.classList.remove("game__blade--" + bladeType);
+        bladeType = bladeTypes[randomDiap(0,bladeTypes.length-1)];
+        blade.setAttribute("data-type",bladeType);
+        blade.classList.add("game__blade--"+bladeType);
         window.addEventListener("mousedown", startMoveBlade);
         window.addEventListener('touchstart', startMoveBlade,{passive: false});
         //blade.addEventListener("dragstart", startMoveBlade);       
@@ -113,14 +144,10 @@
         var pointX = Math.round(centerX - fieldCoords.left);
         var pointY = Math.round(centerY - fieldCoords.top);
         //проверим попали ли мы в игровое поле
-        //debugger
         function findActualRect(posX,posY) {
             return window.rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];
         }
         var actualRect = findActualRect(pointX,pointY);
-        //console.log("end drag center is x" + centerX + " y" + centerY);
-        //console.log("end drag point is x" + pointX + " y" + pointY);
-        //console.log(actualRect);
         if (!actualRect) {
             //возвращаем назад лезвие
             blade.style.top = bladeCoords.top + "px";
@@ -128,12 +155,16 @@
         } else {
             //режем
             var bladeType = blade.getAttribute("data-type");
-            window.cutField(bladeType,pointX,pointY);
+            var pointsInfo = window.cutField(bladeType,pointX,pointY);
+            cut(pointsInfo);
+            //window.points = pointsArr;
+            //window.rects = createRects(window.points);
+            //window.updateBallInfo();
             blade.style.top = bladeCoords.top + "px";
             blade.style.left = bladeCoords.left + "px";
+            startBlade();
 
         }
-        //console.log(fieldCoords);
 
         window.removeEventListener('mousemove', moveBlade);
         window.removeEventListener('mouseup', endMoveBlade);
@@ -143,6 +174,26 @@
 
         //blade.removeEventListener("drag", moveBlade);
         //blade.removeEventListener("dragend", endMoveBlade);
+    }
+
+    function cut(info) {
+        var bladeStartPoint = info.pointBlade;
+        var bladeFinishPoint1 = info.pointNew1;
+        var bladeFinishPoint2 = info.pointNew2;
+        var bladeSpeedX1 = Math.sign(bladeFinishPoint1.x - bladeStartPoint.x);
+        var bladeSpeedY1 = Math.sign(bladeFinishPoint1.y - bladeStartPoint.y);
+        var bladeSpeedX2 = Math.sign(bladeFinishPoint2.x - bladeStartPoint.x);
+        var bladeSpeedY2 = Math.sign(bladeFinishPoint2.y - bladeStartPoint.y);
+        console.log("direction " + bladeType);
+        console.log("from " + bladeStartPoint.x + ":" + bladeStartPoint.y + " to " + bladeFinishPoint1.x + ":" + bladeFinishPoint1.y);
+        console.log("speed " + bladeSpeedX1 + ":" + bladeSpeedY1);
+        console.log("from " + bladeStartPoint.x + ":" + bladeStartPoint.y + " to " + bladeFinishPoint2.x + ":" + bladeFinishPoint2.y);
+        console.log("speed " + bladeSpeedX2 + ":" + bladeSpeedY2);
+
+
+        do {
+            
+        } while()
     }
 
     function getElementCoords(elem) {
@@ -166,6 +217,10 @@
             bottom: top + elem.offsetHeight,
             right: left + elem.offsetWidth
         };
+    }
+
+    function randomDiap(n,m) {
+        return Math.floor(Math.random()*(m-n+1))+n;
     }
 
     // экспорт
