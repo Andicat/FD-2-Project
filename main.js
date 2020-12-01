@@ -59,19 +59,19 @@
         //создаем поле
         var pointsStart = [
             {x:0,y:0},
-            {x:600,y:0},
-            {x:600,y:600},
-            {x:600,y:0},
+            {x:pgWidth,y:0},
+            {x:pgWidth,y:pgHeight},
+            {x:pgWidth,y:0},
         ];
         /*window.points = [
             {x:200,y:0},
             {x:400,y:0},
             {x:400,y:50},
-            {x:600,y:50},
-            {x:600,y:250},
+            {x:100,y:50},
+            {x:100,y:250},
             {x:500,y:250},
-            {x:500,y:600},
-            {x:300,y:600},
+            {x:500,y:100},
+            {x:300,y:100},
             {x:300,y:400},
             {x:150,y:400},
             {x:150,y:250},
@@ -81,9 +81,9 @@
         ];*/
         window.points = [
             {x:0,y:0},
-            {x:600,y:0},
-            {x:600,y:600},
-            {x:0,y:600},
+            {x:pgWidth,y:0},
+            {x:pgWidth,y:pgHeight},
+            {x:0,y:pgHeight},
         ];
         
         //создание рисунка на канвасе
@@ -91,6 +91,9 @@
             window.drawField(context,rectsStart,COLORS.backgound);
             window.drawField(context,window.rects,COLORS.rect);
             window.drawBall();
+            if (window.isCutting) {
+                window.drawCutting(context,"#ffffff",1);
+            }
         }
 
         function startGame() {

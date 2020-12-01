@@ -12,27 +12,29 @@
 
     class BladeSlit {
 
-        constructor(cnt,color,width) {
-            this.cnt = cnt;
-            this.width = width;
-            this.color = color;
-        };
-
-        setSettings(startX,startY,finishX,finishY,speedX,speedY) {
+        constructor(startX,startY,finishX,finishY,speedX,speedY) {
             this.startX = startX;
             this.startY = startY;
             this.finishX = finishX;
             this.finishY = finishY;
+            this.currX = startX;
+            this.currY = startY;
             this.speedX = speedX;
             this.speedY = speedY;
-        }
+            this.cnt;
+            this.width;
+            this.color;
+        };
 
-        draw = function() {
+        draw = function(context,color,width) {
+            this.cnt = context;
+            this.color = color;
+            this.width = width;
             this.cnt.strokeStyle = this.color;
             this.cnt.lineWidth = this.width;
             this.cnt.beginPath();
             this.cnt.moveTo(this.startX,this.startY);
-            this.cnt.lineTo(this.finishX,this.finishY);
+            this.cnt.lineTo(this.currX,this.currY);
             this.cnt.stroke();
         };
     }
@@ -55,6 +57,8 @@
     var fieldCoords = getElementCoords(cntField);
     var bladeCoords = getElementCoords(blade);
     var bladeType;
+    var bladeSlit1;
+    var bladeSlit2;
 
     function startBlade() {
         blade.classList.remove("game__blade--" + bladeType);
@@ -157,13 +161,7 @@
             var bladeType = blade.getAttribute("data-type");
             var pointsInfo = window.cutField(bladeType,pointX,pointY);
             cut(pointsInfo);
-            //window.points = pointsArr;
-            //window.rects = createRects(window.points);
-            //window.updateBallInfo();
-            blade.style.top = bladeCoords.top + "px";
-            blade.style.left = bladeCoords.left + "px";
-            startBlade();
-
+            window.isCutting = true;
         }
 
         window.removeEventListener('mousemove', moveBlade);
@@ -176,25 +174,52 @@
         //blade.removeEventListener("dragend", endMoveBlade);
     }
 
+    var pointsArrNew;
+
     function cut(info) {
-        var bladeSlit1 = new BladeSlit()
         var bladeStartPoint = info.pointBlade;
         var bladeFinishPoint1 = info.pointNew1;
         var bladeFinishPoint2 = info.pointNew2;
-        var bladeSpeedX1 = Math.sign(bladeFinishPoint1.x - bladeStartPoint.x);
-        var bladeSpeedY1 = Math.sign(bladeFinishPoint1.y - bladeStartPoint.y);
-        var bladeSpeedX2 = Math.sign(bladeFinishPoint2.x - bladeStartPoint.x);
-        var bladeSpeedY2 = Math.sign(bladeFinishPoint2.y - bladeStartPoint.y);
-        console.log("direction " + bladeType);
-        console.log("from " + bladeStartPoint.x + ":" + bladeStartPoint.y + " to " + bladeFinishPoint1.x + ":" + bladeFinishPoint1.y);
-        console.log("speed " + bladeSpeedX1 + ":" + bladeSpeedY1);
-        console.log("from " + bladeStartPoint.x + ":" + bladeStartPoint.y + " to " + bladeFinishPoint2.x + ":" + bladeFinishPoint2.y);
-        console.log("speed " + bladeSpeedX2 + ":" + bladeSpeedY2);
+        var bladeSpeedX1 = Math.sign(bladeFinishPoint1.x - bladeStartPoint.x)*2;
+        var bladeSpeedY1 = Math.sign(bladeFinishPoint1.y - bladeStartPoint.y)*2;
+        var bladeSpeedX2 = Math.sign(bladeFinishPoint2.x - bladeStartPoint.x)*2;
+        var bladeSpeedY2 = Math.sign(bladeFinishPoint2.y - bladeStartPoint.y)*2;
+        bladeSlit1 = new BladeSlit(bladeStartPoint.x,bladeStartPoint.y,bladeFinishPoint1.x,bladeFinishPoint1.y,bladeSpeedX1,bladeSpeedY1);
+        bladeSlit2 = new BladeSlit(bladeStartPoint.x,bladeStartPoint.y,bladeFinishPoint2.x,bladeFinishPoint2.y,bladeSpeedX2,bladeSpeedY2);
+        //console.log("direction " + bladeType);
+        //console.log("from " + bladeStartPoint.x + ":" + bladeStartPoint.y + " to " + bladeFinishPoint1.x + ":" + bladeFinishPoint1.y);
+        //console.log("speed " + bladeSpeedX1 + ":" + bladeSpeedY1);
+        //console.log("from " + bladeStartPoint.x + ":" + bladeStartPoint.y + " to " + bladeFinishPoint2.x + ":" + bladeFinishPoint2.y);
+        //console.log("speed " + bladeSpeedX2 + ":" + bladeSpeedY2);
 
+    }
 
-        do {
-            
-        } while()
+    function drawCutting(context,color,width) {
+        var isCuttingBladeSlit1 = (bladeSlit1.currX===bladeSlit1.finishX)&&(bladeSlit1.currY===bladeSlit1.finishY);
+        var isCuttingBladeSlit2 = (bladeSlit2.currX===bladeSlit2.finishX)&&(bladeSlit2.currY===bladeSlit2.finishY);
+        if (isCuttingBladeSlit1) {
+            bladeSlit1.currX += bladeSlit1.speedX;
+            bladeSlit1.currY += bladeSlit1.speedY;
+            bladeSlit1.draw(context,color,width);
+        } else {
+            isCuttingBladeSlit1 = false;
+        }
+        if (isCuttingBladeSlit2) {
+            bladeSlit2.currX += bladeSlit2.speedX;
+            bladeSlit2.currY += bladeSlit2.speedY;
+            bladeSlit2.draw(context,color,width);
+        } else {
+            isCuttingBladeSlit2 = false;
+        }
+        if (!isCuttingBladeSlit1&&!isCuttingBladeSlit2) {
+            window.isCutting = false;
+            window.points = pointsArrNew;
+            window.rects = createRects(window.points);
+            window.updateBallInfo();
+            blade.style.top = bladeCoords.top + "px";
+            blade.style.left = bladeCoords.left + "px";
+            startBlade();
+        }
     }
 
     function getElementCoords(elem) {
@@ -227,5 +252,6 @@
     // экспорт
     window.blade = blade;
     window.startBlade = startBlade;
+    window.drawCutting = drawCutting;
 
 })();
