@@ -1,8 +1,9 @@
 'use strict';
+export var fff;
 
 (function () {
 
-    var ball;
+     //var ball;
 
     class Ball {
 
@@ -15,6 +16,7 @@
             this.elem;
             this.x = x;
             this.y = y;
+            this.actualRect;
         };
 
         draw = function() {
@@ -25,12 +27,9 @@
         };
     }
 
-    function startBall(context,color,radius,posX,posY) {
-        ball = new Ball(context,color,radius,posX,posY);
-        window.actualBallRect = window.findActualRect(ball.x,ball.y);
-    }
+    
 
-    function drawBall() {
+    export  function drawBall() {
         ball.draw();
     }
 
@@ -94,7 +93,9 @@
     //эскпорт
     window.updateBallInfo = updateBallInfo;
     window.drawBall = drawBall;
-    window.startBall = startBall;
+    //window.startBall = startBall;
     window.moveBall = moveBall;
-    window.startBall = startBall;
+    //window.startBall = startBall;
+
+    
 })();

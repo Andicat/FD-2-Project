@@ -101,7 +101,8 @@
             rectsStart = window.createRects(pointsStart);
             window.rects = window.createRects(window.points);
             window.startBlade();
-            window.startBall(context,COLORS.ball,SIZES.ball/2,pgWidth/2,pgHeight/2);
+            ball = new Ball(context,COLORS.ball,SIZES.ball/2,pgWidth/2,pgHeight/2);
+            ball.actualRect = window.findActualRect(ball.x,ball.y);
             draw();
             function move() {
                 window.moveBall();
