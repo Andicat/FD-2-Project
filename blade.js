@@ -10,7 +10,7 @@
         return;
     }
 
-    class bladeSlit {
+    class BladeSlit {
 
         constructor(cnt,color,width) {
             this.cnt = cnt;
@@ -177,6 +177,7 @@
     }
 
     function cut(info) {
+        var bladeSlit1 = new BladeSlit()
         var bladeStartPoint = info.pointBlade;
         var bladeFinishPoint1 = info.pointNew1;
         var bladeFinishPoint2 = info.pointNew2;
