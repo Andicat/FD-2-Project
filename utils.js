@@ -1,72 +1,7 @@
 'use strict';
 
 (function () {
-
-    try {
-        var cntGame = window.cntGame;
-        var cntField = window.cntField;
         
-    } catch {
-        return;
-    }
-
-    class BladeSlit {
-
-        constructor(startX,startY,finishX,finishY,speedX,speedY) {
-            this.startX = startX;
-            this.startY = startY;
-            this.finishX = finishX;
-            this.finishY = finishY;
-            this.currX = startX;
-            this.currY = startY;
-            this.speedX = speedX;
-            this.speedY = speedY;
-            this.cnt;
-            this.width;
-            this.color;
-        };
-
-        draw = function(context,color,width) {
-            this.cnt = context;
-            this.color = color;
-            this.width = width;
-            this.cnt.strokeStyle = this.color;
-            this.cnt.lineWidth = this.width;
-            this.cnt.beginPath();
-            this.cnt.moveTo(this.startX,this.startY);
-            this.cnt.lineTo(this.currX,this.currY);
-            this.cnt.stroke();
-        };
-    }
-
-    class Blade {
-
-        constructor(elem,startX,startY,finishX,finishY,speedX,speedY) {
-            this.blade = elem;
-            /*this.startY = startY;
-            this.finishX = finishX;
-            this.finishY = finishY;
-            this.currX = startX;
-            this.currY = startY;
-            this.speedX = speedX;
-            this.speedY = speedY;
-            this.cnt;
-            this.width;
-            this.color;*/
-        };
-
-        create = function(type) {
-            this.blade.classList.remove("game__blade--" + this.type);
-            this.type = type;
-            this.blade.setAttribute("data-type", bladeType);
-            this.blade.classList.add("game__blade--" + bladeType);
-            window.addEventListener("mousedown", startMoveBlade);
-            window.addEventListener('touchstart', startMoveBlade,{passive: false});
-        };
-
-
-    }
-
     var mouseStart;
     var mouseShift;
     var rightMin;
@@ -84,7 +19,7 @@
     var bladeSlit1;
     var bladeSlit2;
 
-    function startMoveBlade(evt) {
+    window.utils.startMove = function(evt) {
        
         if (evt.target!==blade) {
             return;

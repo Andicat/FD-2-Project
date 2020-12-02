@@ -2,12 +2,33 @@
     //background-image: linear-gradient(to bottom, rgb(51, 63, 196), rgb(89, 28, 64));
     background-color: cadetblue;
     height: 100vh;
+    display: flex;
 }
 
 .game {
+    margin: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    &__start {
+        @include transition(all);
+        font-size: 20px;
+        text-transform: uppercase;
+        margin: 0 0 15px 0;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background-color: brown;
+        color: white;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            outline: none;
+            opacity: 0.9;
+        }
+    }
 
     &__container {
         display: flex;
@@ -25,10 +46,6 @@
     &__footer {
         display: flex;
         margin-top: 20px;
-    }
-
-    &__start {
-        float: right;
     }
 
     &__field {
@@ -76,9 +93,5 @@
             background-image: url("img/blade-line.svg");
             transform: rotate(90deg);
         }
-    }
-
-    &__start {
-        margin: 0 10px 0 auto;
     }
 }

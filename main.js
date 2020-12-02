@@ -12,6 +12,8 @@
         var cntHeader = blockGame.querySelector('.game__header');
         var cntField = blockGame.querySelector('.game__field');
         var cntFooter = blockGame.querySelector('.game__footer');
+        var btnStart = blockGame.querySelector('.game__start');
+        var cntBlade = blockGame.querySelector('.game__blade');
     } catch {
         return;
     }
@@ -34,8 +36,8 @@
         ball: "#000",
     }
 
-    var rectsStart = [];
-    var rects = [];
+    var ball;
+    var field;
 
     function renderGameSVG (cnt) {
 
@@ -49,11 +51,6 @@
         cntField.appendChild(gameCanvas);
         var context = gameCanvas.getContext("2d");
 
-        //создаем кнопку старта
-        var btnStart = document.createElement("button");
-        btnStart.classList.add("game__start");
-        btnStart.textContent = "Start";
-        cntFooter.appendChild(btnStart);
         btnStart.addEventListener("click", startGame);
 
         //создаем поле
@@ -79,18 +76,21 @@
             {x:0,y:100},
             {x:200,y:100},
         ];*/
-        window.points = [
+        var points = [
             {x:0,y:0},
             {x:pgWidth,y:0},
             {x:pgWidth,y:pgHeight},
             {x:0,y:pgHeight},
         ];
+
+        const TOUCH_SHIFT = 100;
+        //const bladeTypes = ["top-right","top-left","bottom-right","bottom-left","right-left","top-bottom"]; 
+        const bladeTypes = ["top-right","top-left"]; 
         
         //создание рисунка на канвасе
         function draw() {
-            window.drawField(context,rectsStart,COLORS.backgound);
-            window.drawField(context,window.rects,COLORS.rect);
-            window.drawBall();
+            window.field.draw();
+            ball.draw();
             if (window.isCutting) {
                 window.drawCutting(context,"#ffffff",1);
             }
@@ -98,14 +98,14 @@
 
         function startGame() {
             clearInterval(timer);
-            rectsStart = window.createRects(pointsStart);
-            window.rects = window.createRects(window.points);
-            window.startBlade();
+            window.field = new window.Field(context,COLORS.backgound,COLORS.rect,pointsStart,points);
+            window.blade = new Blade(cntBlade);
+            window.blade.create(bladeTypes[randomDiap(0,bladeTypes.length-1)]);
             ball = new Ball(context,COLORS.ball,SIZES.ball/2,pgWidth/2,pgHeight/2);
-            ball.actualRect = window.findActualRect(ball.x,ball.y);
+            ball.updateActualRect();
             draw();
             function move() {
-                window.moveBall();
+                ball.move();
                 draw();
             }
             timer = setInterval(move,40);
@@ -117,6 +117,6 @@
     //эскпорт
     window.cntGame = cntGame;
     window.cntField = cntField;
-    window.rects = rects;
-    window.points = points;
+    window.ball = ball;
+    window.field = field;
 })();
