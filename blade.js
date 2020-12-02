@@ -142,16 +142,14 @@
             var bladeSlit2 = this.bladeSlit2;
             var isCuttingBladeSlit1 = (bladeSlit1.currX===bladeSlit1.finishX)&&(bladeSlit1.currY===bladeSlit1.finishY);
             var isCuttingBladeSlit2 = (bladeSlit2.currX===bladeSlit2.finishX)&&(bladeSlit2.currY===bladeSlit2.finishY);
-            console.log(bladeSlit1.currX===bladeSlit1.finishX);
-            console.log(bladeSlit1.currY===bladeSlit1.finishY);
-            //console.log(bladeSlit1.finishX);
-            //console.log(bladeSlit1.finishY);
             if (!isCuttingBladeSlit1) {
                 bladeSlit1.currX += bladeSlit1.speedX;
                 bladeSlit1.currY += bladeSlit1.speedY;
                 bladeSlit1.draw(context,color,width);
             } else {
+                bladeSlit1.draw(context,color,width);
                 isCuttingBladeSlit1 = false;
+                
             }
             if (!isCuttingBladeSlit2) {
                 bladeSlit2.currX += bladeSlit2.speedX;
@@ -159,6 +157,7 @@
                 bladeSlit2.draw(context,color,width);
             } else {
                 isCuttingBladeSlit2 = false;
+                bladeSlit1.draw(context,color,width);
             }
             /*if (!isCuttingBladeSlit1&&!isCuttingBladeSlit2) {
                 window.isCutting = false;
