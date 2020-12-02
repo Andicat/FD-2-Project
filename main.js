@@ -91,16 +91,16 @@
         function draw() {
             window.field.draw();
             ball.draw();
-            if (window.isCutting) {
-                window.drawCutting(context,"#ffffff",1);
+            if (window.blade.isCutting) {
+                blade.drawCutting(context,"#ffffff",1);
             }
         }
 
         function startGame() {
             clearInterval(timer);
             window.field = new window.Field(context,COLORS.backgound,COLORS.rect,pointsStart,points);
-            window.blade = new Blade(cntBlade);
-            window.blade.create(bladeTypes[randomDiap(0,bladeTypes.length-1)]);
+            window.blade = new Blade(cntBlade,window.utils.getElementCoords(cntField));
+            window.blade.create(bladeTypes[window.utils.randomDiap(0,bladeTypes.length-1)]);
             ball = new Ball(context,COLORS.ball,SIZES.ball/2,pgWidth/2,pgHeight/2);
             ball.updateActualRect();
             draw();

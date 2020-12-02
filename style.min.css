@@ -1,2 +1,154 @@
-@font-face{font-style:normal;font-weight:normal;font-family:"Roboto";src:url("../fonts/Roboto-Regular.woff2") format("woff2"),url("../fonts/Roboto-Regular.woff") format("woff")}@font-face{font-style:normal;font-weight:bold;font-family:"Roboto";src:url("../fonts/Roboto-Bold.woff2") format("woff2"),url("../fonts/Roboto-Bold.woff") format("woff")}body{font-family:"Roboto", sans-serif;font-size:14px;line-height:21px;color:#000;font-style:italic;text-align:center;background-color:#f2f2f2;margin:0}a{text-decoration:none}.visually-hidden{position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;margin:-1px;border:0px;padding:0px}.result{display:block;font-size:24px;line-height:normal;font-weight:600;margin:10px}.hidden{display:none !important}.main{background-color:cadetblue;height:100vh;display:flex}.game{margin:auto;display:flex;flex-direction:column;align-items:center}.game__start{transition-property:all;transition-duration:0.3s;font-size:20px;text-transform:uppercase;margin:0 0 15px 0;padding:10px;border-radius:5px;border:none;background-color:brown;color:white;cursor:pointer}.game__start:hover,.game__start:focus{outline:none;opacity:0.9}.game__container{display:flex;flex-direction:column;flex-wrap:wrap;border:1px solid gray;padding:20px;max-height:800px}.game__header{color:#ffffff}.game__footer{display:flex;margin-top:20px}.game__field{display:flex;position:relative}.game__blade{background-color:black;background-repeat:no-repeat;background-size:cover;border-radius:10px;z-index:1;width:60px;height:60px;opacity:0.8;position:absolute;left:calc(50% - 30px)}.game__blade--top-right{background-image:url("img/blade-angle.svg")}.game__blade--top-left{background-image:url("img/blade-angle.svg");transform:rotate(-90deg)}.game__blade--bottom-right{background-image:url("img/blade-angle.svg");transform:rotate(90deg)}.game__blade--bottom-left{background-image:url("img/blade-angle.svg");transform:rotate(180deg)}.game__blade--right-left{background-image:url("img/blade-line.svg")}.game__blade--top-bottom{background-image:url("img/blade-line.svg");transform:rotate(90deg)}
+@font-face {
+  font-style: normal;
+  font-weight: normal;
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Regular.woff2") format("woff2"), url("../fonts/Roboto-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-style: normal;
+  font-weight: bold;
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Bold.woff2") format("woff2"), url("../fonts/Roboto-Bold.woff") format("woff");
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  color: #000000;
+  font-style: italic;
+  text-align: center;
+  background-color: #f2f2f2;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0px;
+  padding: 0px;
+}
+
+.result {
+  display: block;
+  font-size: 24px;
+  line-height: normal;
+  font-weight: 600;
+  margin: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.main {
+  background-color: cadetblue;
+  height: 100vh;
+  display: flex;
+}
+
+.game {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game__start {
+  transition-property: all;
+  transition-duration: 0.3s;
+  font-size: 20px;
+  text-transform: uppercase;
+  margin: 0 0 15px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: brown;
+  color: white;
+  cursor: pointer;
+}
+
+.game__start:hover, .game__start:focus {
+  outline: none;
+  opacity: 0.9;
+}
+
+.game__container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  border: 1px solid gray;
+  padding: 20px;
+  max-height: 800px;
+}
+
+.game__header {
+  color: #ffffff;
+}
+
+.game__footer {
+  display: flex;
+  margin-top: 20px;
+}
+
+.game__field {
+  display: flex;
+  position: relative;
+}
+
+.game__blade {
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
+  z-index: 1;
+  width: 60px;
+  height: 60px;
+  opacity: 0.8;
+  position: absolute;
+}
+
+.game__blade--hidden {
+  visibility: hidden;
+}
+
+.game__blade--active {
+  opacity: 0.4;
+}
+
+.game__blade--top-right {
+  background-image: url("img/blade-angle.svg");
+}
+
+.game__blade--top-left {
+  background-image: url("img/blade-angle.svg");
+  transform: rotate(-90deg);
+}
+
+.game__blade--bottom-right {
+  background-image: url("img/blade-angle.svg");
+  transform: rotate(90deg);
+}
+
+.game__blade--bottom-left {
+  background-image: url("img/blade-angle.svg");
+  transform: rotate(180deg);
+}
+
+.game__blade--right-left {
+  background-image: url("img/blade-line.svg");
+}
+
+.game__blade--top-bottom {
+  background-image: url("img/blade-line.svg");
+  transform: rotate(90deg);
+}
 /*# sourceMappingURL=style.min.css.map */

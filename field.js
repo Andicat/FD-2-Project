@@ -16,11 +16,9 @@
         };
 
         draw = function() {
-            //this.cnt.fillStyle = this.colorBg;
             this.rectsBg.forEach(function(r) {
                 r.draw();
             });
-            //this.cnt.fillStyle = this.color;
             this.rects.forEach(function(r) {
                 r.draw();
             });
@@ -63,86 +61,6 @@
 
         findActualRect = function(posX,posY) {
             return this.rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];
-        };
-
-        cut = function(type,x,y) {
-            var pointsArrNew = [];
-            var pointsArrNew2 = [];
-            var pointNew1 = {};
-            var pointNew2 = {};
-            switch(type) {
-                case "top-right":
-                    this.points.forEach(function(point) {
-                        if (!(point.x>=x&&point.y<=y)) {
-                            pointsArrNew.push(point);
-                        } else {
-                            pointsArrNew2.push(point);
-                        }
-                    });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
-                    pointNew1.y = y;
-                    pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
-                    break;
-                case "top-left":
-                    this.points.forEach(function(point) {
-                        if (!(point.x<=x&&point.y<=y)) {
-                            pointsArrNew.push(point);
-                        } else {
-                            pointsArrNew2.push(point);
-                        }
-                    });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
-                    pointNew1.y = y;
-                    pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
-                    break;
-                case "bottom-right":
-                    this.points.forEach(function(point) {
-                        if (!(point.x>=x&&point.y>=y)) {
-                            pointsArrNew.push(point);
-                        } else {
-                            pointsArrNew2.push(point);
-                        }
-                    });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
-                    pointNew1.y = y;
-                    pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
-                    break;
-                case "bottom-left":
-                    this.points.forEach(function(point) {
-                        if (!(point.x<=x&&point.y>=y)) {
-                            pointsArrNew.push(point);
-                        } else {
-                            pointsArrNew2.push(point);
-                        }
-                    });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
-                    pointNew1.y = y;
-                    pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
-                    break;
-                case "right-left":
-                    this.points.forEach(function(point) {
-                        if (point.y>y) {
-                            pointsArrNew.push(point);
-                        } else {
-                            pointsArrNew2.push(point);
-                        }
-                    });
-                    pointsArrNew2.sort((a,b) => {return a.x-b.x});
-                    pointNew1.x = pointsArrNew2[0].x;
-                    pointNew1.y = y;
-                    pointNew2.x = pointsArrNew2[pointsArr2.length-1].x;
-                    pointNew2.y = y;
-                    break;
-                case "top-bottom":
-                default:
-                    break;
-            }
-    
-            return {pointsArrNew:pointsArrNew, pointsArrNew2:pointsArrNew2, pointNew1:pointNew1, pointNew2:pointNew2, pointBlade: {x:x,y:y}};
         };
     };
 
