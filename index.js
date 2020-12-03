@@ -39,6 +39,15 @@
         ball.y = 250;
         ball.anchor.set(0.5);
         app.stage.addChild(ball);
+
+        const ball2 = new PIXI.Sprite(texture);
+        
+        ball2.width = 30;
+        ball2.height = 30;
+        ball2.x = 350;
+        ball2.y = 250;
+        ball2.anchor.set(0.5);
+        app.stage.addChild(ball2);
         
         // Move container to the center
         /*container.x = app.screen.width / 2;
@@ -54,8 +63,9 @@
             // use delta to create frame-independent transform
             //container.rotation -= 0.01 * delta;
         });*/
+        b = new Bump(PIXI)
 
-        if (hitTestRectangle(ball,graphics )) {
+        if (b.Hit(ball,ball2 )) {
             console.log("fff");
           } else {
             //There's no collision
