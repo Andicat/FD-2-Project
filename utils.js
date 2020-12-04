@@ -75,33 +75,26 @@
             top = sortY[i];
             bottom = sortY[i+1];
             var pointsX = pointsArr.filter(p => {return p.y===top}).map(p => p.x).sort((a,b) => {return a-b});
-            var left = pointsX[0];
-            var right = pointsX[pointsX.length-1];
-            var leftToChange = false;
-            var rightToChange = false;
-            if (left===leftPrev) {
-                left = pointsX[1];
-            } else if (left!==rightPrev&&left!==leftPrev) {
-                leftToChange = true;
-            } else {
-                left = leftPrev;
-            }
-            if (right===rightPrev) {
-                right = pointsX[pointsX.length-2];
-            } else if (right!==rightPrev&&right!==leftPrev) {
-                rightToChange = true; 
-            } else {
-                right = rightPrev;
-            }
-            if (leftToChange&&!rightToChange) {
-                left = leftPrev;
-                //console.log(pointsX);
-                //console.log("left " + left + " right " + right);
-                //console.log("prev left " + leftPrev + " prev right " + rightPrev);
-                //debugger
-            }
-            if (rightToChange&&!leftToChange) {
-                right = rightPrev;
+            if (pointsX.length===4) { //если точек 4
+                left = pointsX[0]!==leftPrev?pointsX[0]:pointsX[1];
+                right = pointsX[3]!==rightPrev?pointsX[3]:pointsX[2];
+            } else { //если точек 2
+                if (!leftPrev&&!rightPrev) { //самый первый 
+                    left = pointsX[0];
+                    right = pointsX[1];
+                } else if(pointsX[0]===leftPrev) { //сужение слева
+                    left = pointsX[1];
+                    right = rightPrev;
+                } else if(pointsX[1]===leftPrev) { //расширение слева
+                    left = pointsX[0];
+                    right = rightPrev;
+                } else if(pointsX[1]===rightPrev) { //сужение справа
+                    left = leftPrev;
+                    right = pointsX[0];
+                } else if(pointsX[0]===rightPrev) { //расширение справа
+                    left = leftPrev;
+                    right = pointsX[1];
+                }
             }
             leftPrev = left;
             rightPrev = right;
@@ -112,7 +105,19 @@
     };
 
     window.utils.findActualRect = function(rects,posX,posY) {
-        return rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];
+        return rects.filter(r => {return (r.top<=posY&&r.bottom>posY&&r.left<=posX&&r.right>posX)})[0];
+    };
+
+    window.utils.findVertical = function(arr1,arr2) {
+        return arr1.filter(function (a1) {
+            return (arr2.filter(a2 => {return a2.y===a1.y}).length);
+        }).map(p => p.y).sort((a,b) => {return a-b});
+    };
+
+    window.utils.findHorisontal = function(arr1,arr2) {
+        return arr1.filter(function (a1) {
+            return (arr2.filter(a2 => {return a2.x===a1.x}).length);
+        }).map(p => p.x).sort((a,b) => {return a-b});
     };
 
 })();

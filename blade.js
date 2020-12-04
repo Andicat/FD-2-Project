@@ -176,10 +176,10 @@
                             pointsArrNew2.push(point);
                         }
                     });
-                    pointsArrNew2.sort((a,b) => {return a.x-b.x});
-                    pointNew1.x = pointsArrNew2[0].x;
+                    var horisontal = window.utils.findHorisontal(pointsArrNew,pointsArrNew2);
+                    pointNew1.x = horisontal[0];
                     pointNew1.y = y;
-                    pointNew2.x = pointsArrNew2[pointsArrNew2.length-1].x;
+                    pointNew2.x = horisontal[horisontal.length-1];
                     pointNew2.y = y;
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
@@ -192,11 +192,11 @@
                             pointsArrNew2.push(point);
                         }
                     });
-                    pointsArrNew2.sort((a,b) => {return a.y-b.y});
+                    var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
                     pointNew1.x = x;
-                    pointNew1.y = pointsArrNew2[0].y;
+                    pointNew1.y = vertical[0];
                     pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2[pointsArrNew2.length-1].y;
+                    pointNew2.y = vertical[vertical.length-1];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
                     break;

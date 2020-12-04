@@ -14,27 +14,29 @@
     <title>Andreeva Katerina FD-2</title>
   </head>
   <body>
-    <main class="main">
+    <main class="game">
       <h1 class="visually-hidden">Andreeva Katerina. It-Academy. FD-2. PROJECT</h1>
-      <section class="game">
-        <button class="game__start">Start</button>
-        <div class="game__container">
-          <div class="game__header">Верхняя панель</div>
-          <div class="game__field"></div>
-          <div class="game__footer">
-            <div class="game__blade game__blade--hidden" draggable="true"></div>
-          </div>
+      <button class="game__start">Start</button>
+      <span class="game__level">1</span>
+      <div class="game__playground">
+        <div class="progress">
+          <div class="progress__value"></div>
         </div>
-      </section>
+        <div class="game__field"></div>
+      </div>
+      <div class="game__blade">
+        <div class="blade blade--hidden"></div>
+      </div> 
     </main>
     <footer></footer>
     <!--<script defer src="js/pixi.js"></script>
     <script defer src="index.js"></script>-->
     <script src="main.js"></script>
+    <script src="game.js"></script>
     <script src="utils.js"></script>
     <script src="blade.js"></script>
     <script src="rect.js"></script>
     <script src="field.js"></script>
-    <script src="ball.js"></script>-->
+    <script src="ball.js"></script>
   </body>
 </html>

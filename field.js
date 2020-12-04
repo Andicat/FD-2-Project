@@ -29,22 +29,7 @@
             }
         };
 
-        draw2 = function() {
-            this.cnt.strokeStyle = this.color;
-                this.cnt.lineWidth = 1;
-                this.cnt.beginPath();
-            for (var i = 1; i< this.points.length; i++) {
-                this.cnt.moveTo(this.points[i].x,this.points[i].y);
-                this.cnt.lineTo(this.points[i-1].x,this.points[i-1].y);
-            }
-            this.cnt.stroke();
-        };
-
-
         cut = function(cutInfo) {
-            console.log("--------------BEFORE");
-            console.log(this.rects);
-            console.log(this.points);
             for (var i = 0; i< cutInfo.arrNew.length; i++) {
                 var arr = cutInfo.arrNew[i].concat(cutInfo.pointsNew);
                 var rects = window.utils.createRects(arr);
@@ -54,9 +39,7 @@
                     this.rects = window.utils.createRects(this.points);
                     this.points = arr;
                     window.ball.updateActualRect();
-                    console.log("--------------AFTER");
-                    console.log(this.rects);
-                    console.log(this.points);
+                    window.utils.updateProgress(this);
                     return;
                 }
             }

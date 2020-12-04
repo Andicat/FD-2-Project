@@ -8,26 +8,24 @@
 
     try {
         var blockGame = document.querySelector('.game');
-        var cntGame = blockGame.querySelector('.game__container');
-        var cntHeader = blockGame.querySelector('.game__header');
+        var cntPlayground = blockGame.querySelector('.game__playground');
+        var progress = blockGame.querySelector('.progress');
         var cntField = blockGame.querySelector('.game__field');
-        var cntFooter = blockGame.querySelector('.game__footer');
+        //var cntFooter = blockGame.querySelector('.game__footer');
         var btnStart = blockGame.querySelector('.game__start');
         var cntBlade = blockGame.querySelector('.game__blade');
     } catch {
         return;
     }
-
-    var timer;
-    const GAME_SIZE = window.matchMedia("(max-width: 768px)").matches?300:600;
+    
+    var clientWidth = document.documentElement.clientWidth;
+    var clientHeight = document.documentElement.clientHeight;
+    const GAME_SIZE = Math.min(clientHeight,clientWidth);
     const SPEED = 5;
     const SIZES = {
         playgroundWidth: GAME_SIZE,
         playgroundHeight: GAME_SIZE,
-        playerWidth: GAME_SIZE*0.02,
-        playerHeight: GAME_SIZE*(0.2-0.02),
         ball: GAME_SIZE*0.025,
-        scoreboardFontSize: GAME_SIZE*0.1,
     };
     const COLORS = {
         backgound: "rgb(144, 172, 173)",
@@ -35,70 +33,26 @@
         rect: " rgb(163, 55, 55)",
         ball: "#000",
     }
+    const TOUCH_SHIFT = 100;
+    const bladeTypes = ["top-right","top-left","bottom-right","bottom-left","right-left","top-bottom"];
+    const bladeSpeed = 3;
 
     function renderGameSVG (cnt) {
 
-        var pgHeight = SIZES.playgroundHeight;
-        var pgWidth = SIZES.playgroundWidth;
+        cntPlayground.style.height = GAME_SIZE + "px";
         
         //создаем канвас
         var gameCanvas = document.createElement("canvas");
-        gameCanvas.setAttribute("width",pgWidth);
-        gameCanvas.setAttribute("height",pgHeight);
+        gameCanvas.setAttribute("width",SIZES.playgroundWidth);
+        gameCanvas.setAttribute("height",SIZES.playgroundHeight);
         cntField.appendChild(gameCanvas);
         window.context = gameCanvas.getContext("2d");
 
         btnStart.addEventListener("click", startGame);
-
-        //создаем поле
-        var pointsStart = [
-            {x:0,y:0},
-            {x:pgWidth,y:0},
-            {x:pgWidth,y:pgHeight},
-            {x:pgWidth,y:0},
-        ];
-        /*window.points = [
-            {x:200,y:0},
-            {x:400,y:0},
-            {x:400,y:50},
-            {x:100,y:50},
-            {x:100,y:250},
-            {x:500,y:250},
-            {x:500,y:100},
-            {x:300,y:100},
-            {x:300,y:400},
-            {x:150,y:400},
-            {x:150,y:250},
-            {x:0,y:250},
-            {x:0,y:100},
-            {x:200,y:100},
-        ];*/
-        /*var points = [
-            {x:0,y:0},
-            {x:pgWidth,y:0},
-            {x:pgWidth,y:pgHeight},
-            {x:0,y:pgHeight},
-        ];*/
-
-        var points = [
-        {x: 600, y: 0},
-        {x: 100, y: 600},
-        {x: 100, y: 500},
-        {x: 50, y: 0},
-        {x: 50, y: 500},
-        {x: 600, y: 480},
-        {x: 450, y: 600},
-        {x: 450, y: 480},
-        ];
-
-        const TOUCH_SHIFT = 100;
-        //const bladeTypes = ["top-right","top-left","bottom-right","bottom-left","right-left","top-bottom"];
-        const bladeTypes = ["top-bottom"];
-        const bladeSpeed = 3;
         
         //создание рисунка на канвасе
         function draw() {
-            window.field.draw2();
+            window.field.draw();
             window.ball.draw();
             if (window.blade.isCutting) {
                 blade.cut();
@@ -106,11 +60,22 @@
         }
 
         function startGame() {
-            //clearInterval(timer);
-            window.field = new Field(window.context,COLORS.backgound,COLORS.rect,pointsStart,points);
+            var fieldSize = cntField.offsetHeight - progress.offsetHeight;
+            progress.style.width = fieldSize + "px";
+            cntField.style.width = fieldSize + "px";
+            console.log(fieldSize);
+            var count = 1;
+            var pointsStart = [
+                {x:0,y:0},
+                {x:fieldSize,y:0},
+                {x:fieldSize,y:fieldSize},
+                {x:fieldSize,y:0},
+            ];
+            window.level = new Level(progress, count, pointsStart, pointsStart, 60, COLORS.rect);
+            window.field = new Field(window.context,COLORS.backgound,window.level.color,window.level.pointsStart,window.level.pointsCurr);
             window.blade = new Blade(cntBlade,window.utils.getElementCoords(cntField),bladeTypes,bladeSpeed);
             window.blade.create();
-            window.ball = new Ball(window.context,COLORS.ball,SIZES.ball/2,pgWidth/2,pgHeight/2);
+            window.ball = new Ball(window.context,COLORS.ball,SIZES.ball/2,SIZES.playgroundWidth/2,SIZES.playgroundHeight/2);
             ball.updateActualRect();
             draw();
             function move() {
@@ -126,7 +91,7 @@
     renderGameSVG(cntField);
 
     //эскпорт
-    window.cntGame = cntGame;
+    //window.cntGame = cntGame;
 
     window.cntField = cntField;
 })();

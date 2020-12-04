@@ -1,0 +1,53 @@
+.blade {
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+    z-index: 1;
+    width: 60px;
+    height: 60px;
+    opacity: 0.8;
+    position: absolute;
+    
+    &--hidden {
+        visibility: hidden;
+    }
+
+    &--active {
+        opacity: 0.4;
+    }
+
+    &--top-right {
+        background-image: url("img/blade-angle.svg");
+    }
+
+    &--top-left {
+        background-image: url("img/blade-angle.svg");
+        transform: rotate(-90deg);
+    }
+
+    &--bottom-right {
+        background-image: url("img/blade-angle.svg");
+        transform: rotate(90deg);
+    }
+
+    &--bottom-left {
+        background-image: url("img/blade-angle.svg");
+        transform: rotate(180deg);
+    }
+
+    &--right-left {
+        background-image: url("img/blade-line.svg");
+    }
+
+    &--top-bottom {
+        background-image: url("img/blade-line.svg");
+        transform: rotate(90deg);
+    }
+}
+
+/*@media screen and (orientation: portrait) {
+    #toolbar {
+      width: 100%;
+    }
+  }*/
