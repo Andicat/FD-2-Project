@@ -35,7 +35,7 @@
             
             // проверка справа
             if ((this.x + this.radius) > this.actualRect.right) {
-                nextRect = window.field.findActualRect(ballRight,this.y);
+                nextRect = window.utils.findActualRect(window.field.rects,ballRight,this.y);
                 if (!nextRect) {
                     this.speedX =- this.speedX;
                     this.x = this.actualRect.right - this.radius;
@@ -43,9 +43,9 @@
                     this.actualRect = nextRect;
                 }
             }
-           // проверка слева
+            // проверка слева
             if ((this.x - this.radius) < this.actualRect.left) {
-                nextRect = window.field.findActualRect(ballLeft,this.y);
+                nextRect = window.utils.findActualRect(window.field.rects,ballLeft,this.y);
                 if (!nextRect) {
                     this.speedX =- this.speedX;
                     this.x = this.actualRect.left + this.radius;
@@ -55,7 +55,7 @@
             }
             // проверка снизу
             if ((this.y + this.radius) > this.actualRect.bottom) {
-                nextRect = window.field.findActualRect(this.x,ballBottom);
+                nextRect = window.utils.findActualRect(window.field.rects,this.x,ballBottom);
                 if (!nextRect) {
                     this.speedY =- this.speedY;
                     this.y = this.actualRect.bottom - this.radius;
@@ -65,7 +65,7 @@
             }
             // проверка сверху
             if ((this.y - this.radius) < this.actualRect.top) {
-                nextRect = window.field.findActualRect(this.x,ballTop);
+                nextRect = window.utils.findActualRect(window.field.rects,this.x,ballTop);
                 if (!nextRect) {
                     this.speedY =- this.speedY;
                     this.y = this.actualRect.top + this.radius;
@@ -73,10 +73,18 @@
                     this.actualRect = nextRect;
                 }
             }
+            // проверка коллизии с линиями blade
+            if (window.blade.isCutting) {
+                var hit = window.utils.hitSlit(this,window.blade.slit1)||window.utils.hitSlit(this,window.blade.slit2);
+                if (hit) {
+                    console.log("hit");
+                    window.blade.goToStart();
+                }
+            }
         };
 
         updateActualRect = function() {
-            this.actualRect = window.field.findActualRect(this.x,this.y);
+            this.actualRect = window.utils.findActualRect(window.field.rects,this.x,this.y);
         }
     }
 

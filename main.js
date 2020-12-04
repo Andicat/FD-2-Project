@@ -36,9 +36,6 @@
         ball: "#000",
     }
 
-    var ball;
-    var field;
-
     function renderGameSVG (cnt) {
 
         var pgHeight = SIZES.playgroundHeight;
@@ -49,7 +46,7 @@
         gameCanvas.setAttribute("width",pgWidth);
         gameCanvas.setAttribute("height",pgHeight);
         cntField.appendChild(gameCanvas);
-        var context = gameCanvas.getContext("2d");
+        window.context = gameCanvas.getContext("2d");
 
         btnStart.addEventListener("click", startGame);
 
@@ -76,39 +73,53 @@
             {x:0,y:100},
             {x:200,y:100},
         ];*/
-        var points = [
+        /*var points = [
             {x:0,y:0},
             {x:pgWidth,y:0},
             {x:pgWidth,y:pgHeight},
             {x:0,y:pgHeight},
+        ];*/
+
+        var points = [
+        {x: 600, y: 0},
+        {x: 100, y: 600},
+        {x: 100, y: 500},
+        {x: 50, y: 0},
+        {x: 50, y: 500},
+        {x: 600, y: 480},
+        {x: 450, y: 600},
+        {x: 450, y: 480},
         ];
 
         const TOUCH_SHIFT = 100;
-        //const bladeTypes = ["top-right","top-left","bottom-right","bottom-left","right-left","top-bottom"]; 
-        const bladeTypes = ["top-right","top-left"]; 
+        //const bladeTypes = ["top-right","top-left","bottom-right","bottom-left","right-left","top-bottom"];
+        const bladeTypes = ["top-bottom"];
+        const bladeSpeed = 3;
         
         //создание рисунка на канвасе
         function draw() {
-            window.field.draw();
-            ball.draw();
+            window.field.draw2();
+            window.ball.draw();
             if (window.blade.isCutting) {
-                blade.drawCutting(context,"#ffffff",1);
+                blade.cut();
             }
         }
 
         function startGame() {
-            clearInterval(timer);
-            window.field = new window.Field(context,COLORS.backgound,COLORS.rect,pointsStart,points);
-            window.blade = new Blade(cntBlade,window.utils.getElementCoords(cntField));
-            window.blade.create(bladeTypes[window.utils.randomDiap(0,bladeTypes.length-1)]);
-            ball = new Ball(context,COLORS.ball,SIZES.ball/2,pgWidth/2,pgHeight/2);
+            //clearInterval(timer);
+            window.field = new Field(window.context,COLORS.backgound,COLORS.rect,pointsStart,points);
+            window.blade = new Blade(cntBlade,window.utils.getElementCoords(cntField),bladeTypes,bladeSpeed);
+            window.blade.create();
+            window.ball = new Ball(window.context,COLORS.ball,SIZES.ball/2,pgWidth/2,pgHeight/2);
             ball.updateActualRect();
             draw();
             function move() {
-                ball.move();
+                window.ball.move();
                 draw();
+                requestAnimationFrame(move);
             }
-            timer = setInterval(move,40);
+            requestAnimationFrame(move);
+            //timer = setInterval(move,40);
         }
     }
 
@@ -116,7 +127,6 @@
 
     //эскпорт
     window.cntGame = cntGame;
+
     window.cntField = cntField;
-    window.ball = ball;
-    window.field = field;
 })();

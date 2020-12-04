@@ -4,24 +4,59 @@
 
     class Slit {
 
-        constructor(startX,startY,finishX,finishY,speedX,speedY) {
+        constructor(context,color,width,startX,startY,finishX,finishY,speed) {
+            this.cnt = context;
+            this.width = width;
+            this.color = color;
             this.startX = startX;
             this.startY = startY;
             this.finishX = finishX;
             this.finishY = finishY;
             this.currX = startX;
             this.currY = startY;
-            this.speedX = speedX;
-            this.speedY = speedY;
-            this.cnt;
-            this.width;
-            this.color;
+            this.direction;
+            this.speedX;
+            this.speedY;
+            if (startX!==finishX) {
+                this.direction = "X";
+                this.speedY = 0;
+                this.speedX = Math.sign(finishX - startX)*speed;
+            }
+            if (startY!==finishY) {
+                this.direction = "Y";
+                this.speedX = 0;
+                this.speedY = Math.sign(finishY - startY)*speed;
+            }
         };
 
-        draw = function(context,color,width) {
-            this.cnt = context;
-            this.color = color;
-            this.width = width;
+        move = function() {
+            if (this.direction==="X") {
+                var lenghtX = Math.abs(this.startX - this.finishX);
+                var currLenghtX = Math.abs(this.startX - this.currX);
+                if (currLenghtX<=lenghtX) {
+                    this.currX += this.speedX;
+                } else {
+                    this.currX = this.finishX;
+                    this.direction = undefined;
+                }
+                return true;
+            }
+            if (this.direction==="Y") {
+                var lenghtY = Math.abs(this.startY - this.finishY);
+                var currLenghtY = Math.abs(this.startY - this.currY);
+                if (currLenghtY<=lenghtY) {
+                    this.currY += this.speedY;
+                }
+                else {
+                    this.currY = this.finishY;
+                    this.direction = undefined;
+                }
+                return true;
+            }
+            return false;
+        };
+
+        draw = function() {
             this.cnt.strokeStyle = this.color;
             this.cnt.lineWidth = this.width;
             this.cnt.beginPath();
@@ -33,34 +68,39 @@
 
     class Blade {
 
-        constructor(elem,fieldSizes) {
+        constructor(elem,fieldSizes,types,speed) {
             this.elem = elem;
             this.fieldSizes = fieldSizes;
             this.startTop = this.fieldSizes.bottom + elem.offsetHeight/4;
             this.startLeft = this.fieldSizes.left + this.fieldSizes.width/2 - elem.offsetWidth/2;
             this.isCutting = false;
+            this.cutInfo;
+            this.types = types;
+            this.speed = speed;
         };
 
-        create = function(type) {
+        create = function() {
+            this.update();
             this.elem.classList.remove("game__blade--hidden");
-            this.elem.classList.remove("game__blade--" + this.type);
-            this.type = type;
-            this.elem.setAttribute("data-type", type);
-            this.elem.classList.add("game__blade--" + type);
             window.addEventListener("mousedown", startMoveBlade);
             window.addEventListener('touchstart', startMoveBlade,{passive: false});
             this.goToStart();
         };
 
         goToStart = function() {
+            this.elem.classList.remove("game__blade--active");
+            this.slit1 = undefined;
+            this.slit2 = undefined;
             this.elem.style.top = this.startTop + "px";
             this.elem.style.left = this.startLeft + "px";
         }
 
         takeCutInfo = function(type,x,y) {
+            var arrNew = [];
             var pointsArr = window.field.points;
             var pointsArrNew = [];
             var pointsArrNew2 = [];
+            var pointsNew = [];
             var pointNew1 = {};
             var pointNew2 = {};
             switch(type) {
@@ -76,6 +116,9 @@
                     pointNew1.y = y;
                     pointNew2.x = x;
                     pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                    pointsNew.push(pointNew1);
+                    pointsNew.push(pointNew2);
+                    pointsNew.push({x:x,y:y});
                     break;
                 case "top-left":
                     pointsArr.forEach(function(point) {
@@ -89,6 +132,9 @@
                     pointNew1.y = y;
                     pointNew2.x = x;
                     pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                    pointsNew.push(pointNew1);
+                    pointsNew.push(pointNew2);
+                    pointsNew.push({x:x,y:y});
                     break;
                 case "bottom-right":
                     pointsArr.forEach(function(point) {
@@ -102,6 +148,9 @@
                     pointNew1.y = y;
                     pointNew2.x = x;
                     pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                    pointsNew.push(pointNew1);
+                    pointsNew.push(pointNew2);
+                    pointsNew.push({x:x,y:y});
                     break;
                 case "bottom-left":
                     pointsArr.forEach(function(point) {
@@ -115,10 +164,13 @@
                     pointNew1.y = y;
                     pointNew2.x = x;
                     pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                    pointsNew.push(pointNew1);
+                    pointsNew.push(pointNew2);
+                    pointsNew.push({x:x,y:y});
                     break;
                 case "right-left":
                     pointsArr.forEach(function(point) {
-                        if (point.y>y) {
+                        if (point.y<y) {
                             pointsArrNew.push(point);
                         } else {
                             pointsArrNew2.push(point);
@@ -127,74 +179,74 @@
                     pointsArrNew2.sort((a,b) => {return a.x-b.x});
                     pointNew1.x = pointsArrNew2[0].x;
                     pointNew1.y = y;
-                    pointNew2.x = pointsArrNew2[pointsArr2.length-1].x;
+                    pointNew2.x = pointsArrNew2[pointsArrNew2.length-1].x;
                     pointNew2.y = y;
+                    pointsNew.push(pointNew1);
+                    pointsNew.push(pointNew2);
                     break;
                 case "top-bottom":
+                    pointsArr.forEach(function(point) {
+                        if (point.x<x) {
+                            pointsArrNew.push(point);
+                        } else {
+                            pointsArrNew2.push(point);
+                        }
+                    });
+                    pointsArrNew2.sort((a,b) => {return a.y-b.y});
+                    pointNew1.x = x;
+                    pointNew1.y = pointsArrNew2[0].y;
+                    pointNew2.x = x;
+                    pointNew2.y = pointsArrNew2[pointsArrNew2.length-1].y;
+                    pointsNew.push(pointNew1);
+                    pointsNew.push(pointNew2);
+                    break;
                 default:
                     break;
             }
-            return {pointsArrNew:pointsArrNew, pointsArrNew2:pointsArrNew2, pointNew1:pointNew1, pointNew2:pointNew2, pointBlade: {x:x,y:y}};
+            arrNew = [pointsArrNew,pointsArrNew2];
+            return {arrNew:arrNew, pointsNew:pointsNew};
         };
 
-        drawCutting = function(context,color,width) {
-            var bladeSlit1 = this.bladeSlit1;
-            var bladeSlit2 = this.bladeSlit2;
-            var isCuttingBladeSlit1 = (bladeSlit1.currX===bladeSlit1.finishX)&&(bladeSlit1.currY===bladeSlit1.finishY);
-            var isCuttingBladeSlit2 = (bladeSlit2.currX===bladeSlit2.finishX)&&(bladeSlit2.currY===bladeSlit2.finishY);
-            if (!isCuttingBladeSlit1) {
-                bladeSlit1.currX += bladeSlit1.speedX;
-                bladeSlit1.currY += bladeSlit1.speedY;
-                bladeSlit1.draw(context,color,width);
+        cut = function() {
+            var slitInMove1 = this.slit1.move();
+            var slitInMove2 = this.slit2.move();
+            this.isCutting = slitInMove1||slitInMove2;
+            if (this.isCutting) {
+                this.slit1.draw();
+                this.slit2.draw();
             } else {
-                bladeSlit1.draw(context,color,width);
-                isCuttingBladeSlit1 = false;
-                
+                window.field.cut(this.cutInfo);
+                this.update();
+                this.goToStart();
+
             }
-            if (!isCuttingBladeSlit2) {
-                bladeSlit2.currX += bladeSlit2.speedX;
-                bladeSlit2.currY += bladeSlit2.speedY;
-                bladeSlit2.draw(context,color,width);
-            } else {
-                isCuttingBladeSlit2 = false;
-                bladeSlit1.draw(context,color,width);
-            }
-            /*if (!isCuttingBladeSlit1&&!isCuttingBladeSlit2) {
-                window.isCutting = false;
-                window.points = pointsArrNew;
-                window.rects = createRects(window.points);
-                window.updateBallInfo();
-                blade.style.top = bladeCoords.top + "px";
-                blade.style.left = bladeCoords.left + "px";
-                startBlade();
-            }*/
         }
 
-        finish = function() {
+        drop = function() {
             var centerY = blade.offsetTop + blade.offsetHeight/2;
             var centerX = blade.offsetLeft + blade.offsetWidth/2;
             var pointX = Math.round(centerX - this.fieldSizes.left);
             var pointY = Math.round(centerY - this.fieldSizes.top);
             //проверим попали ли мы в игровое поле
-            var actualRect = window.field.findActualRect(pointX,pointY);
+            var actualRect = window.utils.findActualRect(window.field.rects,pointX,pointY);
             if (!actualRect) {
                 this.goToStart();
             } else {
-                //режем
                 this.elem.classList.add("game__blade--active");
-                var pointsInfo = this.takeCutInfo(this.type,pointX,pointY);
-                console.log(pointsInfo);
-                var bladeStartPoint = pointsInfo.pointBlade;
-                var bladeFinishPoint1 = pointsInfo.pointNew1;
-                var bladeFinishPoint2 = pointsInfo.pointNew2;
-                var bladeSpeedX1 = Math.sign(bladeFinishPoint1.x - bladeStartPoint.x)*2;
-                var bladeSpeedY1 = Math.sign(bladeFinishPoint1.y - bladeStartPoint.y)*2;
-                var bladeSpeedX2 = Math.sign(bladeFinishPoint2.x - bladeStartPoint.x)*2;
-                var bladeSpeedY2 = Math.sign(bladeFinishPoint2.y - bladeStartPoint.y)*2;
-                this.bladeSlit1 = new Slit(bladeStartPoint.x,bladeStartPoint.y,bladeFinishPoint1.x,bladeFinishPoint1.y,bladeSpeedX1,bladeSpeedY1);
-                this.bladeSlit2 = new Slit(bladeStartPoint.x,bladeStartPoint.y,bladeFinishPoint2.x,bladeFinishPoint2.y,bladeSpeedX2,bladeSpeedY2);
+                this.cutInfo = this.takeCutInfo(this.type,pointX,pointY);
+                this.slit1 = new Slit(window.context,"#ffffff",1,pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed);
+                this.slit2 = new Slit(window.context,"#ffffff",1,pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed);
                 this.isCutting = true;
+                console.log(this.type + " cut point x:" + pointX + " y:" + pointY);
             }
+        }
+
+        update() {
+            this.elem.classList.remove("game__blade--" + this.type);
+            var type = this.types[window.utils.randomDiap(0,this.types.length-1)];
+            this.type = type;
+            this.elem.setAttribute("data-type", type);
+            this.elem.classList.add("game__blade--" + type);
         }
     }
 
@@ -274,7 +326,7 @@
 
     function endMoveBlade(evt) {
         evt.preventDefault();
-        window.blade.finish();
+        window.blade.drop();
         window.removeEventListener('mousemove', moveBlade);
         window.removeEventListener('mouseup', endMoveBlade);
         

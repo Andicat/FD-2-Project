@@ -11,57 +11,56 @@
             this.color = color;
             this.pointsBg = pointsBg;
             this.points = points;
-            this.rectsBg = this.createRects(this.cnt,this.colorBg,this.pointsBg);
-            this.rects = this.createRects(this.cnt,this.color,this.points);
+            this.rectsBg = window.utils.createRects(this.pointsBg);
+            this.rects = window.utils.createRects(this.points);
         };
 
         draw = function() {
-            this.rectsBg.forEach(function(r) {
-                r.draw();
-            });
-            this.rects.forEach(function(r) {
-                r.draw();
-            });
-        };
-
-        createRects = function(context, color, pointsArr) {
             var rect;
-            var rects = [];
-            var left;
-            var right;
-            var top;
-            var bottom;
-            var leftPrev;
-            var rightPrev;
-            var sortY = Array.from(new Set(pointsArr.map(p => p.y).sort((a,b) => {return a-b})));
-            
-            for (var i = 0; i < sortY.length-1; i++) {
-                top = sortY[i];
-                bottom = sortY[i+1];
-                var pointsX = pointsArr.filter(p => {return p.y===top}).map(p => p.x).sort((a,b) => {return a-b});
-                var left = pointsX[0];
-                var right = pointsX[pointsX.length-1];
-                if (left===leftPrev) {
-                    left = pointsX[1];
-                } else {
-                    left = (left!==rightPrev&&left!==leftPrev)?left:leftPrev;
-                }
-                if (right===rightPrev) {
-                    right = pointsX[pointsX.length-2];
-                } else {
-                    right = (right!==rightPrev&&right!==leftPrev&&right!==left)?right:rightPrev;
-                }
-                leftPrev = left;
-                rightPrev = right;
-                rect = new window.Rect(context,color,top,bottom,left,right);
-                rects.push(rect);
+            for (var i = 0; i< this.rectsBg.length; i++) {
+                rect = this.rectsBg[i];
+                this.cnt.fillStyle = this.colorBg;
+                this.cnt.fillRect(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
             }
-            return rects;
+            for (var i = 0; i< this.rects.length; i++) {
+                rect = this.rects[i];
+                this.cnt.fillStyle = this.color;
+                this.cnt.fillRect(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
+            }
         };
 
-        findActualRect = function(posX,posY) {
-            return this.rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];
+        draw2 = function() {
+            this.cnt.strokeStyle = this.color;
+                this.cnt.lineWidth = 1;
+                this.cnt.beginPath();
+            for (var i = 1; i< this.points.length; i++) {
+                this.cnt.moveTo(this.points[i].x,this.points[i].y);
+                this.cnt.lineTo(this.points[i-1].x,this.points[i-1].y);
+            }
+            this.cnt.stroke();
         };
+
+
+        cut = function(cutInfo) {
+            console.log("--------------BEFORE");
+            console.log(this.rects);
+            console.log(this.points);
+            for (var i = 0; i< cutInfo.arrNew.length; i++) {
+                var arr = cutInfo.arrNew[i].concat(cutInfo.pointsNew);
+                var rects = window.utils.createRects(arr);
+                var isBall = window.utils.findActualRect(rects,window.ball.x,window.ball.y);
+                if (isBall) {
+                    this.points = arr;
+                    this.rects = window.utils.createRects(this.points);
+                    this.points = arr;
+                    window.ball.updateActualRect();
+                    console.log("--------------AFTER");
+                    console.log(this.rects);
+                    console.log(this.points);
+                    return;
+                }
+            }
+        }
     };
 
     //экспорт
