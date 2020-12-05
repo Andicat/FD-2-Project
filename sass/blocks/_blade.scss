@@ -10,6 +10,8 @@
     position: absolute;
     top: calc(50% - 30px);
     left: calc(50% - 30px);
+    //transition-property: none;
+    //transition-duration: 1s;
     
     &--hidden {
         visibility: hidden;
@@ -17,8 +19,6 @@
 
     &--active {
         transform-origin: center center;
-        transition-property: transform;
-        transition-duration: 1s;
         opacity: 0.4;
     }
 

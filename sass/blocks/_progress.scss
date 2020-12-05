@@ -9,6 +9,7 @@
     margin: 0 auto 15px;
     
     &__value {
+        transition-property: width;
         height: 100%;
         width: 0%;
         //border: 1px solid gray;

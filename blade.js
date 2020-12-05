@@ -135,10 +135,14 @@
                             pointsArrNew2.push(point);
                         }
                     });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
+                    var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                    var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
+                    pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                    pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
                     pointsNew.push({x:x,y:y});
@@ -151,10 +155,14 @@
                             pointsArrNew2.push(point);
                         }
                     });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
+                    var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                    var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
+                    pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
+                    pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
                     pointsNew.push({x:x,y:y});
@@ -167,10 +175,14 @@
                             pointsArrNew2.push(point);
                         }
                     });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
+                    var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                    var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
+                    pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                    pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
                     pointsNew.push({x:x,y:y});
@@ -183,10 +195,14 @@
                             pointsArrNew2.push(point);
                         }
                     });
-                    pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
+                    var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                    var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
+                    pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
+                    pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
                     pointsNew.push({x:x,y:y});
@@ -199,10 +215,10 @@
                             pointsArrNew2.push(point);
                         }
                     });
-                    var horisontal = window.utils.findHorisontal(pointsArrNew,pointsArrNew2);
-                    pointNew1.x = horisontal[0];
+                    var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                    pointNew1.x = horizontal[0];
                     pointNew1.y = y;
-                    pointNew2.x = horisontal[horisontal.length-1];
+                    pointNew2.x = horizontal[horizontal.length-1];
                     pointNew2.y = y;
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
@@ -252,6 +268,9 @@
             var actualRect = window.utils.findActualRect(window.field.rects,pointX,pointY);
             if (!actualRect) {
                 this.goToStart();
+               // debugger
+                this.elem.style.transitionProperty = "top, left";
+                this.elem.style.transitionDuration = "3s";
             } else {
                 this.elem.classList.add("blade--active");
                 this.cutInfo = this.takeCutInfo(this.type,pointX,pointY);
@@ -285,6 +304,10 @@
         if (evt.target!==blade) {
             return;
         }
+
+        blade.style.transitionProperty = "transform";
+        blade.style.transitionDuration = "1s";
+
         evt.preventDefault();
         if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];

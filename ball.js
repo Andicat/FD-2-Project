@@ -4,9 +4,9 @@
 
     class Ball {
 
-        constructor(cnt,color,radius,x,y) {
-            this.speedX = 3;
-            this.speedY = -3;
+        constructor(cnt,color,radius,x,y,speed) {
+            this.speedX = window.utils.randomSign()*speed;
+            this.speedY = window.utils.randomSign()*speed;
             this.cnt = cnt;
             this.color = color;
             this.radius = radius;
@@ -79,8 +79,12 @@
                 if (hit) {
                     console.log("hit");
                     window.blade.goToStart();
+                    debugger
+                    window.game.finish();
+                    return;
                 }
             }
+            this.draw();
         };
 
         updateActualRect = function() {
