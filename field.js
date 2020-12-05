@@ -40,6 +40,7 @@
                     this.points = arr;
                     window.ball.updateActualRect();
                     window.level.updateProgress(this);
+                    window.utils.getMaxCoords(this.points);
                     return;
                 }
             }

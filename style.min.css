@@ -1,2 +1,194 @@
-@font-face{font-style:normal;font-weight:normal;font-family:"Roboto";src:url("../fonts/Roboto-Regular.woff2") format("woff2"),url("../fonts/Roboto-Regular.woff") format("woff")}@font-face{font-style:normal;font-weight:bold;font-family:"Roboto";src:url("../fonts/Roboto-Bold.woff2") format("woff2"),url("../fonts/Roboto-Bold.woff") format("woff")}body{font-family:"Roboto", sans-serif;font-size:14px;line-height:21px;color:#000;font-style:italic;text-align:center;background-color:#f2f2f2;margin:0}a{text-decoration:none}.visually-hidden{position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;margin:-1px;border:0px;padding:0px}.result{display:block;font-size:24px;line-height:normal;font-weight:600;margin:10px}.hidden{display:none !important}.game{margin:auto;background:linear-gradient(180deg, #020024 0%, rgba(0,129,255,0.8) 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;flex-wrap:wrap;position:fixed;top:0;right:0;bottom:0;left:0;justify-content:center}.game__playground{box-sizing:border-box;padding:10px 20px}.game__name{color:#ffffff;margin:0;font-size:36px;line-height:normal;font-weight:400;margin-bottom:20px}.game__level{display:block;color:#ffffff;margin:0;font-size:42px;line-height:normal;font-weight:400}.game__field{margin:0 auto 10px;display:flex}.game__blade{height:61px;min-width:100%}.game__start{position:absolute;bottom:0;left:80%;transition-property:all;transition-duration:0.3s;font-size:20px;text-transform:uppercase;margin:0 0 15px 0;padding:10px;border-radius:5px;border:none;background-color:brown;color:white;cursor:pointer;transform:translateX(-50%)}.game__start:hover,.game__start:focus{outline:none;opacity:0.9}.progress{display:flex;width:100%;flex-direction:column;align-items:stretch;margin-bottom:2%;background-color:rgba(255,255,255,0.3);height:15px;margin:0 auto 15px}.progress__value{height:100%;width:0%}.blade{background-color:black;background-repeat:no-repeat;background-size:cover;border-radius:50%;z-index:1;width:61px;height:61px;opacity:0.8;position:absolute;top:calc(50% - 30px);left:calc(50% - 30px)}.blade--hidden{visibility:hidden}.blade--active{transform-origin:center center;transition-property:transform;transition-duration:1s;opacity:0.4}.blade--top-right{background-image:url("img/blade-top-right.svg")}.blade--top-left{background-image:url("img/blade-top-left.svg")}.blade--bottom-right{background-image:url("img/blade-bottom-right.svg")}.blade--bottom-left{background-image:url("img/blade-bottom-left.svg")}.blade--left-right{background-image:url("img/blade-left-right.svg")}.blade--top-bottom{background-image:url("img/blade-top-bottom.svg")}
+@font-face {
+  font-style: normal;
+  font-weight: normal;
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Regular.woff2") format("woff2"), url("../fonts/Roboto-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-style: normal;
+  font-weight: bold;
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Bold.woff2") format("woff2"), url("../fonts/Roboto-Bold.woff") format("woff");
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  color: #000000;
+  font-style: italic;
+  text-align: center;
+  background-color: #f2f2f2;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0px;
+  padding: 0px;
+}
+
+.result {
+  display: block;
+  font-size: 24px;
+  line-height: normal;
+  font-weight: 600;
+  margin: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.game {
+  margin: auto;
+  background: linear-gradient(180deg, #020024 0%, rgba(0, 129, 255, 0.8) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  justify-content: center;
+}
+
+.game__playground {
+  box-sizing: border-box;
+  padding: 10px 20px;
+}
+
+.game__name {
+  color: #ffffff;
+  margin: 0;
+  font-size: 36px;
+  line-height: normal;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+.game__level {
+  display: block;
+  color: #ffffff;
+  margin: 0;
+  font-size: 42px;
+  line-height: normal;
+  font-weight: 400;
+}
+
+.game__field {
+  margin: 0 auto 10px;
+  display: flex;
+}
+
+.game__blade {
+  height: 61px;
+  min-width: 100%;
+}
+
+.game__start {
+  position: absolute;
+  bottom: 0;
+  left: 80%;
+  transition-property: all;
+  transition-duration: 0.3s;
+  font-size: 20px;
+  text-transform: uppercase;
+  margin: 0 0 15px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: brown;
+  color: white;
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.game__start:hover, .game__start:focus {
+  outline: none;
+  opacity: 0.9;
+}
+
+.progress {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 2%;
+  background-color: rgba(255, 255, 255, 0.3);
+  height: 15px;
+  margin: 0 auto 15px;
+}
+
+.progress__value {
+  transition-property: width;
+  height: 100%;
+  width: 0%;
+}
+
+.blade {
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+  z-index: 1;
+  width: 61px;
+  height: 61px;
+  opacity: 0.8;
+  position: absolute;
+  top: calc(50% - 30px);
+  left: calc(50% - 30px);
+}
+
+.blade--hidden {
+  visibility: hidden;
+}
+
+.blade--active {
+  transform-origin: center center;
+  opacity: 0.4;
+}
+
+.blade--top-right {
+  background-image: url("img/blade-top-right.svg");
+}
+
+.blade--top-left {
+  background-image: url("img/blade-top-left.svg");
+}
+
+.blade--bottom-right {
+  background-image: url("img/blade-bottom-right.svg");
+}
+
+.blade--bottom-left {
+  background-image: url("img/blade-bottom-left.svg");
+}
+
+.blade--left-right {
+  background-image: url("img/blade-left-right.svg");
+}
+
+.blade--top-bottom {
+  background-image: url("img/blade-top-bottom.svg");
+}
+
+/*@media screen and (orientation: portrait) {
+    #toolbar {
+      width: 100%;
+    }
+  }*/
 /*# sourceMappingURL=style.min.css.map */

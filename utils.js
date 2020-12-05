@@ -33,6 +33,10 @@
         return Math.floor(Math.random()*(m-n+1))+n;
     }
 
+    window.utils.randomSign = function() {
+        return Math.sign(0.5-Math.random());
+    }
+
     window.utils.hitSlit = function(elem,slit) {
         var r1x = elem.x - elem.radius;
         var r1y = elem.y - elem.radius;
@@ -51,10 +55,10 @@
             var r2x = Math.min(slit.startX,slit.currX)
             var r2y = slit.startY - slit.width/2;;
         }
-        if (r1x + r1w >= r2x &&    // r1 right edge past r2 left
-            r1x <= r2x + r2w &&    // r1 left edge past r2 right
-            r1y + r1h >= r2y &&    // r1 top edge past r2 bottom
-            r1y <= r2y + r2h) {    // r1 bottom edge past r2 top
+        if (r1x + r1w >= r2x &&    
+            r1x <= r2x + r2w &&    
+            r1y + r1h >= r2y &&    
+            r1y <= r2y + r2h) {    
             return true;
         }
         return false;
@@ -114,7 +118,7 @@
         }).map(p => p.y).sort((a,b) => {return a-b});
     };
 
-    window.utils.findHorisontal = function(arr1,arr2) {
+    window.utils.findHorizontal = function(arr1,arr2) {
         return arr1.filter(function (a1) {
             return (arr2.filter(a2 => {return a2.x===a1.x}).length);
         }).map(p => p.x).sort((a,b) => {return a-b});
@@ -130,24 +134,70 @@
     window.utils.scaleField = function(points, fieldSize) {
         var sortY = Array.from(new Set(points.map(p => p.y).sort((a,b) => {return a-b})));
         var sortX = Array.from(new Set(points.map(p => p.x).sort((a,b) => {return a-b})));
-        var width = sortX[sortX.length-1] - sortX[0];
-        var height = sortY[sortY.length-1] - sortY[0];
-        console.log("width " + width);
-        console.log("height " + height);
-        console.log("field " + fieldSize);
-        console.log("scale index " + fieldSize/Math.max(width,height));
-        console.log("center x " + (width/2) + " y " + (height/2));
-        console.log("center FIELD x " + (fieldSize/2) + " y " + (fieldSize/2));
+        var maxX = sortX[sortX.length-1];
+        var minX = sortX[0];
+        var maxY = sortY[sortY.length-1];
+        var minY = sortY[0];
+        var width = maxX - minX;
+        var height = maxY - minY;
+        var centerX = sortX[0] + (width/2);
+        var centerY = sortY[0] + (height/2);
+        //console.log("FIELD center " + fieldSize/2 + "-" + fieldSize/2);
+        //console.log("old center " + centerX + "-" + centerY);
+        
         //центрируем по ширине
         if ((width+height)!==fieldSize*2) {
-            var deltaX = Math.round((fieldSize - width)/2);
-            console.log("смещаем по x " + deltaX);
-            var deltaY = Math.round((fieldSize - height)/2);
-            console.log("смещаем по y " + deltaY);
-            var pointsNew = points.map(p => { return {x:p.x + deltaX, y: p.y + deltaY} });
-            console.log(points);
-            console.log(pointsNew);
+            var deltaX = Math.round(fieldSize/2 - centerX);
+            var deltaY = Math.round(fieldSize/2 - centerY);
+            points = points.map(p => { return {x:p.x + deltaX, y: p.y + deltaY} });
+            centerX += deltaX;
+            centerY += deltaY;
+            maxX += deltaX;
+            minX += deltaX;
+            maxY += deltaY;
+            minY += deltaY;
         }
-        return pointsNew;
+        //console.log("new center " + centerX + "-" + centerY);
+        //растягиваем
+        var scale = Math.min(fieldSize/width, fieldSize/height);
+        if (scale>1) {
+            points = points.map(function(p) {
+                let newX = Math.round(centerX + (p.x-centerX)*scale);
+                //console.log("x " + p.x + "-->" + newX);
+                let newY = Math.round(centerY + (p.y-centerY)*scale);
+                //console.log("y " + p.y + "-->" + newY);
+                return {x:newX, y:newY};
+            });
+        }
+        
+        /*console.log("width " + width);
+        console.log("height " + height);
+        console.log("FIELD " + fieldSize);
+        console.log("scale " + scale);*/
+        //debugger
+
+        return points;
     }
+
+    window.utils.getMaxCoords = function(points) {
+        var sortY = Array.from(new Set(points.map(p => p.y).sort((a,b) => {return a-b})));
+        var sortX = Array.from(new Set(points.map(p => p.x).sort((a,b) => {return a-b})));
+        console.log("AFTER CUT X-" + sortX[0] + "-" + sortX[sortX.length-1]);
+        console.log("AFTER CUT Y-" + sortY[0] + "-" + sortY[sortY.length-1]);
+    };
+
+    window.utils.convertColorHEXtoRGB = function(color) {
+          
+        if(color.substring(0,1) == '#') {
+            color = color.substring(1);
+        }
+      
+        var rgbColor = {};
+      
+        rgbColor.red = parseInt(color.substring(0,2),16);
+        rgbColor.green = parseInt(color.substring(2,4),16);
+        rgbColor.blue = parseInt(color.substring(4),16);
+      
+        return rgbColor;
+       };
 })();

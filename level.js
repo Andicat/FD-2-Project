@@ -21,6 +21,7 @@
             this.squareStart = window.utils.calculateSquare(field.rectsBg);
             this.elemCount.textContent = this.count;
             this.elemBar.style.width = "";
+            this.elemBar.style.transitionDuration = "";
         }
 
         updateProgress = function(field) {
@@ -28,6 +29,7 @@
             this.squareCurr = window.utils.calculateSquare(field.rects);
             this.progress = Math.round((this.squareStart - this.squareCurr)/(this.squareStart/100*(100-this.percent))*100);
             this.elemBar.style.width = Math.min(this.progress,100) + "%";
+            this.elemBar.style.transitionDuration = "1s";
             if (this.progress>=100) {
                 window.game.finishLevel();
             } else {
