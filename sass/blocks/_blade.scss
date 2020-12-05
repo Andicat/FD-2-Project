@@ -2,47 +2,48 @@
     background-color: black;
     background-repeat: no-repeat;
     background-size: cover;
-    border-radius: 10px;
+    border-radius: 50%;
     z-index: 1;
-    width: 60px;
-    height: 60px;
+    width: 61px;
+    height: 61px;
     opacity: 0.8;
     position: absolute;
+    top: calc(50% - 30px);
+    left: calc(50% - 30px);
     
     &--hidden {
         visibility: hidden;
     }
 
     &--active {
+        transform-origin: center center;
+        transition-property: transform;
+        transition-duration: 1s;
         opacity: 0.4;
     }
 
     &--top-right {
-        background-image: url("img/blade-angle.svg");
+        background-image: url("img/blade-top-right.svg");
     }
 
     &--top-left {
-        background-image: url("img/blade-angle.svg");
-        transform: rotate(-90deg);
+        background-image: url("img/blade-top-left.svg");
     }
 
     &--bottom-right {
-        background-image: url("img/blade-angle.svg");
-        transform: rotate(90deg);
+        background-image: url("img/blade-bottom-right.svg");
     }
 
     &--bottom-left {
-        background-image: url("img/blade-angle.svg");
-        transform: rotate(180deg);
+        background-image: url("img/blade-bottom-left.svg");
     }
 
-    &--right-left {
-        background-image: url("img/blade-line.svg");
+    &--left-right {
+        background-image: url("img/blade-left-right.svg");
     }
 
     &--top-bottom {
-        background-image: url("img/blade-line.svg");
-        transform: rotate(90deg);
+        background-image: url("img/blade-top-bottom.svg");
     }
 }
 

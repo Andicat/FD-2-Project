@@ -120,4 +120,34 @@
         }).map(p => p.x).sort((a,b) => {return a-b});
     };
 
+    window.utils.calculateSquare = function(rects) {
+        var square = rects.reduce(function(s,r,i,a) {
+            return s + r.square;
+          }, 0);
+        return square;
+    };
+
+    window.utils.scaleField = function(points, fieldSize) {
+        var sortY = Array.from(new Set(points.map(p => p.y).sort((a,b) => {return a-b})));
+        var sortX = Array.from(new Set(points.map(p => p.x).sort((a,b) => {return a-b})));
+        var width = sortX[sortX.length-1] - sortX[0];
+        var height = sortY[sortY.length-1] - sortY[0];
+        console.log("width " + width);
+        console.log("height " + height);
+        console.log("field " + fieldSize);
+        console.log("scale index " + fieldSize/Math.max(width,height));
+        console.log("center x " + (width/2) + " y " + (height/2));
+        console.log("center FIELD x " + (fieldSize/2) + " y " + (fieldSize/2));
+        //центрируем по ширине
+        if ((width+height)!==fieldSize*2) {
+            var deltaX = Math.round((fieldSize - width)/2);
+            console.log("смещаем по x " + deltaX);
+            var deltaY = Math.round((fieldSize - height)/2);
+            console.log("смещаем по y " + deltaY);
+            var pointsNew = points.map(p => { return {x:p.x + deltaX, y: p.y + deltaY} });
+            console.log(points);
+            console.log(pointsNew);
+        }
+        return pointsNew;
+    }
 })();

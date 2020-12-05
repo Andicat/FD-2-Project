@@ -4,7 +4,7 @@
 
     class Slit {
 
-        constructor(context,color,width,startX,startY,finishX,finishY,speed) {
+        constructor(startX,startY,finishX,finishY,speed,context,color,width) {
             this.cnt = context;
             this.width = width;
             this.color = color;
@@ -58,37 +58,60 @@
 
         draw = function() {
             this.cnt.strokeStyle = this.color;
+            this.cnt.fillStyle = this.color;
             this.cnt.lineWidth = this.width;
             this.cnt.beginPath();
             this.cnt.moveTo(this.startX,this.startY);
             this.cnt.lineTo(this.currX,this.currY);
             this.cnt.stroke();
+            this.cnt.closePath();
+            this.cnt.beginPath();
+            this.cnt.arc(this.currX, this.currY, this.width*2, 0, Math.PI*2, false);
+            this.cnt.fill();
+            this.cnt.closePath();
+            this.cnt.beginPath();
+            this.cnt.arc(this.startX, this.startY, this.width*2, 0, Math.PI*2, false);
+            this.cnt.fill();
+            this.cnt.closePath();
         };
     };
 
     class Blade {
 
-        constructor(elem,fieldSizes,types,speed) {
+        constructor(elem,fieldSizes,types,speed,context,slitColor,slitWidth,topShift) {
             this.elem = elem;
             this.fieldSizes = fieldSizes;
-            this.startTop = this.fieldSizes.bottom + elem.offsetHeight/4;
+            this.startTop = this.fieldSizes.bottom + elem.offsetHeight/6;
             this.startLeft = this.fieldSizes.left + this.fieldSizes.width/2 - elem.offsetWidth/2;
             this.isCutting = false;
             this.cutInfo;
             this.types = types;
             this.speed = speed;
+            this.cnt = context;
+            this.slitColor = slitColor;
+            this.slitWidth = slitWidth;
+            this.topShift = topShift;
         };
 
-        create = function() {
+        activate = function() {
             this.update();
-            this.elem.classList.remove("game__blade--hidden");
+            this.elem.classList.remove("blade--hidden");
             window.addEventListener("mousedown", startMoveBlade);
             window.addEventListener('touchstart', startMoveBlade,{passive: false});
             this.goToStart();
         };
 
+        disactivate = function() {
+            this.elem.classList.remove("blade--" + this.type);
+            this.elem.classList.add("blade--hidden");
+            window.removeEventListener("mousedown", startMoveBlade);
+            window.removeEventListener('touchstart', startMoveBlade,{passive: false});
+            this.goToStart();
+        }
+
         goToStart = function() {
-            this.elem.classList.remove("game__blade--active");
+            this.elem.classList.remove("blade--active");
+            this.elem.style.transform = "";
             this.slit1 = undefined;
             this.slit2 = undefined;
             this.elem.style.top = this.startTop + "px";
@@ -168,7 +191,7 @@
                     pointsNew.push(pointNew2);
                     pointsNew.push({x:x,y:y});
                     break;
-                case "right-left":
+                case "left-right":
                     pointsArr.forEach(function(point) {
                         if (point.y<y) {
                             pointsArrNew.push(point);
@@ -212,19 +235,17 @@
             var slitInMove2 = this.slit2.move();
             this.isCutting = slitInMove1||slitInMove2;
             if (this.isCutting) {
+                this.elem.style.transform = "scale(0)";
                 this.slit1.draw();
                 this.slit2.draw();
             } else {
                 window.field.cut(this.cutInfo);
-                this.update();
-                this.goToStart();
-
             }
         }
 
         drop = function() {
-            var centerY = blade.offsetTop + blade.offsetHeight/2;
-            var centerX = blade.offsetLeft + blade.offsetWidth/2;
+            var centerY = blade.offsetTop + (blade.offsetHeight-1)/2 + 1;
+            var centerX = blade.offsetLeft + (blade.offsetWidth-1)/2 + 1;
             var pointX = Math.round(centerX - this.fieldSizes.left);
             var pointY = Math.round(centerY - this.fieldSizes.top);
             //проверим попали ли мы в игровое поле
@@ -232,21 +253,22 @@
             if (!actualRect) {
                 this.goToStart();
             } else {
-                this.elem.classList.add("game__blade--active");
+                this.elem.classList.add("blade--active");
                 this.cutInfo = this.takeCutInfo(this.type,pointX,pointY);
-                this.slit1 = new Slit(window.context,"#ffffff",1,pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed);
-                this.slit2 = new Slit(window.context,"#ffffff",1,pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed);
+                this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed,this.cnt,this.slitColor,this.slitWidth);
+                this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed,this.cnt,this.slitColor,this.slitWidth);
                 this.isCutting = true;
-                console.log(this.type + " cut point x:" + pointX + " y:" + pointY);
+                //console.log(this.type + " cut point x:" + pointX + " y:" + pointY);
             }
         }
 
         update() {
-            this.elem.classList.remove("game__blade--" + this.type);
+            this.elem.classList.remove("blade--" + this.type);
             var type = this.types[window.utils.randomDiap(0,this.types.length-1)];
             this.type = type;
             this.elem.setAttribute("data-type", type);
-            this.elem.classList.add("game__blade--" + type);
+            this.elem.classList.add("blade--" + type);
+            this.goToStart();
         }
     }
 
@@ -257,19 +279,20 @@
 
     function startMoveBlade(evt) {
 
+        var topShift = 0;
         blade = window.blade.elem;
        
         if (evt.target!==blade) {
-            console.log(blade);
             return;
         }
         evt.preventDefault();
         if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
+            topShift = window.blade.topShift;
         }
 
         //перемещаем объект
-        blade.style.top = blade.offsetTop + "px";
+        blade.style.top = blade.offsetTop - topShift + "px";
     
         window.addEventListener('mousemove', moveBlade);
         window.addEventListener('mouseup', endMoveBlade);

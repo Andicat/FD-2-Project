@@ -10,6 +10,7 @@
             this.bottom = bottom;
             this.left = left;
             this.right = right;
+            this.square = Math.round((right-left)*(bottom-top));
         };
     };
   

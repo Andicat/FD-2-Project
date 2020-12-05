@@ -39,7 +39,7 @@
                     this.rects = window.utils.createRects(this.points);
                     this.points = arr;
                     window.ball.updateActualRect();
-                    window.utils.updateProgress(this);
+                    window.level.updateProgress(this);
                     return;
                 }
             }
