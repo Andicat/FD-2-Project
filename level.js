@@ -31,6 +31,7 @@
             this.elemBar.style.width = Math.min(this.progress,100) + "%";
             this.elemBar.style.transitionDuration = "1s";
             if (this.progress>=100) {
+                this.elemBar.style.transitionDuration = "";
                 window.game.finishLevel();
             } else {
                 window.blade.update();

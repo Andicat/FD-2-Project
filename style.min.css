@@ -92,6 +92,8 @@ a {
 .game__field {
   margin: 0 auto 10px;
   display: flex;
+  transition-property: opacity;
+  transition-duration: 1s;
 }
 
 .game__blade {
@@ -99,10 +101,8 @@ a {
   min-width: 100%;
 }
 
-.game__start {
+.game__button {
   position: absolute;
-  bottom: 0;
-  left: 80%;
   transition-property: all;
   transition-duration: 0.3s;
   font-size: 20px;
@@ -117,9 +117,19 @@ a {
   transform: translateX(-50%);
 }
 
-.game__start:hover, .game__start:focus {
+.game__button:hover, .game__button:focus {
   outline: none;
   opacity: 0.9;
+}
+
+.game__button--start {
+  bottom: 0;
+  left: 80%;
+}
+
+.game__button--colors {
+  bottom: 0;
+  left: 20%;
 }
 
 .progress {
@@ -131,6 +141,8 @@ a {
   background-color: rgba(255, 255, 255, 0.3);
   height: 15px;
   margin: 0 auto 15px;
+  transition-property: opacity;
+  transition-duration: 1s;
 }
 
 .progress__value {

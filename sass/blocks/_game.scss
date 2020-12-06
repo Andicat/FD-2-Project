@@ -16,7 +16,6 @@
 
     &__playground {
         box-sizing: border-box;
-        //background-color: burlywood;
         padding: 10px 20px;
     }
 
@@ -41,6 +40,8 @@
     &__field {
         margin: 0 auto 10px;
         display: flex;
+        transition-property: opacity;
+        transition-duration: 1s;
     }
 
     &__blade {
@@ -49,10 +50,8 @@
     }
 
     
-    &__start {
+    &__button {
         position: absolute;
-        bottom: 0;
-        left: 80%;
         @include transition(all);
         font-size: 20px;
         text-transform: uppercase;
@@ -70,6 +69,15 @@
             outline: none;
             opacity: 0.9;
         }
-    }
 
+        &--start {
+            bottom: 0;
+            left: 80%;
+        }
+    
+        &--colors {
+            bottom: 0;
+            left: 20%;
+        }
+    }
 }
