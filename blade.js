@@ -29,6 +29,25 @@
             }
         };
 
+        draw = function() {
+            this.cnt.strokeStyle = this.color;
+            this.cnt.fillStyle = this.color;
+            this.cnt.lineWidth = this.width;
+            this.cnt.beginPath();
+            this.cnt.moveTo(this.startX,this.startY);
+            this.cnt.lineTo(this.currX,this.currY);
+            this.cnt.stroke();
+            this.cnt.closePath();
+            this.cnt.beginPath();
+            this.cnt.arc(this.currX, this.currY, this.width*2, 0, Math.PI*2, false);
+            this.cnt.fill();
+            this.cnt.closePath();
+            this.cnt.beginPath();
+            this.cnt.arc(this.startX, this.startY, this.width*2, 0, Math.PI*2, false);
+            this.cnt.fill();
+            this.cnt.closePath();
+        };
+
         move = function() {
             if (this.direction==="X") {
                 var lenghtX = Math.abs(this.startX - this.finishX);
@@ -55,30 +74,11 @@
             }
             return false;
         };
-
-        draw = function() {
-            this.cnt.strokeStyle = this.color;
-            this.cnt.fillStyle = this.color;
-            this.cnt.lineWidth = this.width;
-            this.cnt.beginPath();
-            this.cnt.moveTo(this.startX,this.startY);
-            this.cnt.lineTo(this.currX,this.currY);
-            this.cnt.stroke();
-            this.cnt.closePath();
-            this.cnt.beginPath();
-            this.cnt.arc(this.currX, this.currY, this.width*2, 0, Math.PI*2, false);
-            this.cnt.fill();
-            this.cnt.closePath();
-            this.cnt.beginPath();
-            this.cnt.arc(this.startX, this.startY, this.width*2, 0, Math.PI*2, false);
-            this.cnt.fill();
-            this.cnt.closePath();
-        };
     };
 
     class Blade {
 
-        constructor(elem,fieldSizes,types,speed,context,slitColor,slitWidth,topShift) {
+        constructor(context,elem,fieldSizes,types,speed,slitColor,slitWidth) {
             this.elem = elem;
             this.fieldSizes = fieldSizes;
             this.startTop = this.fieldSizes.bottom + elem.offsetHeight/6;
@@ -90,7 +90,6 @@
             this.cnt = context;
             this.slitColor = slitColor;
             this.slitWidth = slitWidth;
-            this.topShift = topShift;
         };
 
         activate = function() {
@@ -129,7 +128,7 @@
             switch(type) {
                 case "top-right":
                     pointsArr.forEach(function(point) {
-                        if (!(point.x>=x&&point.y<=y)) {
+                        if (!(point.x>=x && point.y<=y)) {
                             pointsArrNew.push(point);
                         } else {
                             pointsArrNew2.push(point);
@@ -137,11 +136,9 @@
                     });
                     var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
                     var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
-                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
                     pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
                     pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
@@ -157,11 +154,9 @@
                     });
                     var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
                     var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
-                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
                     pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return a.y-b.y})[0].y;
                     pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
@@ -177,11 +172,9 @@
                     });
                     var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
                     var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
-                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return b.x-a.x})[0].x;
                     pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
                     pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
@@ -197,11 +190,9 @@
                     });
                     var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
                     var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
-                    //pointNew1.x = pointsArrNew2.sort((a,b) => {return a.x-b.x})[0].x;
                     pointNew1.x = horizontal[0];
                     pointNew1.y = y;
                     pointNew2.x = x;
-                    //pointNew2.y = pointsArrNew2.sort((a,b) => {return b.y-a.y})[0].y;
                     pointNew2.y = vertical[0];
                     pointsNew.push(pointNew1);
                     pointsNew.push(pointNew2);
@@ -265,19 +256,17 @@
             var pointX = Math.round(centerX - this.fieldSizes.left);
             var pointY = Math.round(centerY - this.fieldSizes.top);
             //проверим попали ли мы в игровое поле
-            var actualRect = window.utils.findActualRect(window.field.rects,pointX,pointY);
+            var actualRect = window.utils.findActualRect(window.field.rects,pointX,pointY,0);
             if (!actualRect) {
                 this.goToStart();
-               // debugger
                 this.elem.style.transitionProperty = "top, left";
-                this.elem.style.transitionDuration = "3s";
+                this.elem.style.transitionDuration = "1s";
             } else {
                 this.elem.classList.add("blade--active");
                 this.cutInfo = this.takeCutInfo(this.type,pointX,pointY);
                 this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed,this.cnt,this.slitColor,this.slitWidth);
                 this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed,this.cnt,this.slitColor,this.slitWidth);
                 this.isCutting = true;
-                //console.log(this.type + " cut point x:" + pointX + " y:" + pointY);
             }
         }
 
@@ -311,7 +300,7 @@
         evt.preventDefault();
         if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
-            topShift = window.blade.topShift;
+            topShift = blade.offsetHeight*1.5;
         }
 
         //перемещаем объект
