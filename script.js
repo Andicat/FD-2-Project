@@ -50,10 +50,9 @@
         const CANVAS_SIZE = cntField.offsetWidth;
         const BORDER_SIZE = CANVAS_SIZE*0.01;
         const FIELD_SIZE = CANVAS_SIZE - BORDER_SIZE*2;
-        const BALL_RADIUS = CANVAS_SIZE*0.02;
+        const BALL_RADIUS = CANVAS_SIZE*0.03;
 
-        var imgBall = new Image();
-        imgBall.src = "img/ball.svg";
+        var imgBallSrc = "img/ball-7.svg";
 
         var levelInfo = {
             count: 1,
@@ -98,7 +97,7 @@
             btnStart.textContent = "Finish";
             btnStart.removeEventListener("click", startGame);
             btnStart.addEventListener("click", finishGame);
-            window.game = new Game(window.context,FIELD_SIZE,BORDER_SIZE,COLOR_BG,COLOR_BORDER,COLOR_BALL,BALL_RADIUS,ballSpeed,levelInfo,levelColors,imgBall,cntBlade,cntField,cntCounter,cntProgress,cntProgressValue,bladeTypes,bladeSpeed);
+            window.game = new Game(window.context,FIELD_SIZE,BORDER_SIZE,COLOR_BG,COLOR_BORDER,COLOR_BALL,BALL_RADIUS,ballSpeed,levelInfo,levelColors,imgBallSrc,cntBlade,cntField,cntCounter,cntProgress,cntProgressValue,bladeTypes,bladeSpeed);
             window.game.start();
             function tick() {
                 if (window.game) {
@@ -118,7 +117,7 @@
 
         function finishGame() {
             window.game.finish();
-            window.game = undefined;
+            window.game = null;
             context.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
             btnStart.textContent = "Start";
             btnStart.removeEventListener("click", finishGame);

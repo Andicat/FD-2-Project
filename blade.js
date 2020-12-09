@@ -56,7 +56,7 @@
                     this.currX += this.speedX;
                 } else {
                     this.currX = this.finishX;
-                    this.direction = undefined;
+                    this.direction = null;
                 }
                 return true;
             }
@@ -68,7 +68,7 @@
                 }
                 else {
                     this.currY = this.finishY;
-                    this.direction = undefined;
+                    this.direction = null;
                 }
                 return true;
             }
@@ -111,8 +111,8 @@
         goToStart = function() {
             this.elem.classList.remove("blade--active");
             this.elem.style.transform = "";
-            this.slit1 = undefined;
-            this.slit2 = undefined;
+            this.slit1 = null;
+            this.slit2 = null;
             this.elem.style.top = this.startTop + "px";
             this.elem.style.left = this.startLeft + "px";
         }
@@ -305,6 +305,7 @@
 
         //перемещаем объект
         blade.style.top = blade.offsetTop - topShift + "px";
+        //blade.style.top = blade.offsetTop + "px";
     
         window.addEventListener('mousemove', moveBlade);
         window.addEventListener('mouseup', endMoveBlade);
@@ -357,6 +358,12 @@
         //перемещаем объект
         blade.style.top = Math.min(topShift, limits.bottom) + "px";
         blade.style.left = Math.min(leftShift, limits.right) + "px";
+        var shiftTopMouse = mouseStart.y - blade.offsetTop;
+        if (shiftTopMouse<blade.offsetHeight*1.5) {
+            //blade.style.top = (mouseStart.y + blade.offsetHeight*1.5) + "px";
+            //console.log("shift between " + shiftTopMouse + "height");
+        }
+        
     }
 
     function endMoveBlade(evt) {

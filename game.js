@@ -58,11 +58,11 @@
             this.cntField.style.opacity = "0";
             this.cntProgress.style.opacity = "0";
             this.cntCounter.textContent = "FINISH";
-            window.level = undefined;
-            window.field = undefined;
+            window.level = null;
+            window.field = null;
             window.blade.disactivate();
-            window.blade = undefined;
-            window.ball = undefined;
+            window.blade = null;
+            window.ball = null;
         }
 
         finishLevel = function() {
