@@ -9,13 +9,12 @@
     try {
         var blockGame = document.querySelector('.game');
         var cntPlayground = blockGame.querySelector('.game__playground');
-        var cntProgress = blockGame.querySelector('.progress');
-        var cntProgressValue = blockGame.querySelector('.progress__value');
+        var cntBlade = cntPlayground.querySelector('.blade');
         var cntField = blockGame.querySelector('.game__field');
-        var cntCounter = blockGame.querySelector('.game__level');
+        
         var btnStart = blockGame.querySelector('.game__button--start');
         var btnColors = blockGame.querySelector('.game__button--colors');
-        var cntBlade = blockGame.querySelector('.blade');
+        
     } catch {
         return;
     }
@@ -29,7 +28,7 @@
     const COLOR_BORDER = "#FFFFFF";
     const COLOR_BALL = "#000000";
 
-    const bladeTypes = ["top-right","top-left","bottom-right","bottom-left","left-right","top-bottom"];
+    
     const bladeSpeed = 6;
     const ballSpeed = 3;
 
@@ -99,11 +98,13 @@
             btnStart.addEventListener("click", finishGame);
             
             var myGame = new Game(CANVAS_SIZE);
-            var viewCanvas = new ViewCanvas(context);
-            //var controller = new ClockControllerButtons();
+            var viewCanvas = new ViewCanvas(context,blockGame);
+            var controller = new GameController();
             //viewClock.init(clock,cntClock);
             //controller.init(clock,cntClock);
             //clock.init(viewClock);
+            controller.start(myGame,cntPlayground);
+            viewCanvas.start(myGame);
             myGame.start(viewCanvas);
         
         
@@ -114,7 +115,7 @@
         //clock.updateView();
             
             
-            function tick() {
+           /* function tick() {
                 if (window.game) {
                     if (window.game.InProgress) {
                         window.game.draw();
@@ -127,7 +128,7 @@
                     }
                 }
             }
-            tick();
+            tick();*/
         }
 
         function finishGame() {

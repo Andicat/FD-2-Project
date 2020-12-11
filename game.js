@@ -6,6 +6,9 @@ class Game {
         this.borderSize = canvasSize*0.01;
         this.fieldSize = canvasSize - this.borderSize*2;
         this.myView = null;
+        this.field = null;
+        this.ball = null;
+        this.blade = null;
         this.level = null;
         this.pointsStart = [
             {x:this.borderSize,y:this.borderSize},
@@ -39,35 +42,223 @@ class Game {
     start = function(view) {
         this.InProgress = true;
         this.myView = view;
-        
         this.field = new Field(this.pointsStart,this.pointsStart);
-        this.level = new Level(1,this.pointsStart,50);
-        //window.blade = new Blade(this.cnt,this.cntBlade,window.utils.getElementCoords(this.cntField),this.bladeTypes,this.bladeSpeed,this.borderColor,this.ballRadius/3);
-        //window.blade.activate();
-        //window.ball = new Ball(this.cnt,this.ballColor,this.ballRadius,this.ballSpeed,this.imageBall);
-        //window.ball.activate();
+        this.level = new Level(1,this.pointsStart,this.field,50);
+        this.ball = new Ball(this.fieldSize,this.field);
+        this.blade = new Blade(this.fieldSize);
+        this.updateBlade();
+        this.tick();
     }
 
-    initLevel = function() {
-        window.level = new Level(this.cntCounter, this.levelInfo.count, this.cntProgressValue, this.levelInfo.pointsStart, this.levelInfo.percentToWin, this.levelInfo.color);
-        window.field = new Field(this.cnt,this.bgColor,this.levelInfo.color,this.levelInfo.pointsStart,this.levelInfo.pointsStart,this.borderSize,this.borderColor);
-        window.level.init(field);
-        window.blade = new Blade(this.cnt,this.cntBlade,window.utils.getElementCoords(this.cntField),this.bladeTypes,this.bladeSpeed,this.borderColor,this.ballRadius/3);
-        window.blade.activate();
-        window.ball = new Ball(this.cnt,this.ballColor,this.ballRadius,this.ballSpeed,this.imageBall);
-        window.ball.activate();
-    }
-
-    /*draw = function() {
-        this.cnt.clearRect(0, 0, this.fieldSize + this.borderSize*2, this.fieldSize + this.borderSize*2);
-        window.field.draw();
-        if (window.blade && window.blade.isCutting) {
-            window.blade.cut();
-        }
+    tick = function() {
         if (this.InProgress) {
-            window.ball.move();
+            this.ball.move();
         }
-    }*/
+        if (this.isCutting) {
+            this.cut();
+        }
+        /*if (window.game.scaleField) {
+            window.game.scale();
+        }*/
+        if (this.InProgress) {
+            this.updateView();
+            requestAnimationFrame(this.tick.bind(this));
+        }
+    }
+
+    dropBlade = function(pointX, pointY) {
+        //проверим попали ли мы в игровое поле
+        var actualRect = window.utils.findActualRect(this.field.rects,pointX,pointY,0);
+        if (!actualRect) {
+            this.myView.updateBlade();
+            //this.goToStart();
+            //this.elem.style.transitionProperty = "top, left";
+            //this.elem.style.transitionDuration = "1s";
+        } else {
+            this.myView.activateBlade();
+            this.cutInfo = this.takeCutInfo(this.blade.type,pointX,pointY);
+            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed);
+            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed);
+            this.isCutting = true;
+        }
+    }
+
+    takeCutInfo = function(type,x,y) {
+        var arrNew = [];
+        var pointsArr = this.field.points;
+        var pointsArrNew = [];
+        var pointsArrNew2 = [];
+        var pointsNew = [];
+        var pointNew1 = {};
+        var pointNew2 = {};
+        switch(type) {
+            case "top-right":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x>=x && point.y<=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "top-left":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x<=x&&point.y<=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "bottom-right":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x>=x&&point.y>=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "bottom-left":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x<=x&&point.y>=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "left-right":
+                pointsArr.forEach(function(point) {
+                    if (point.y<y) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = horizontal[horizontal.length-1];
+                pointNew2.y = y;
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                break;
+            case "top-bottom":
+                pointsArr.forEach(function(point) {
+                    if (point.x<x) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = x;
+                pointNew1.y = vertical[0];
+                pointNew2.x = x;
+                pointNew2.y = vertical[vertical.length-1];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                break;
+            default:
+                break;
+        }
+        arrNew = [pointsArrNew,pointsArrNew2];
+        return {arrNew:arrNew, pointsNew:pointsNew};
+    };
+
+    cut = function() {
+        var slitInMove1 = this.slit1.move();
+        var slitInMove2 = this.slit2.move();
+        this.isCutting = slitInMove1||slitInMove2;
+        if (this.isCutting) {
+            //this.elem.style.transform = "scale(0)";
+            //this.slit1.draw();
+            //this.slit2.draw();
+        } else {
+            this.slit1 = null;
+            this.slit2 = null;
+            //window.field.cut(this.cutInfo);
+            for (var i = 0; i< this.cutInfo.arrNew.length; i++) {
+                var arr = this.cutInfo.arrNew[i].concat(this.cutInfo.pointsNew);
+                var rects = this.field.createRects(arr);
+                var isBall = window.utils.findActualRect(rects,this.ball.x,this.ball.y,this.ball.radius);
+                if (isBall) {
+                    this.field.points = arr;
+                    this.field.rects = this.field.createRects(this.field.points);
+                    this.ball.updateActualRect();
+                    this.updateBlade();
+                    this.updateProgress();
+                    //window.level.updateProgress(this);
+                    //window.utils.getMaxCoords(this.points);
+                    return;
+                }
+            }
+            
+        }
+    }
+
+    updateProgress = function() {
+        this.level.pointsCurr = this.field.points;
+        this.level.squareCurr = window.utils.calculateSquare(this.field.rects);
+        this.level.progress = Math.round((this.level.squareStart - this.level.squareCurr)/(this.level.squareStart/100*(100-this.level.percent))*100);
+        //console.log(this.level.progress);
+        this.myView.updateLevel();
+        if (this.level.progress>=100) {
+            this.finishLevel();
+        } else {
+            ///window.blade.update();
+        }
+    }
+
+    updateView = function() {
+        if (this.myView) {
+            this.myView.update();
+        }
+    }
+
+    updateBlade = function() {
+        this.blade.update();
+        if (this.myView) {
+            this.myView.updateBlade();
+        }
+    }
 
     finish = function() {
         this.InProgress = false;
@@ -83,7 +274,6 @@ class Game {
 
     finishLevel = function() {
         this.InProgress = false;
-        this.draw();
         window.blade.disactivate();
         this.pointsOld = window.level.pointsCurr;
         this.colorOld = window.utils.convertColorHEXtoRGB(this.levelInfo.color);
@@ -184,27 +374,10 @@ class Field {
         }
         return rects;
     };
-
-    cut = function(cutInfo) {
-        for (var i = 0; i< cutInfo.arrNew.length; i++) {
-            var arr = cutInfo.arrNew[i].concat(cutInfo.pointsNew);
-            var rects = this.createRects(arr);
-            var isBall = window.utils.findActualRect(rects,window.ball.x,window.ball.y,window.ball.radius);
-            if (isBall) {
-                this.points = arr;
-                this.rects = this.createRects(this.points);
-                this.points = arr;
-                window.ball.updateActualRect();
-                window.level.updateProgress(this);
-                window.utils.getMaxCoords(this.points);
-                return;
-            }
-        }
-    }
 };
 
 class Level {
-    constructor(count,pointsStart,percent,color) {
+    constructor(count,pointsStart,field,percent,color) {
         this.count = count;
         this.pointsStart = pointsStart;
         this.pointsCurr = pointsStart;
@@ -216,47 +389,32 @@ class Level {
         this.squareStart = window.utils.calculateSquare(field.rectsBg);
     };
 
-    updateProgress = function(field) {
-        this.pointsCurr = field.points;
-        this.squareCurr = window.utils.calculateSquare(field.rects);
-        this.progress = Math.round((this.squareStart - this.squareCurr)/(this.squareStart/100*(100-this.percent))*100);
-        this.elemBar.style.width = Math.min(this.progress,100) + "%";
-        this.elemBar.style.transitionDuration = "1s";
-        if (this.progress>=100) {
-            this.elemBar.style.transitionDuration = "";
-            window.game.finishLevel();
-        } else {
-            window.blade.update();
-        }
-    }
+    
 };
-
 
 class Ball {
 
-    constructor(radius,speed,image) {
+    constructor(fieldSize,field) {
+        this.field = field;
+        this.radius = fieldSize*0.03;
+        var speed = 3;
         this.speedX = window.utils.randomSign()*speed;
         this.speedY = window.utils.randomSign()*speed;
-        this.radius = radius;
         this.x;
         this.y;
         this.actualRect;
         this.image = new Image();
-        this.image.src = image;
-        this.rotation;
-    };
-
-    activate = function() {
-        this.actualRect = window.field.rects[0];
+        this.image.src = "img/ball-7.svg";
+        this.rotation = 0;
+        this.actualRect = field.rects[0];
         this.x = this.actualRect.left + (this.actualRect.right-this.actualRect.left)/2 - this.radius;
         this.y = this.actualRect.top + (this.actualRect.bottom-this.actualRect.top)/2 - this.radius;
-        this.rotation = 0;
-    }
+    };
 
     move = function() {
         this.x += this.speedX;
-        this.y += this.speedY;
-                        
+        this.y += this.speedY;   
+        this.rotation += 5;      
         var nextRect;
         
         //проверка области
@@ -267,7 +425,7 @@ class Ball {
             this.speedX =- this.speedX;
             this.x = this.actualRect.left + this.radius;
         } else if (((this.y + this.radius) > this.actualRect.bottom)&&this.speedY>0) { //bottom
-            nextRect = window.utils.findActualRect(window.field.rects,this.x,this.y+this.radius,this.radius);
+            nextRect = window.utils.findActualRect(this.field.rects,this.x,this.y+this.radius,this.radius);
             if (!nextRect) {
                 this.speedY =- this.speedY;
                 this.y = this.actualRect.bottom - this.radius;
@@ -275,7 +433,7 @@ class Ball {
                 this.actualRect = nextRect;
             }
         } else if (((this.y - this.radius) < this.actualRect.top)&&this.speedY<0) { //top
-            nextRect = window.utils.findActualRect(window.field.rects,this.x,this.y-this.radius,this.radius);
+            nextRect = window.utils.findActualRect(this.field.rects,this.x,this.y-this.radius,this.radius);
             if (!nextRect) {
                 this.speedY =- this.speedY;
                 this.y = this.actualRect.top + this.radius;
@@ -284,17 +442,59 @@ class Ball {
             }
         }
         // проверка коллизии с линиями blade
-        if (window.blade.isCutting) {
+        /*if (window.blade.isCutting) {
             var hit = window.utils.hitSlit(this,window.blade.slit1)||window.utils.hitSlit(this,window.blade.slit2);
             if (hit) {
                 window.game.finish();
                 return;
             }
-        }
+        }*/
     };
 
     updateActualRect = function() {
-        this.actualRect = window.utils.findActualRect(window.field.rects,this.x,this.y,this.radius);
+        this.actualRect = window.utils.findActualRect(this.field.rects,this.x,this.y,this.radius);
+    }
+}
+
+
+
+class Blade {
+
+    constructor(fieldSize) {
+        this.bladeTypes = ["top-right","top-left","bottom-right","bottom-left","left-right","top-bottom"];
+        this.isCutting = false;
+        this.cutInfo;
+        this.type = null;
+        this.speed = 3;
+        this.update();
+        //this.activate();
+    };
+
+    disactivate = function() {
+        this.elem.classList.remove("blade--" + this.type);
+        this.elem.classList.add("blade--hidden");
+        window.removeEventListener("mousedown", startMoveBlade);
+        window.removeEventListener('touchstart', startMoveBlade,{passive: false});
+        this.goToStart();
+    }
+
+    goToStart = function() {
+        this.elem.classList.remove("blade--active");
+        this.elem.style.transform = "";
+        this.slit1 = null;
+        this.slit2 = null;
+        this.elem.style.top = this.startTop + "px";
+        this.elem.style.left = this.startLeft + "px";
+    }
+
+    
+
+    update() {
+        //this.elem.classList.remove("blade--" + this.type);
+        this.type = this.bladeTypes[window.utils.randomDiap(0,this.bladeTypes.length-1)];
+        //this.elem.setAttribute("data-type", type);
+        //this.elem.classList.add("blade--" + type);
+        //this.goToStart();
     }
 }
 
