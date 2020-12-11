@@ -71,7 +71,7 @@
         gameCanvas.setAttribute("width",CANVAS_SIZE);
         gameCanvas.setAttribute("height",CANVAS_SIZE);
         cntField.appendChild(gameCanvas);
-        window.context = gameCanvas.getContext("2d");
+        var context = gameCanvas.getContext("2d");
 
         btnStart.addEventListener("click", startGame);
         btnColors.addEventListener("click", showColors);
@@ -97,8 +97,23 @@
             btnStart.textContent = "Finish";
             btnStart.removeEventListener("click", startGame);
             btnStart.addEventListener("click", finishGame);
-            window.game = new Game(window.context,FIELD_SIZE,BORDER_SIZE,COLOR_BG,COLOR_BORDER,COLOR_BALL,BALL_RADIUS,ballSpeed,levelInfo,levelColors,imgBallSrc,cntBlade,cntField,cntCounter,cntProgress,cntProgressValue,bladeTypes,bladeSpeed);
-            window.game.start();
+            
+            var myGame = new Game(CANVAS_SIZE);
+            var viewCanvas = new ViewCanvas(context);
+            //var controller = new ClockControllerButtons();
+            //viewClock.init(clock,cntClock);
+            //controller.init(clock,cntClock);
+            //clock.init(viewClock);
+            myGame.start(viewCanvas);
+        
+        
+
+        
+
+        // инициируем первичное отображение Model во View
+        //clock.updateView();
+            
+            
             function tick() {
                 if (window.game) {
                     if (window.game.InProgress) {
