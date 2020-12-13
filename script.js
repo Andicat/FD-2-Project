@@ -1,8 +1,6 @@
 'use strict';
 
 //======================================FD-2 SCALE-GAME==================================
-/*
-*/
 
 (function () {
 
@@ -24,11 +22,43 @@
         return;
     }
     
+    //настройка размеров игры
     var clientWidth = document.documentElement.clientWidth;
     var clientHeight = document.documentElement.clientHeight;
     const GAME_HEIGHT = clientHeight;
     const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*3,clientWidth));
     
+    //загрузка данных AJAX (цвета, мячики)
+    function loadAJAXData() {
+        var files = ["colors","balls"];
+        var filesCount = 0;
+        var DATA = {};
+        var URL = 'https://andicat.github.io/FD-2-Project/data/';
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+
+        for ( let i = 0; i < files.length; i++ ) {
+    
+            xhr.addEventListener('load', loaded);
+            xhr.open('GET', URL + files[i] + '.json');
+            xhr.send();
+
+            function loaded(data) {
+                DATA[i] = data;
+                filesCount++;
+                if (filesCount == files.length) {
+                    showIP();
+                }
+            }
+
+            function showIP() {
+                console.log("данные загружены");
+                console.log(DATA);
+            }
+        }
+    }
+
+    //загрузка данный из локального хранилища
     var lsName = "gameScale";
     var ls = localStorage.getItem(lsName);
     var lsData = {};
@@ -72,8 +102,6 @@
         //создаем контейнер
         var balls = document.createElement("ul");
         balls.classList.add("ball");
-        //clock.style.width = CLOCK_SIZE + "px";
-        //clock.style.height = CLOCK_SIZE + "px";
         cnt.appendChild(balls);
         
         //создаем мячики
@@ -174,6 +202,7 @@
 
         
     }
+
 
     renderGame(cntField);
 
