@@ -271,13 +271,22 @@
     };
 
     window.utils.setRandomColor = function() {
-        const levelColors = [
+        var levelColors;
+        var URL = 'https://andicat.github.io/FD-2-Project/';
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+        xhr.addEventListener('load', function () {
+            levelColors = xhr.response;
+        });
+        xhr.open('GET', 'https://andicat.github.io/FD-2-Project/colors.json');
+        xhr.send();
+        /*const levelColors = [
             "#F79F1F","#FFC312","#ffd700","#FFCC33","#FFFF33","#A3CB38", //yellow
             "#009966","#00CC66","#33FF66","#66CC66","#66FF33","#66CC33","#009432","#1289A7","#006266", //green
             "#0033CC","#0066FF","#0099CC","#00CCCC","#33CCCC","#1B1464","#5758BB", //blue
             "#993399","#6633CC","#D980FA","#B53471","#9980FA","#833471","#6F1E51","#993366","#FF66FF", //violet
             "#ED4C67","#EE5A24","#EA2027","#ff6d69","#FF3300","#FF3333","#FF3366" //pink
-        ];
+        ];*/
         return levelColors[window.utils.randomDiap(0,levelColors.length-1)];
     }
 })();
