@@ -28,7 +28,7 @@ class ViewCanvas {
         //this.cnt.setTransform(0.47,0.18,-0.83,0.22,this.field.offsetWidth/2,this.field.offsetHeight/2);
         //текущее игровое поле
         this.cnt.clearRect(0, 0, fieldSize + borderSize*2, fieldSize + borderSize*2);
-        this.cnt.globalAlpha = 0.9;
+        /*this.cnt.globalAlpha = 0.9;
         for (var j = 0; j < levels.length; j++) {
             this.cnt.save();
             this.cnt.setTransform(0.47,0.18,-0.61,0.19,fieldSize/2,fieldSize/2-(fieldSize/2/levels.length)*j);
@@ -38,7 +38,15 @@ class ViewCanvas {
                 this.cnt.fillRect(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
             };
             this.cnt.restore();
+        }*/
+        var gradient = "";
+        for (var j = 0; j < levels.length; j++) {
+            var count = 100/(levels.length-1);
+            console.log(count*j);
+            gradient = gradient + ", rgb(" + levels[j].color.red + "," + levels[j].color.green + "," + levels[j].color.blue + ") " + (count*j) + "%";
         }
+        //"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%)"
+        this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
         
     }
 

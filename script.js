@@ -16,109 +16,59 @@
         var btnBallModalClose = modalBall.querySelector('.modal__button-close');
         var cntField = blockGame.querySelector('.game__field');
         var btnStart = blockGame.querySelector('.game__button--start');
-        //var btnColors = blockGame.querySelector('.game__button--colors');
         
     } catch {
         return;
     }
-
-    var ttt = ["ball-1.svg",
-    "ball-2.svg",
-    "ball-3.svg",
-    "ball-4.svg",
-    "ball-5.svg",
-    "ball-6.svg",
-    "ball-7.svg",
-    "ball-8.svg",
-    "ball-9.svg",
-    "ball-10.svg",
-    "ball-11.svg",
-    "ball-12.svg",
-    "ball-13.svg",
-    "ball-14.svg",
-    "ball-15.svg",
-    "ball-16.svg",
-    "ball-17.svg",
-    "ball-18.svg",
-    "ball-19.svg",
-    "ball-20.svg",
-    "ball-21.svg",
-    "ball-22.svg",
-    "ball-23.svg",
-    "ball-24.svg",
-    "ball-25.svg",
-    "ball-26.svg",
-    "ball-27.svg",
-    "ball-28.svg",
-    "ball-29.svg",
-    "ball-30.svg",
-    "ball-31.svg",
-    "ball-32.svg",
-    "ball-33.svg",
-    "ball-34.svg",
-    "ball-35.svg",
-    "ball-36.svg",
-    "ball-37.svg",
-    "ball-38.svg",
-    "ball-39.svg",
-    "ball-40.svg"];
-    console.log(JSON.stringify(ttt));
 
     //настройка размеров игры
     var clientWidth = document.documentElement.clientWidth;
     var clientHeight = document.documentElement.clientHeight;
     const GAME_HEIGHT = clientHeight;
     const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*3,clientWidth));
+    const DATA = {};
+    var lsData = {};
     
     //загрузка данных AJAX (цвета, мячики)
     function loadAJAXData() {
         var files = ["colors","balls"];
         var filesCount = 0;
-        var DATA = {};
         var URL = 'https://andicat.github.io/FD-2-Project/data/';
         
-       
-
         for ( let i = 0; i < files.length; i++ ) {
     
             let xhr = new XMLHttpRequest();
-            xhr.responseType = 'text';
+            xhr.responseType = 'json';
             xhr.addEventListener('load', loaded);
             xhr.open('GET', URL + files[i] + '.json');
             xhr.send();
 
             function loaded() {
-                debugger
-                DATA[i] = xhr.response;
+                DATA[files[i]] = xhr.response;
                 filesCount++;
                 if (filesCount == files.length) {
-                    showIP();
+                    renderGame();
                 }
-            }
-
-            function showIP() {
-                console.log("данные загружены");
-                console.log(DATA);
             }
         }
     }
 
-    loadAJAXData();
-
-    //загрузка данный из локального хранилища
-    var lsName = "gameScale";
-    var ls = localStorage.getItem(lsName);
-    var lsData = {};
-    if (ls) {
-        lsData = JSON.parse(ls);
+    var clickAudio = new Audio;
+    if (clickAudio.canPlayType("audio/mpeg")=="probably") {
+        clickAudio.src="sound/click.mp3";
     }
+
+    // если поддержка формата точно известна, можно сразу так:
+    //var clickAudio=new Audio("http://fe.it-academy.by/Examples/Sounds/button-16.mp3");
+
+    loadAJAXData();
 
     // открытие модального окна
     btnBall.addEventListener('click', function(evt) {
         evt.preventDefault();
         document.body.classList.add('stop-scrolling');
         modalBall.classList.add('modal--show');
-        showBalls(modalBall.querySelector(".modal__inner"));
+        showBalls(modalBall.querySelector(".modal__container"));
     });
     
     //закрытие модального окна по кнопке закрытия
@@ -142,32 +92,42 @@
     function closeModal() {
         modalBall.classList.remove('modal--show');
         document.body.classList.remove('stop-scrolling');
+        var ballSelectedSrc = document.forms["balls"].querySelector('input:checked').value;
+        btnBall.style.backgroundImage = "url('img/" + ballSelectedSrc + "')";
+        lsData.ballImageSrc = ballSelectedSrc;
     }
 
     function showBalls(cnt) {
         cnt.innerHTML = "";
         //создаем контейнер
-        var balls = document.createElement("ul");
-        balls.classList.add("ball");
-        cnt.appendChild(balls);
+        var ballsForm = document.createElement("form");
+        ballsForm.setAttribute("name","balls");
+        ballsForm.classList.add("ball");
+
+        cnt.appendChild(ballsForm);
         
         //создаем мячики
-        for (var i = 1; i <= 40; i++) {
+        var ballsArr = DATA.balls;
+        for (var i = 0; i < ballsArr.length; i++) {
             var ballItem = document.createElement("li");
             ballItem.classList.add("ball__item");
-            balls.appendChild(ballItem);
+            ballsForm.appendChild(ballItem);
             var ballInput = document.createElement("input");
             ballInput.classList.add("visually-hidden");
             ballInput.setAttribute("type","radio");
             ballInput.setAttribute("name","balls");
-            ballInput.setAttribute("id","ball-" + i);
-            ballInput.setAttribute("value","ball-" + i);
+            ballInput.setAttribute("id","ball-" + (i+1));
+            ballInput.setAttribute("value",ballsArr[i]);
+            if (lsData.ballImageSrc == ballsArr[i]) {
+                ballInput.setAttribute("checked","true");
+            }
             ballItem.appendChild(ballInput);
             var ballLabel = document.createElement("label");
-            ballLabel.setAttribute("for","ball-" + i);
-            ballLabel.style.backgroundImage = "url('img/ball-" + i + ".svg')";
+            ballLabel.setAttribute("for","ball-" + (i+1));
+            ballLabel.style.backgroundImage = "url('img/" + ballsArr[i] + "')";
             ballItem.appendChild(ballLabel);
         }
+
     }
 
     function closeModalOverlay(evt) {
@@ -175,7 +135,14 @@
         document.body.classList.remove('stop-scrolling');
     }
     
-    function renderGame (cnt) {   
+    function renderGame () {   
+        //загрузка данный из локального хранилища
+        var lsName = "gameScale";
+        var ls = localStorage.getItem(lsName);
+        if (ls) {
+            lsData = JSON.parse(ls);
+        }
+
         if (lsData.soundOff) {
             btnSound.classList.add("game__button--sound-off");
         } else {
@@ -183,10 +150,10 @@
         }
 
         if (lsData.ballImageSrc) {
-            btnBall.style.backgroundImage = "url('" + lsData.ballImageSrc + "')";
+            btnBall.style.backgroundImage = "url('img/" + lsData.ballImageSrc + "')";
         } else {
-            btnBall.style.backgroundImage = "url('img/ball-1.svg')";
-            lsData.ballImageSrc = 'img/ball-1.svg';
+            btnBall.style.backgroundImage = "url('img/" + DATA.balls[0] + "')";
+            lsData.ballImageSrc = DATA.balls[0];
         }
 
         if (lsData.bestScore) {
@@ -213,44 +180,81 @@
             lsData.soundOff = btnSound.classList.contains("game__button--sound-off")?true:false;
         })
         cntPlay.classList.add("hidden");
-        //btnColors.addEventListener("click", showColors);
+        
 
+        var btnColors = blockGame.querySelector('.game__button--colors');
+        btnColors.addEventListener("click", showColors);
+        var colorIndex = 0;
         function showColors() {
-            context.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-            var colorCount = levelColors.length;
-            var colorSize = CANVAS_SIZE/Math.ceil(Math.sqrt(colorCount));
-            var top = 0;
-            var left = 0;
-            for (var i = 0; i< levelColors.length; i++) {
-                context.fillStyle = levelColors[i];
-                context.fillRect(left,top,colorSize,colorSize);
-                left = left + colorSize;
-                if (left+colorSize>CANVAS_SIZE) {
-                    top = top + colorSize;
-                    left = 0;
-                }
-            }
+            var colors = [
+            "#e6bf32", 
+            "#FBCB2C", 
+            "#ebd726", 
+            "#FAC221",  
+            "#ffd333",
+            "#F79F1F", 
+            "#A3CB38", 
+            "#009966", 
+            "#00CC66",  
+            "#66CC66",  
+            "#66CC33", 
+            "#009432", 
+            "#1289A7", 
+            "#006266", 
+            "#0033CC", 
+            "#0066FF", 
+            "#0099CC", 
+            "#00CCCC", 
+            "#33CCCC", 
+            "#1B1464", 
+            "#5758BB", 
+            "#993399", 
+            "#6633CC", 
+            "#B53471", 
+            "#9980FA", 
+            "#833471", 
+            "#6F1E51", 
+            "#993366", 
+            "#ED4C67", 
+            "#EE5A24", 
+            "#EA2027", 
+            "#ff6d69", 
+            "#FF3300", 
+            "#FF3333", 
+            "#FF3366"];
+
+            /*var colors = [
+              ]*/  
+
+            btnStart.style.backgroundColor = colors[colorIndex];
+            btnStart.style.backgroundImage = btnBall.style.backgroundImage;
+            btnStart.style.backgroundSize = "10%";
+            btnStart.style.backgroundPosition = "70px 10px";
+            btnStart.textContent = colors[colorIndex];
+            btnStart.style.fontSize = "20px";
+            colorIndex++;
+
         }
 
         function startGame() {
-            //btnStart.textContent = "Finish";
-            //btnStart.removeEventListener("click", startGame);
-            //btnStart.addEventListener("click", finishGame);
             cntIntro.classList.add("hidden");
             cntPlay.classList.remove("hidden");
+            clickSoundInit();
             
-            var myGame = new Game(CANVAS_SIZE);
+            var myGame = new Game(CANVAS_SIZE,DATA);
             var viewCanvas = new ViewCanvas(context,blockGame);
             var controller = new GameController();
             controller.start(myGame,cntPlayground,btnSound);
             viewCanvas.start(myGame);
-            myGame.startGame(viewCanvas,lsName,lsData);
+            myGame.startGame(viewCanvas,lsName,lsData,clickAudio);
+        }
+
+        function clickSoundInit() {
+            clickAudio.play(); // запускаем звук
+            clickAudio.pause(); // и сразу останавливаем
         }
 
         
     }
-
-
-    renderGame(cntField);
 
 })();

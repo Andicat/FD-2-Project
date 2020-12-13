@@ -16,12 +16,12 @@
 	&__inner {
 		width: 500px;
 		height: 80vh;
-		background-color: rgba($color: white, $alpha: 0.4);
+		background-color: rgba($color: white, $alpha: 1);
 		border-radius: 10px;
 		position: relative;
 		display: flex;
 		margin-bottom: auto;
-		overflow: auto;
+		overflow: hidden;
 		margin: auto;
 		padding: 40px;
 	  
