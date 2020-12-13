@@ -21,7 +21,10 @@
     } catch {
         return;
     }
-    
+
+    var ttt = ["ball-1.svg","ball-2.svg","ball-3.svg","ball-4.svg","ball-5.svg","ball-6.svg","ball-7.svg","ball-8.svg","ball-9.svg","ball-10.svg","ball-11.svg","ball-12.svg","ball-13.svg","ball-14.svg","ball-15.svg","ball-16.svg","ball-17.svg","ball-18.svg","ball-19.svg","ball-20.svg","ball-21.svg","ball-22.svg","ball-23.svg","ball-24.svg","ball-25.svg","ball-26.svg","ball-27.svg","ball-28.svg","ball-29.svg","ball-30.svg","ball-31.svg","ball-32.svg","ball-33.svg","ball-34.svg","ball-35.svg","ball-36.svg","ball-37.svg","ball-38.svg","ball-39.svg","ball-40.svg"];
+    console.log(JSON.stringify(ttt));
+
     //настройка размеров игры
     var clientWidth = document.documentElement.clientWidth;
     var clientHeight = document.documentElement.clientHeight;
@@ -34,17 +37,20 @@
         var filesCount = 0;
         var DATA = {};
         var URL = 'https://andicat.github.io/FD-2-Project/data/';
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = 'json';
+        
+       
 
         for ( let i = 0; i < files.length; i++ ) {
     
+            let xhr = new XMLHttpRequest();
+            xhr.responseType = 'text';
             xhr.addEventListener('load', loaded);
             xhr.open('GET', URL + files[i] + '.json');
             xhr.send();
 
-            function loaded(data) {
-                DATA[i] = data;
+            function loaded() {
+                debugger
+                DATA[i] = xhr.response;
                 filesCount++;
                 if (filesCount == files.length) {
                     showIP();
@@ -57,6 +63,8 @@
             }
         }
     }
+
+    loadAJAXData();
 
     //загрузка данный из локального хранилища
     var lsName = "gameScale";
