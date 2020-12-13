@@ -205,7 +205,7 @@ class Game {
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
             } else {
-                this.ball.actualRect = nextRect;
+                this.ball.actualRect = (this.ball.y > this.ball.actualRect.bottom)?nextRect:this.ball.actualRect;
             }
         } else if (((this.ball.y - this.ball.radius) < this.ball.actualRect.top)&&this.ball.speedY<0) { //top
             nextRect = window.utils.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius);
@@ -213,7 +213,7 @@ class Game {
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.top + this.ball.radius;
             } else {
-                this.ball.actualRect = nextRect;
+                this.ball.actualRect = (this.ball.y < this.ball.actualRect.top)?nextRect:this.ball.actualRect;
             }
         }
         // проверка коллизии с линиями blade
