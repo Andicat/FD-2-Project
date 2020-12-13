@@ -16,30 +16,46 @@
   <body>
     <main class="game">
       <h1 class="visually-hidden">Andreeva Katerina. It-Academy. FD-2. PROJECT. SCALE-game</h1>
-      <button class="game__button game__button--start">Start</button>
-      <button class="game__button game__button--colors">Colors</button>
+      <!--<button class="game__button game__button--colors">Colors</button>-->
       <div class="game__playground">
         <h2 class="game__name">SCALE</h2>
-        <span class="game__level">1</span>
-        <div class="progress">
-          <div class="progress__value"></div>
+        <div class="game__intro">
+          <span class="game__score-title">BEST SCORE</span>
+          <span class="game__score-value"></span>
+          <div class="game__buttons">
+            <button class="game__button game__button--start">Play</button>
+            <div class="game__settings">
+              <button class="game__button game__button--small game__button--record"></button>
+              <button class="game__button game__button--small game__button--ball"></button>
+              <button class="game__button game__button--small game__button--sound"></button>
+            </div>
+          </div>
         </div>
-        <div class="game__field"></div>
-        <div class="game__blade">
-          <div class="blade blade--hidden"></div>
-        </div> 
+        <div class="game__play">
+          <span class="game__level">1</span>
+          <div class="progress">
+            <div class="progress__value"></div>
+          </div>
+          <div class="game__field"></div>
+          <div class="game__blade">
+            <div class="blade hidden"></div>
+          </div> 
+        </div>
       </div>
-      
+      <section class="modal">
+        <div class="modal__inner">
+            <button class="modal__button-close" type="button">Закрыть</button>
+        </div>
+    </section>
     </main>
     <footer></footer>
     <!--<script defer src="js/pixi.js"></script>
     <script defer src="index.js"></script>-->
     <script src="utils.js"></script>
     <script src="script.js"></script>
-    <script src="game.js"></script>
-    <script src="level.js"></script>
-    <script src="blade.js"></script>
-    <script src="field.js"></script>
-    <script src="ball.js"></script>
+    <script src="GameControlls.js"></script>
+    <script src="ViewCanvas.js"></script>
+    <script src="elements.js"></script>
+    <script src="Game.js"></script>
   </body>
 </html>

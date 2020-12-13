@@ -15,20 +15,33 @@
             this.x;
             this.y;
             this.actualRect;
-            //this.image = image;
+            this.image = new Image();
+            this.image.src = image;
+            this.rotation;
+            
         };
 
         draw = function() {
-            this.cnt.fillStyle = this.color;
-            this.cnt.beginPath();
-            this.cnt.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
-            this.cnt.fill();
+            this.rotation += 5;
+            //this.cnt.fillStyle = this.color;
+            this.cnt.shadowBlur = 0;
+            
+            this.cnt.save();
+            this.cnt.translate(this.x,this.y);
+            this.cnt.rotate(this.rotation*Math.PI/180);
+            //this.cnt.rotate(10);
+            this.cnt.drawImage(this.image, 0 - this.radius, 0 - this.radius, this.radius*2, this.radius*2);
+            this.cnt.restore();
+            //this.cnt.beginPath();
+            //this.cnt.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
+            //this.cnt.fill();
         };
 
         activate = function() {
             this.actualRect = window.field.rects[0];
-            this.x = this.actualRect.left + (this.actualRect.right-this.actualRect.left)/2;
-            this.y = this.actualRect.top + (this.actualRect.bottom-this.actualRect.top)/2;
+            this.x = this.actualRect.left + (this.actualRect.right-this.actualRect.left)/2 - this.radius;
+            this.y = this.actualRect.top + (this.actualRect.bottom-this.actualRect.top)/2 - this.radius;
+            this.rotation = 0;
         }
 
         move = function() {

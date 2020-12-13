@@ -1,7 +1,8 @@
 .blade {
-    background-color: black;
+    background-color: white;
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center;
     border-radius: 50%;
     z-index: 1;
     width: 61px;
@@ -13,10 +14,6 @@
     //transition-property: none;
     //transition-duration: 1s;
     
-    &--hidden {
-        visibility: hidden;
-    }
-
     &--active {
         transform-origin: center center;
         opacity: 0.4;
