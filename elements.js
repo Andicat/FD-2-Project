@@ -116,12 +116,13 @@ class Field {
 };
 
 class Level {
-    constructor(count,pointsStart,field,percent) {
+    constructor(count,pointsStart,field,percent,colors) {
         this.count = count;
         this.pointsStart = pointsStart;
         this.pointsCurr = pointsStart;
         this.percent = percent;
-        this.color = window.utils.convertColorHEXtoRGB(window.utils.setRandomColor());
+        this.colors = colors;
+        this.color = window.utils.convertColorHEXtoRGB(this.colors[window.utils.randomDiap(0,this.colors.length-1)]);
         this.squareStart;
         this.squareCurr;
         this.progress;
@@ -142,7 +143,7 @@ class Ball {
         this.actualRect;
         this.imageSrc = imageSrc;
         this.image = new Image();
-        this.image.src = this.imageSrc;
+        this.image.src = "img/" + this.imageSrc;
         this.rotation = 0;
         this.actualRect = field.rects[0];
         this.x = this.actualRect.left + (this.actualRect.right-this.actualRect.left)/2 - this.radius;

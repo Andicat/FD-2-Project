@@ -73,10 +73,11 @@
 
         &:hover,
         &:focus {
-            font-size: 50px;
+            //font-size: 42px;
             outline: none;
             background-color: rgba($color: white, $alpha: 0.4);
             box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+            transform: scale(1.1);
         }
 
         &--start {
@@ -85,8 +86,9 @@
             margin-bottom: 50px;        }
     
         &--colors {
-            //bottom: 0;
-            //left: 20%;
+            position: absolute;
+            bottom: 0;
+            left: 20%;
         }
 
         &--small {

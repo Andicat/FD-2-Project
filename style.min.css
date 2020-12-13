@@ -123,16 +123,22 @@ a {
 }
 
 .game__button:hover, .game__button:focus {
-  font-size: 50px;
   outline: none;
   background-color: rgba(255, 255, 255, 0.4);
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  transform: scale(1.1);
 }
 
 .game__button--start {
   min-height: 200px;
   min-width: 200px;
   margin-bottom: 50px;
+}
+
+.game__button--colors {
+  position: absolute;
+  bottom: 0;
+  left: 20%;
 }
 
 .game__button--small {
@@ -282,12 +288,12 @@ a {
 .modal__inner {
   width: 500px;
   height: 80vh;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: white;
   border-radius: 10px;
   position: relative;
   display: flex;
   margin-bottom: auto;
-  overflow: auto;
+  overflow: hidden;
   margin: auto;
   padding: 40px;
 }
@@ -358,19 +364,21 @@ a {
 
 .ball__item input:hover ~ label,
 .ball__item input:focus ~ label {
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  transform: scale(1.1);
 }
 
 .ball__item input:checked ~ label {
-  background-color: #ffffff;
+  transform: none;
+  background-color: gray;
 }
 
 .ball__item label {
   display: block;
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  background-color: #ffffff;
+  width: 80px;
+  height: 80px;
+  border: 3px solid white;
   margin: 10px;
   background-repeat: no-repeat;
   background-position: center;

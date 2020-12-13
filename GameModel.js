@@ -2,7 +2,7 @@
 
 class Game {
     
-    constructor(canvasSize) {
+    constructor(canvasSize, data) {
         this.borderSize = canvasSize*0.01;
         this.slitWidth = canvasSize*0.008;
         this.fieldSize = canvasSize - this.borderSize*2;
@@ -12,6 +12,8 @@ class Game {
         this.ball = null;
         this.blade = null;
         this.level = null;
+        this.ballsImage = data.balls;
+        this.levelColors = data.colors;
         this.levels = [];
         this.pointsStart = [
             {x:this.borderSize,y:this.borderSize},
@@ -38,15 +40,16 @@ class Game {
             ;
     };
 
-    startGame = function(view,lsName,lsData) {
+    startGame = function(view,lsName,lsData,clickAudio) {
         this.InProgress = true;
         this.myView = view;
         this.lsData = lsData;
         this.soundOff = this.lsData.soundOff;
         this.lsName = lsName;
+        this.clickAudio = clickAudio;
         //console.log(this.soundOff);
         this.field = new Field(this.pointsStart,this.pointsStart);
-        this.level = new Level(1,this.pointsStart,this.field,50);
+        this.level = new Level(1,this.pointsStart,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.lsData.ballImageSrc);
         this.startLevel();
         this.tick();
@@ -79,6 +82,14 @@ class Game {
         if (this.InProgress||this.isScaling) {
             this.updateView();
             this.RAF.call(window, this.tick.bind(this));
+        }
+    }
+
+    sound = function(type) {
+        this.clickAudio.currentTime = 0;
+        this.clickAudio.play();
+        if ( navigator.vibrate ) { // есть поддержка Vibration API?
+            window.navigator.vibrate(100); // вибрация 100мс
         }
     }
 
@@ -133,7 +144,7 @@ class Game {
         this.isCutting = false;
         this.levels.push(this.level);
         var scalingInfo = window.utils.scaleField(this.level.pointsCurr,this.fieldSize, this.borderSize,this.ball);
-        this.level = new Level(this.level.count + 1, scalingInfo.points, this.field, 50);
+        this.level = new Level(this.level.count + 1, scalingInfo.points, this.field, 50, this.levelColors);
         this.field.rectsBg = [];
         this.scalingInfo = {
             colorPrev: this.levels[this.levels.length-1].color,
@@ -163,6 +174,7 @@ class Game {
             this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*2,this.slitWidth);
             this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*2,this.slitWidth);
             this.isCutting = true;
+            setTimeout(this.sound.bind(this),10);
         }
     }
 

@@ -35,17 +35,21 @@ class GameController {
             return;
         }
 
+        if (blade.classList.contains("blade--active")) {
+            return;
+        }
+
         blade.style.transitionProperty = "transform";
         blade.style.transitionDuration = "1s";
 
         evt.preventDefault();
         if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
-            this.topShift = blade.offsetHeight*1.5;
+            this.topShiftTouch = blade.offsetHeight*1.5;
         }
 
         //перемещаем объект
-        blade.style.top = blade.offsetTop - this.topShift + "px";
+        blade.style.top = blade.offsetTop - this.topShiftTouch + "px";
         
         this.moveBladeListener = this.moveBlade.bind(this);
         this.endMoveBladeListener = this.endMoveBlade.bind(this);
@@ -90,11 +94,12 @@ class GameController {
         //перемещаем объект
         blade.style.top = Math.min(topShift, this.limits.bottom) + "px";
         blade.style.left = Math.min(leftShift, this.limits.right) + "px";
-        //var shiftTopMouse = mouseStart.y - blade.offsetTop;
-        //if (shiftTopMouse<blade.offsetHeight*1.5) {
-            //blade.style.top = (mouseStart.y + blade.offsetHeight*1.5) + "px";
-            //console.log("shift between " + shiftTopMouse + "height");
-        //}
+        
+        var shiftTopMouse = this.mouseStart.y - blade.offsetTop;
+        if (shiftTopMouse < this.topShiftTouch) {
+            blade.style.top = "0px";
+            //console.log("shift between " + Math.round(shiftTopMouse) + " top shift " + Math.round(topShift) + " TOUCH " + Math.round(this.topShiftTouch));
+        }
         
     }
 
