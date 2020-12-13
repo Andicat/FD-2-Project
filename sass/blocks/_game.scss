@@ -17,6 +17,8 @@
     &__playground {
         box-sizing: border-box;
         padding: 10px 20px;
+        display: flex;
+        flex-direction: column;
     }
 
     &__name {
@@ -49,35 +51,105 @@
         min-width: 100%;
     }
 
-    
     &__button {
-        position: absolute;
+        //width: 50%;
+        //position: absolute;
         @include transition(all);
-        font-size: 20px;
+        font-size: 42px;
         text-transform: uppercase;
-        margin: 0 0 15px 0;
+        margin: 20px;
         padding: 10px;
         border-radius: 5px;
         border: none;
-        background-color: brown;
+        background-color: rgba($color: white, $alpha: 0.2);
+        border: 3px solid white;
         color: white;
         cursor: pointer;
-        transform: translateX(-50%);
+        background-repeat: no-repeat;
+        background-size: 70%;
+        background-position: center;
+        border-radius: 50%;
+        //transform: translateX(-50%);
 
         &:hover,
         &:focus {
+            font-size: 50px;
             outline: none;
-            opacity: 0.9;
+            background-color: rgba($color: white, $alpha: 0.4);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
         }
 
         &--start {
-            bottom: 0;
-            left: 80%;
-        }
+            min-height: 200px;
+            min-width: 200px;
+            margin-bottom: 50px;        }
     
         &--colors {
-            bottom: 0;
-            left: 20%;
+            //bottom: 0;
+            //left: 20%;
+        }
+
+        &--small {
+            
+            min-height: 70px;
+            min-width: 70px;
+        }
+
+        &--sound {
+            background-image: url("img/sound-on.svg");
+        }
+
+        &--sound-off {
+            background-image: url("img/sound-off.svg");
+        }
+
+        &--record {
+            background-image: url("img/icon-table.svg");
+            background-size: 60%;
         }
     }
+
+    &__intro {
+        width: auto;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__score-title {
+        display: block;
+        color: #ffffff;
+        margin: 0;
+        font-size: 20px;
+        line-height: normal;
+        font-weight: 400;
+        margin-top: 20px;
+        text-transform: lowercase;
+    }
+
+    &__score-value {
+        display: block;
+        color: #ffffff;
+        margin: 0;
+        font-size: 40px;
+        line-height: normal;
+        font-weight: 400;
+        margin-top: 10px;
+    }
+
+    &__buttons {
+        margin-top: auto;
+        margin-bottom: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__settings {
+        display: flex;
+        flex-direction: row;
+    }
 }
+
+

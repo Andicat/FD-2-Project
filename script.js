@@ -9,11 +9,16 @@
     try {
         var blockGame = document.querySelector('.game');
         var cntPlayground = blockGame.querySelector('.game__playground');
-        var cntBlade = cntPlayground.querySelector('.blade');
+        var cntIntro = blockGame.querySelector('.game__intro');
+        var cntPlay = blockGame.querySelector('.game__play');
+        var cntScore = blockGame.querySelector('.game__score-value');
+        var btnSound = blockGame.querySelector('.game__button--sound');
+        var btnBall = blockGame.querySelector('.game__button--ball');
+        var modalBall = document.querySelector('.modal');
+        var btnBallModalClose = modalBall.querySelector('.modal__button-close');
         var cntField = blockGame.querySelector('.game__field');
-        
         var btnStart = blockGame.querySelector('.game__button--start');
-        var btnColors = blockGame.querySelector('.game__button--colors');
+        //var btnColors = blockGame.querySelector('.game__button--colors');
         
     } catch {
         return;
@@ -24,24 +29,94 @@
     const GAME_HEIGHT = clientHeight;
     const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*3,clientWidth));
     
-    const COLOR_BG = "rgba(255, 255, 255, 0.3)";
-    const COLOR_BORDER = "#FFFFFF";
-    const COLOR_BALL = "#000000";
+    var lsName = "gameScale";
+    var ls = localStorage.getItem(lsName);
+    var lsData = {};
+    if (ls) {
+        lsData = JSON.parse(ls);
+    }
 
+    // открытие модального окна
+    btnBall.addEventListener('click', function(evt) {
+        evt.preventDefault();
+        document.body.classList.add('stop-scrolling');
+        modalBall.classList.add('modal--show');
+        showBalls(modalBall.querySelector(".modal__inner"));
+    });
     
-    const bladeSpeed = 6;
-    const ballSpeed = 3;
+    //закрытие модального окна по кнопке закрытия
+    btnBallModalClose.addEventListener("click", closeModal);
 
+    // закрытие модального окна по esc
+    window.addEventListener("keydown", function(evt) {
+        if (evt.keyCode === 27) {
+        evt.preventDefault();
+        closeModal();
+        }
+    });
+
+    // закрытие модального окна по клику на modal-overlay
+    modalBall.addEventListener('click', function(evt) {
+        if (evt.target === this) {
+            closeModalOverlay(evt);
+        }
+    });
+
+    function closeModal() {
+        modalBall.classList.remove('modal--show');
+        document.body.classList.remove('stop-scrolling');
+    }
+
+    function showBalls(cnt) {
+        cnt.innerHTML = "";
+        //создаем контейнер
+        var balls = document.createElement("ul");
+        balls.classList.add("ball");
+        //clock.style.width = CLOCK_SIZE + "px";
+        //clock.style.height = CLOCK_SIZE + "px";
+        cnt.appendChild(balls);
+        
+        //создаем мячики
+        for (var i = 1; i <= 40; i++) {
+            var ballItem = document.createElement("li");
+            ballItem.classList.add("ball__item");
+            balls.appendChild(ballItem);
+            var ballInput = document.createElement("input");
+            ballInput.classList.add("visually-hidden");
+            ballInput.setAttribute("type","radio");
+            ballInput.setAttribute("name","balls");
+            ballInput.setAttribute("id","ball-" + i);
+            ballInput.setAttribute("value","ball-" + i);
+            ballItem.appendChild(ballInput);
+            var ballLabel = document.createElement("label");
+            ballLabel.setAttribute("for","ball-" + i);
+            ballLabel.style.backgroundImage = "url('img/ball-" + i + ".svg')";
+            ballItem.appendChild(ballLabel);
+        }
+    }
+
+    function closeModalOverlay(evt) {
+        evt.target.classList.remove('modal--show');
+        document.body.classList.remove('stop-scrolling');
+    }
     
-    const levelColors = [
-        "#F79F1F","#FFC312","#ffd700","#FFCC33","#FFFF33","#A3CB38", //yellow
-        "#009966","#00CC66","#33FF66","#66CC66","#66FF33","#66CC33","#009432","#1289A7","#006266", //green
-        "#0033CC","#0066FF","#0099CC","#00CCCC","#33CCCC","#1B1464","#5758BB", //blue
-        "#993399","#6633CC","#D980FA","#B53471","#9980FA","#833471","#6F1E51","#993366","#FF66FF", //violet
-        "#ED4C67","#EE5A24","#EA2027","#ff6d69","#FF3300","#FF3333","#FF3366" //pink
-    ];
+    function renderGame (cnt) {   
+        if (lsData.soundOff) {
+            btnSound.classList.add("game__button--sound-off");
+        } else {
+            lsData.soundOff = false;
+        }
 
-    function renderGameSVG (cnt) {
+        if (lsData.ballImageSrc) {
+            btnBall.style.backgroundImage = "url('" + lsData.ballImageSrc + "')";
+        } else {
+            btnBall.style.backgroundImage = "url('img/ball-1.svg')";
+            lsData.ballImageSrc = 'img/ball-1.svg';
+        }
+
+        if (lsData.bestScore) {
+            cntScore.textContent = lsData.bestScore;
+        }
 
         cntPlayground.style.height = GAME_HEIGHT + "px";
         cntPlayground.style.width = GAME_WIDTH + "px";
@@ -49,22 +124,7 @@
         const CANVAS_SIZE = cntField.offsetWidth;
         const BORDER_SIZE = CANVAS_SIZE*0.01;
         const FIELD_SIZE = CANVAS_SIZE - BORDER_SIZE*2;
-        const BALL_RADIUS = CANVAS_SIZE*0.03;
 
-        var imgBallSrc = "img/ball-7.svg";
-
-        var levelInfo = {
-            count: 1,
-            percentToWin: 50,
-            pointsStart: [
-                    {x:BORDER_SIZE,y:BORDER_SIZE},
-                    {x:FIELD_SIZE+BORDER_SIZE,y:BORDER_SIZE},
-                    {x:FIELD_SIZE+BORDER_SIZE,y:FIELD_SIZE+BORDER_SIZE},
-                    {x:BORDER_SIZE,y:FIELD_SIZE+BORDER_SIZE},
-                ],
-            color: levelColors[window.utils.randomDiap(0,levelColors.length-1)],
-        };
-        
         //создаем канвас
         var gameCanvas = document.createElement("canvas");
         gameCanvas.setAttribute("width",CANVAS_SIZE);
@@ -73,7 +133,12 @@
         var context = gameCanvas.getContext("2d");
 
         btnStart.addEventListener("click", startGame);
-        btnColors.addEventListener("click", showColors);
+        btnSound.addEventListener("click", function() {
+            btnSound.classList.toggle("game__button--sound-off");
+            lsData.soundOff = btnSound.classList.contains("game__button--sound-off")?true:false;
+        })
+        cntPlay.classList.add("hidden");
+        //btnColors.addEventListener("click", showColors);
 
         function showColors() {
             context.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -93,54 +158,23 @@
         }
 
         function startGame() {
-            btnStart.textContent = "Finish";
-            btnStart.removeEventListener("click", startGame);
-            btnStart.addEventListener("click", finishGame);
+            //btnStart.textContent = "Finish";
+            //btnStart.removeEventListener("click", startGame);
+            //btnStart.addEventListener("click", finishGame);
+            cntIntro.classList.add("hidden");
+            cntPlay.classList.remove("hidden");
             
             var myGame = new Game(CANVAS_SIZE);
             var viewCanvas = new ViewCanvas(context,blockGame);
             var controller = new GameController();
-            //viewClock.init(clock,cntClock);
-            //controller.init(clock,cntClock);
-            //clock.init(viewClock);
-            controller.start(myGame,cntPlayground);
+            controller.start(myGame,cntPlayground,btnSound);
             viewCanvas.start(myGame);
-            myGame.start(viewCanvas);
-        
-        
-
-        
-
-        // инициируем первичное отображение Model во View
-        //clock.updateView();
-            
-            
-           /* function tick() {
-                if (window.game) {
-                    if (window.game.InProgress) {
-                        window.game.draw();
-                    }
-                    if (window.game.scaleField) {
-                        window.game.scale();
-                    }
-                    if (window.game.InProgress||window.game.scaleField) {
-                        requestAnimationFrame(tick);
-                    }
-                }
-            }
-            tick();*/
+            myGame.startGame(viewCanvas,lsName,lsData);
         }
 
-        function finishGame() {
-            window.game.finish();
-            window.game = null;
-            context.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-            btnStart.textContent = "Start";
-            btnStart.removeEventListener("click", finishGame);
-            btnStart.addEventListener("click", startGame);
-        }
+        
     }
 
-    renderGameSVG(cntField);
+    renderGame(cntField);
 
 })();

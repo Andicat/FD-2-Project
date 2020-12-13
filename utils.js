@@ -81,6 +81,126 @@
         }).map(p => p.x).sort((a,b) => {return a-b});
     };
 
+    window.utils.takeCutInfo = function(pointsArr,type,x,y) {
+        var arrNew = [];
+        //var pointsArr = this.field.points;
+        var pointsArrNew = [];
+        var pointsArrNew2 = [];
+        var pointsNew = [];
+        var pointNew1 = {};
+        var pointNew2 = {};
+        switch(type) {
+            case "top-right":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x>=x && point.y<=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "top-left":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x<=x&&point.y<=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "bottom-right":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x>=x&&point.y>=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "bottom-left":
+                pointsArr.forEach(function(point) {
+                    if (!(point.x<=x&&point.y>=y)) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = x;
+                pointNew2.y = vertical[0];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                pointsNew.push({x:x,y:y});
+                break;
+            case "left-right":
+                pointsArr.forEach(function(point) {
+                    if (point.y<y) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var horizontal = window.utils.findHorizontal(pointsArrNew,pointsArrNew2);
+                pointNew1.x = horizontal[0];
+                pointNew1.y = y;
+                pointNew2.x = horizontal[horizontal.length-1];
+                pointNew2.y = y;
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                break;
+            case "top-bottom":
+                pointsArr.forEach(function(point) {
+                    if (point.x<x) {
+                        pointsArrNew.push(point);
+                    } else {
+                        pointsArrNew2.push(point);
+                    }
+                });
+                var vertical = window.utils.findVertical(pointsArrNew,pointsArrNew2);
+                pointNew1.x = x;
+                pointNew1.y = vertical[0];
+                pointNew2.x = x;
+                pointNew2.y = vertical[vertical.length-1];
+                pointsNew.push(pointNew1);
+                pointsNew.push(pointNew2);
+                break;
+            default:
+                break;
+        }
+        arrNew = [pointsArrNew,pointsArrNew2];
+        return {arrNew:arrNew, pointsNew:pointsNew};
+    };
+
     window.utils.calculateSquare = function(rects) {
         var square = rects.reduce(function(s,r,i,a) {
             return s + r.square;
@@ -88,7 +208,7 @@
         return square;
     };
 
-    window.utils.scaleField = function(points, fieldSize, borderSize) {
+    window.utils.scaleField = function(points, fieldSize, borderSize, ball) {
         var sortY = Array.from(new Set(points.map(p => p.y).sort((a,b) => {return a-b})));
         var sortX = Array.from(new Set(points.map(p => p.x).sort((a,b) => {return a-b})));
         var maxX = sortX[sortX.length-1];
@@ -99,13 +219,19 @@
         var height = maxY - minY;
         var centerX = sortX[0] + (width/2);
         var centerY = sortY[0] + (height/2);
+        var centerBallX = ball.x;
+        var centerBallY = ball.y;
         //центрируем по ширине
         if ((width+height)!==fieldSize*2) {
             var deltaX = Math.round(fieldSize/2 + borderSize - centerX);
             var deltaY = Math.round(fieldSize/2 + borderSize- centerY);
+            //var deltaBallX = Math.round(fieldSize/2 + borderSize - centerBallX);
+            //var deltaBallY = Math.round(fieldSize/2 + borderSize- centerBallY);
             points = points.map(p => { return {x:p.x + deltaX, y: p.y + deltaY} });
             centerX += deltaX;
             centerY += deltaY;
+            centerBallX += deltaX;
+            centerBallY += deltaY;
             maxX += deltaX;
             minX += deltaX;
             maxY += deltaY;
@@ -120,7 +246,7 @@
                 return {x:newX, y:newY};
             });
         }
-        return points;
+        return {points:points, ball:{x:centerBallX,y:centerBallY}};
     }
 
     window.utils.getMaxCoords = function(points) {
@@ -142,5 +268,16 @@
         rgbColor.blue = parseInt(color.substring(4),16);
       
         return rgbColor;
-       };
+    };
+
+    window.utils.setRandomColor = function() {
+        const levelColors = [
+            "#F79F1F","#FFC312","#ffd700","#FFCC33","#FFFF33","#A3CB38", //yellow
+            "#009966","#00CC66","#33FF66","#66CC66","#66FF33","#66CC33","#009432","#1289A7","#006266", //green
+            "#0033CC","#0066FF","#0099CC","#00CCCC","#33CCCC","#1B1464","#5758BB", //blue
+            "#993399","#6633CC","#D980FA","#B53471","#9980FA","#833471","#6F1E51","#993366","#FF66FF", //violet
+            "#ED4C67","#EE5A24","#EA2027","#ff6d69","#FF3300","#FF3333","#FF3366" //pink
+        ];
+        return levelColors[window.utils.randomDiap(0,levelColors.length-1)];
+    }
 })();

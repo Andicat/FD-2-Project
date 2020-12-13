@@ -11,21 +11,20 @@ class GameController {
         this.mouseShift = null;
         this.limits = null;
         this.topShift = 0;
+        this.moveBladeListener;
+        this.endMoveBladeListener;
     }
     
-    start = function(model,container) {
+    start = function(model,container,btnSound) {
         this.myModel = model;
         this.myContainer = container;
         this.cntBlade = container.querySelector('.blade');
         this.cntField = container.querySelector('.game__field');
         this.fieldSizes = window.utils.getElementCoords(this.cntField);
         this.cntBlade.classList.remove("blade--hidden");
+        this.btnSound = btnSound;
         window.addEventListener("mousedown", this.startMoveBlade.bind(this));
         window.addEventListener('touchstart', this.startMoveBlade.bind(this),{passive: false});
-
-        /*var cntProgress = container.querySelector('.progress');*/
-        
-        
     }
 
     startMoveBlade = function(evt) {
@@ -47,13 +46,13 @@ class GameController {
 
         //перемещаем объект
         blade.style.top = blade.offsetTop - this.topShift + "px";
-        //blade.style.top = blade.offsetTop + "px";
-    
-        window.addEventListener('mousemove', this.moveBlade.bind(this));
-        window.addEventListener('mouseup', this.endMoveBlade.bind(this));
         
-        window.addEventListener('touchmove', this.moveBlade.bind(this),{ passive: false });
-        window.addEventListener('touchend', this.endMoveBlade.bind(this));
+        this.moveBladeListener = this.moveBlade.bind(this);
+        this.endMoveBladeListener = this.endMoveBlade.bind(this);
+        window.addEventListener('mousemove', this.moveBladeListener);
+        window.addEventListener('mouseup', this.endMoveBladeListener);
+        window.addEventListener('touchmove', this.moveBladeListener,{ passive: false });
+        window.addEventListener('touchend', this.endMoveBladeListener);
         
         //начальные координаты мышки/пальца
         this.mouseStart = {
@@ -61,15 +60,6 @@ class GameController {
             y: evt.clientY
         };
 
-        //пределы
-        /*var leftMax = blade.offsetLeft + blade.offsetWidth;
-        var topMax = blade.offsetTop + blade.offsetHeight;
-        var rightMin = cntGame.offsetWidth - blade.offsetLeft;
-        var bottomMin = cntGame.offsetHeight - blade.offsetTop;
-        /*limits = {
-            bottom: cntGame.offsetHeight - blade.offsetHeight,
-            right: cntGame.offsetWidth - blade.offsetWidth,
-        };*/
         this.limits = {
             bottom: document.documentElement.clientHeight - blade.offsetHeight,
             right: document.documentElement.clientWidth - blade.offsetWidth,
@@ -96,8 +86,6 @@ class GameController {
         //показатели смещения
         var leftShift = Math.max(blade.offsetLeft + mouseShift.x,0);
         var topShift = Math.max(blade.offsetTop + mouseShift.y,0);
-        //var leftShift = blade.offsetLeft + mouseShift.x;
-        //var topShift = blade.offsetTop + mouseShift.y;
 
         //перемещаем объект
         blade.style.top = Math.min(topShift, this.limits.bottom) + "px";
@@ -118,14 +106,9 @@ class GameController {
         var pointY = Math.round(centerY - this.fieldSizes.top);
         evt.preventDefault();
         this.myModel.dropBlade(pointX,pointY);
-        window.removeEventListener('mousemove', this.moveBlade);
-        window.removeEventListener('mouseup', this.endMoveBlade);
-        
-        window.removeEventListener('touchmove', this.moveBlade);
-        window.removeEventListener('touchend', this.endMoveBlade);
+        window.removeEventListener('mousemove', this.moveBladeListener);
+        window.removeEventListener('mouseup', this.endMoveBladeListener);
+        window.removeEventListener('touchmove', this.moveBladeListener,{ passive: false });
+        window.removeEventListener('touchend', this.endMoveBladeListener);
     }
-
-    /*stop = function() {
-        this.myModel.stop(); // контроллер вызывает только методы модели
-    }*/
 }
