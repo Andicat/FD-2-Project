@@ -28,6 +28,26 @@
     const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*3,clientWidth));
     const DATA = {};
     var lsData = {};
+
+    var s1 = new Date().getMilliseconds();
+    var sss = {};
+    //узнаем частоту экрана
+    function getFPS() {
+        var s2 = new Date().getMilliseconds();
+        var delta = s2-s1;
+        s1 = s2;
+        if (delta in sss) {
+            sss[delta] = sss[delta] + 1;
+            if (sss[delta]>50) {
+                console.log("Частота экрана примерно " + Math.round(1000/delta));
+                return
+            }  
+        } else {
+            sss[delta] = 1;
+        }
+        requestAnimationFrame(getFPS);
+    }
+    getFPS();
     
     //загрузка данных AJAX (цвета, мячики)
     function loadAJAXData() {
@@ -182,8 +202,8 @@
         cntPlay.classList.add("hidden");
         
 
-        var btnColors = blockGame.querySelector('.game__button--colors');
-        btnColors.addEventListener("click", showColors);
+        //var btnColors = blockGame.querySelector('.game__button--colors');
+        //btnColors.addEventListener("click", showColors);
         var colorIndex = 0;
         function showColors() {
             var colors = [
