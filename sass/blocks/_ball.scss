@@ -18,20 +18,23 @@
 
             &:checked ~ label {
                 transform: none;
-                background-color: gray;
+                background-color: #339aff;
+                border-color: white;
+                transform: scale(1.2);
             }
         }
 
         label {
             display: block;
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            border: 3px solid white;
-            margin: 10px;
+            width: 60px;
+            height: 60px;   
+            margin: 8px;
+            border: 1px solid #339aff;
+            background-color: white;
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 80%;
+            background-size: 70%;
         }
     }
 }

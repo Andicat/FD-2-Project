@@ -59,7 +59,7 @@ class ViewCanvas {
         this[type].play();
         if ( navigator.vibrate ) {
             if (type==="soundEnd") {
-                window.navigator.vibrate(200,50,200,50,200);
+                window.navigator.vibrate(300,100,300,100,300);
             } else {
                 window.navigator.vibrate(100);
             }

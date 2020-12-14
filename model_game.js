@@ -8,7 +8,7 @@ class Game {
         this.slitWidth = canvasSize*0.006;
         this.fieldSize = canvasSize - this.borderSize*2;
         this.myView = null;
-        this.speed = Math.round((data.fps/60)*3);
+        this.speed = Math.round(60*3/data.fps);
         this.field = null;
         this.ball = null;
         this.blade = null;
