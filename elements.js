@@ -132,10 +132,9 @@ class Level {
 
 class Ball {
 
-    constructor(fieldSize,field,imageSrc) {
+    constructor(fieldSize,field,imageSrc,speed) {
         this.field = field;
         this.radius = fieldSize*0.03;
-        var speed = 3;
         this.speedX = window.utils.randomSign()*speed;
         this.speedY = window.utils.randomSign()*speed;
         this.x;
@@ -158,6 +157,5 @@ class Blade {
         this.isTurn;
         this.isActive;
         this.type = null;
-        this.speed = 3;
     }  
 }

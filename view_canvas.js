@@ -2,23 +2,47 @@
 
 class ViewCanvas {
     
-    constructor(context,container) {
-        this.cnt = context;
+    constructor(container) {
         this.blade = container.querySelector('.blade');
         this.field = container.querySelector('.game__field');
+        this.btnBall = container.querySelector('.game__button--ball');
+        this.btnSound = container.querySelector('.game__button--sound');
         this.progress = container.querySelector('.progress__value');
         this.count = container.querySelector('.game__level');
+        this.cntScore = container.querySelector('.game__score-value');
         this.myModel;
         this.colorBg = "rgba(255, 255, 255, 0.3)";
         this.borderColor = "#FFFFFF";
         this.slitColor = "#FFFFFF";
         this.borderSize = null;
         this.slitWidth = null;
+        this.soundBlade = new Audio('sound/click.mp3');
     };
 
-    start = function(model) {
+    start = function(context,model) {
         this.myModel = model;
+        this.cnt = context;
+        this.updateBallImage();
+        this.updateSound();
+        if (this.myModel.bestScore) {
+            this.cntScore.textContent = this.myModel.bestScore;
+        }
     }
+
+    initSound = function() {
+        this.soundBlade.play();
+        this.soundBlade.pause();        
+    }
+
+
+    sound = function(type) {
+        this[type].currentTime = 0;
+        this[type].play();
+        if ( navigator.vibrate ) { // есть поддержка Vibration API?
+            window.navigator.vibrate(100); // вибрация 100мс
+        }
+    }
+
 
     drawFinish = function(fieldSize,borderSize,levels) {
         //this.cnt.save();
@@ -164,6 +188,19 @@ class ViewCanvas {
             this.blade.classList.remove("blade--" + this.myModel.blade.type);
             this.blade.style.transform = "scale(0)";
             this.blade.style.transitionDuration = "1s";
+            this.sound("soundBlade");
         }
+    }
+
+    updateSound = function() {
+        if (this.myModel.soundOff) {
+            this.btnSound.classList.add("game__button--sound-off");
+        } else {
+            this.btnSound.classList.remove("game__button--sound-off");
+        }
+    }
+
+    updateBallImage = function() {
+        this.btnBall.style.backgroundImage = "url('img/" + this.myModel.ballImageSrc + "')";
     }
 };

@@ -19,7 +19,7 @@
       <!--<button class="game__button game__button--colors">Colors</button>-->
       <div class="game__playground">
         <h2 class="game__name">SCALE</h2>
-        <div class="game__intro">
+        <div class="game__intro hidden">
           <span class="game__score-title">BEST SCORE</span>
           <span class="game__score-value"></span>
           <div class="game__buttons">
@@ -31,7 +31,7 @@
             </div>
           </div>
         </div>
-        <div class="game__play">
+        <div class="game__play hidden">
           <span class="game__level">1</span>
           <div class="progress">
             <div class="progress__value"></div>
@@ -45,7 +45,9 @@
       <section class="modal">
         <div class="modal__inner">
             <button class="modal__button-close" type="button">Закрыть</button>
-            <div class="modal__container"></div>
+            <div class="modal__container">
+              <form class="balls" name="balls"></form>
+            </div>
         </div>
     </section>
     </main>
@@ -54,9 +56,9 @@
     <script defer src="index.js"></script>-->
     <script src="utils.js"></script>
     <script src="script.js"></script>
-    <script src="GameControlls.js"></script>
-    <script src="ViewCanvas.js"></script>
+    <script src="controll_game.js"></script>
+    <script src="view_canvas.js"></script>
     <script src="elements.js"></script>
-    <script src="GameModel.js"></script>
+    <script src="model_game.js"></script>
   </body>
 </html>
