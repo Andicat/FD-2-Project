@@ -195,14 +195,9 @@ class GameController {
         document.body.classList.remove('stop-scrolling');
     }
 
-    startGame = function(evt) {
-        
+    startGame = function(evt) { 
         this.cntPlay.classList.remove("hidden");
         this.cntIntro.classList.add("hidden");
         this.myModel.startGame();
     }
-
-    
-        
-        
 }

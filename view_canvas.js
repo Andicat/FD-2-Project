@@ -33,6 +33,9 @@ class ViewCanvas {
     }
 
     initSound = function() {
+        if (this.myModel.soundOff) {
+            return;
+        }
         this.soundBlade.play();
         this.soundBlade.pause();        
         this.soundCut.play();
@@ -46,6 +49,9 @@ class ViewCanvas {
 
 
     sound = function(type) {
+        if (this.myModel.soundOff) {
+            return;
+        }
         this[type].currentTime = 0;
         if (type==="soundCut") {
             this[type].playbackRate = 1 + 1*(this.myModel.level.progress?this.myModel.level.progress:100)/100;
@@ -68,7 +74,7 @@ class ViewCanvas {
         //this.cnt.setTransform(1.00,0.20,-1.00,0.30,200,200);
         //this.cnt.setTransform(0.47,0.18,-0.83,0.22,this.field.offsetWidth/2,this.field.offsetHeight/2);
         //текущее игровое поле
-        this.cnt.clearRect(0, 0, fieldSize + borderSize*2, fieldSize + borderSize*2);
+        //this.cnt.clearRect(0, 0, fieldSize + borderSize*2, fieldSize + borderSize*2);
         /*this.cnt.globalAlpha = 0.9;
         for (var j = 0; j < levels.length; j++) {
             this.cnt.save();
@@ -80,14 +86,18 @@ class ViewCanvas {
             };
             this.cnt.restore();
         }*/
-        var gradient = "";
+        /*var gradient = "";
         for (var j = 0; j < levels.length; j++) {
             var count = 100/(levels.length-1);
             console.log(count*j);
             gradient = gradient + ", rgb(" + levels[j].color.red + "," + levels[j].color.green + "," + levels[j].color.blue + ") " + (count*j) + "%";
-        }
+        }*/
         //"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%)"
-        this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
+        //this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
+        this.field.style.opacity = 0;
+        setTimeout(function(){
+
+        },1000);
         
     }
 
