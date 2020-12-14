@@ -4,8 +4,8 @@ class Game {
     
     constructor(canvasSize, data) {
         this.canvasSize = canvasSize;
-        this.borderSize = canvasSize*0.01;
-        this.slitWidth = canvasSize*0.008;
+        this.borderSize = canvasSize*0.008;
+        this.slitWidth = canvasSize*0.006;
         this.fieldSize = canvasSize - this.borderSize*2;
         this.myView = null;
         this.speed = Math.round((data.fps/60)*3);
@@ -140,7 +140,6 @@ class Game {
         this.updateBlade();
         this.updateBallRect();
         this.myView.updateBlade();
-        this.myView.updateLevel();
     }
 
     finishLevel = function() {
@@ -161,6 +160,7 @@ class Game {
         this.isScaling = true;
         this.scaleCount = 0;
         this.saveLocalStorageData();
+        this.myView.updateLevel();
     }    
 
     //********************************************************BLADE

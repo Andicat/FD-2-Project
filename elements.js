@@ -122,7 +122,7 @@ class Level {
         this.pointsCurr = pointsStart;
         this.percent = percent;
         this.colors = colors;
-        this.color = window.utils.convertColorHEXtoRGB(this.colors[window.utils.randomDiap(0,this.colors.length-1)]);
+        this.color = window.utils.convertColorHEXtoRGB(this.colors[count-1]);
         this.squareStart;
         this.squareCurr;
         this.progress;

@@ -17,6 +17,9 @@ class ViewCanvas {
         this.borderSize = null;
         this.slitWidth = null;
         this.soundBlade = new Audio('sound/click.mp3');
+        this.soundCut = new Audio('sound/click-2.mp3');
+        this.soundEnd = new Audio('sound/click-end.mp3');
+        this.soundStart = new Audio('sound/start.mp3');
     };
 
     start = function(context,model) {
@@ -32,14 +35,28 @@ class ViewCanvas {
     initSound = function() {
         this.soundBlade.play();
         this.soundBlade.pause();        
+        this.soundCut.play();
+        this.soundCut.pause();
+        this.soundEnd.play();
+        this.soundEnd.pause();
+        this.soundStart.volume = 0.6;
+        this.soundStart.play();
+        //this.soundStart.pause();
     }
 
 
     sound = function(type) {
         this[type].currentTime = 0;
+        if (type==="soundCut") {
+            this[type].playbackRate = 1 + 1*(this.myModel.level.progress?this.myModel.level.progress:100)/100;
+        }
         this[type].play();
-        if ( navigator.vibrate ) { // есть поддержка Vibration API?
-            window.navigator.vibrate(100); // вибрация 100мс
+        if ( navigator.vibrate ) {
+            if (type==="soundEnd") {
+                window.navigator.vibrate(200,50,200,50,200);
+            } else {
+                window.navigator.vibrate(100);
+            }
         }
     }
 
@@ -134,6 +151,7 @@ class ViewCanvas {
             this.progress.textContent = "FINISH";
             var fieldSize = this.myModel.fieldSize; 
             var borderSize = this.myModel.borderSize;
+            this.sound("soundEnd");
             this.drawFinish(fieldSize,borderSize,this.myModel.levels);
             return;
         }
@@ -152,9 +170,6 @@ class ViewCanvas {
         var slitWidth = this.myModel.slitWidth; 
         this.InProgress = this.myModel.InProgress;
         this.draw(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball);
-        if (this.myModel.isScaling) {
-            this.updateLevel();
-        }
     }
 
     updateLevel = function() {
@@ -164,8 +179,10 @@ class ViewCanvas {
         if (this.myModel.isScaling) {
             this.progress.style.transitionDuration = "";
             this.count.textContent = this.myModel.level.count;
-        }
-        
+        } 
+        if (!this.myModel.blade.isActive) {
+            this.sound("soundCut");
+        }    
     }
 
     updateBlade = function() {
@@ -183,6 +200,7 @@ class ViewCanvas {
             this.blade.style.top = this.field.offsetTop + this.field.offsetHeight + this.blade.offsetHeight/6 + "px";
             this.blade.style.left = this.field.offsetLeft + this.field.offsetWidth/2 - this.blade.offsetWidth/2 + "px";
             this.blade.classList.add("blade--" + this.myModel.blade.type);
+           
         } else {
             this.blade.classList.add("blade--active");
             this.blade.classList.remove("blade--" + this.myModel.blade.type);
