@@ -152,6 +152,7 @@ class GameController {
 
     changeBall = function(evt) {
         this.myModel.setBall(evt.target.value);
+        this.closeModalBall();
     }
 
     keyDown = function(evt) {
