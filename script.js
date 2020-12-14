@@ -36,6 +36,7 @@
                 sss[delta] = sss[delta] + 1;
                 if (sss[delta]>50) {
                     data.fps = Math.round(1000/delta);
+                    blockGame.querySelector('.game__button--start').textContent = data.fps;
                     resolve(true);
                     return;
                 }  
