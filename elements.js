@@ -122,7 +122,7 @@ class Level {
         this.pointsCurr = pointsStart;
         this.percent = percent;
         this.colors = colors;
-        this.color = window.utils.convertColorHEXtoRGB(this.colors[window.utils.randomDiap(0,this.colors.length-1)]);
+        this.color = window.utils.convertColorHEXtoRGB(this.colors[count-1]);
         this.squareStart;
         this.squareCurr;
         this.progress;
@@ -132,10 +132,9 @@ class Level {
 
 class Ball {
 
-    constructor(fieldSize,field,imageSrc) {
+    constructor(fieldSize,field,imageSrc,speed) {
         this.field = field;
         this.radius = fieldSize*0.03;
-        var speed = 3;
         this.speedX = window.utils.randomSign()*speed;
         this.speedY = window.utils.randomSign()*speed;
         this.x;
@@ -158,6 +157,5 @@ class Blade {
         this.isTurn;
         this.isActive;
         this.type = null;
-        this.speed = 3;
     }  
 }

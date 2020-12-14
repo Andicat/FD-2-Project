@@ -15,16 +15,45 @@ class GameController {
         this.endMoveBladeListener;
     }
     
-    start = function(model,container,btnSound) {
+    start = function(model,container) {
         this.myModel = model;
         this.myContainer = container;
-        this.cntBlade = container.querySelector('.blade');
         this.cntField = container.querySelector('.game__field');
         this.fieldSizes = window.utils.getElementCoords(this.cntField);
+        this.cntPlay = container.querySelector('.game__play');
+        this.cntIntro = container.querySelector('.game__intro');
+
+        this.cntBlade = container.querySelector('.blade');
         this.cntBlade.classList.remove("blade--hidden");
-        this.btnSound = btnSound;
+
+        //находим все кнопки
+        this.btnStart = container.querySelector('.game__button--start');
+        this.btnSound = container.querySelector('.game__button--sound');
+        this.btnBall = container.querySelector('.game__button--ball');
+        this.btnRecord = container.querySelector('.game__button--record');
+
+        //модальное окно выбора мячика
+        this.modalBall = document.querySelector('.modal');
+        this.btnBallModalClose = this.modalBall.querySelector('.modal__button-close');
+        this.formBalls = this.modalBall.querySelector(".balls");
+
+        //назначаем обработчики
+        this.btnStart.addEventListener("click", this.startGame.bind(this));
+        this.btnBall.addEventListener('click', this.openModalBall.bind(this));
+        this.btnBallModalClose.addEventListener("click", this.closeModalBall.bind(this));
+
+        this.modalBall.addEventListener('click', function(evt) {
+            if (evt.target === this) {
+                evt.target.classList.remove('modal--show');
+                document.body.classList.remove('stop-scrolling');
+            }
+        });
+        this.formBalls.addEventListener("change",this.changeBall.bind(this));
+        this.btnSound.addEventListener("click", this.changeSound.bind(this));
+
         window.addEventListener("mousedown", this.startMoveBlade.bind(this));
         window.addEventListener('touchstart', this.startMoveBlade.bind(this),{passive: false});
+        window.addEventListener("keydown",this.keyDown.bind(this));
     }
 
     startMoveBlade = function(evt) {
@@ -115,5 +144,60 @@ class GameController {
         window.removeEventListener('mouseup', this.endMoveBladeListener);
         window.removeEventListener('touchmove', this.moveBladeListener,{ passive: false });
         window.removeEventListener('touchend', this.endMoveBladeListener);
+    }
+
+    changeSound = function(evt) {
+        this.myModel.setSound(this.btnSound.classList.contains("game__button--sound-off")?false:true);
+    }
+
+    changeBall = function(evt) {
+        this.myModel.setBall(evt.target.value);
+    }
+
+    keyDown = function(evt) {
+        if (evt.keyCode === 27) {
+            evt.preventDefault();
+            this.closeModalBall();
+        }
+    }
+
+    // модальное окнo выбора мячиков
+    openModalBall = function(evt) {
+        evt.preventDefault();
+        document.body.classList.add('stop-scrolling');
+        this.modalBall.classList.add('modal--show');
+        this.formBalls.innerHTML = "";
+        //создаем мячики
+        var ballsArr = this.myModel.ballsImage;
+        for (var i = 0; i < ballsArr.length; i++) {
+            var ballItem = document.createElement("li");
+            ballItem.classList.add("balls__item");
+            this.formBalls.appendChild(ballItem);
+            var ballInput = document.createElement("input");
+            ballInput.classList.add("visually-hidden");
+            ballInput.setAttribute("type","radio");
+            ballInput.setAttribute("name","balls");
+            ballInput.setAttribute("id","ball-" + (i+1));
+            ballInput.setAttribute("value",ballsArr[i]);
+            if (this.myModel.ballImageSrc == ballsArr[i]) {
+                ballInput.setAttribute("checked","true");
+            }
+            ballItem.appendChild(ballInput);
+            var ballLabel = document.createElement("label");
+            ballLabel.setAttribute("for","ball-" + (i+1));
+            ballLabel.style.backgroundImage = "url('img/" + ballsArr[i] + "')";
+            ballItem.appendChild(ballLabel);
+        }
+    }
+
+    closeModalBall = function(evt) {
+        this.modalBall.classList.remove('modal--show');
+        document.body.classList.remove('stop-scrolling');
+    }
+
+    startGame = function(evt) { 
+        this.cntPlay.classList.remove("hidden");
+        this.cntIntro.classList.add("hidden");
+        this.myModel.startGame();
     }
 }

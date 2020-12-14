@@ -3,16 +3,19 @@
 class Game {
     
     constructor(canvasSize, data) {
-        this.borderSize = canvasSize*0.01;
-        this.slitWidth = canvasSize*0.008;
+        this.canvasSize = canvasSize;
+        this.borderSize = canvasSize*0.008;
+        this.slitWidth = canvasSize*0.006;
         this.fieldSize = canvasSize - this.borderSize*2;
         this.myView = null;
-        this.speed = 3;
+        this.speed = Math.round((data.fps/60)*3);
         this.field = null;
         this.ball = null;
         this.blade = null;
         this.level = null;
         this.ballsImage = data.balls;
+        this.ballImageSrc = data.ballImageSrc?data.ballImageSrc:data.balls[0];
+        this.bestScore = data.bestScore?data.bestScore:0;
         this.levelColors = data.colors;
         this.levels = [];
         this.pointsStart = [
@@ -24,9 +27,9 @@ class Game {
         this.InProgress = false;
         this.isScaling = false;
         this.isCutting = false;
-        this.soundOff = null;
-        this.lsName = null;
-        this.RAF=
+        this.soundOff = data.soundOff;
+        this.lsName = data.lsName;
+        this.RAF =
             // находим, какой метод доступен
             window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -40,19 +43,28 @@ class Game {
             ;
     };
 
-    startGame = function(view,lsName,lsData,clickAudio) {
-        this.InProgress = true;
+    start = function(view) {
         this.myView = view;
-        this.lsData = lsData;
-        this.soundOff = this.lsData.soundOff;
-        this.lsName = lsName;
-        this.clickAudio = clickAudio;
-        //console.log(this.soundOff);
+    }
+
+    setSound = function(value) {
+        this.soundOff = value;
+        this.myView.updateSound();
+    }
+
+    setBall = function(value) {
+        this.ballImageSrc = value;
+        this.myView.updateBallImage();
+    }
+
+    startGame = function() {
+        this.InProgress = true;
         this.field = new Field(this.pointsStart,this.pointsStart);
         this.level = new Level(1,this.pointsStart,this.field,50,this.levelColors);
-        this.ball = new Ball(this.fieldSize,this.field,this.lsData.ballImageSrc);
+        this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
         this.startLevel();
         this.tick();
+        this.myView.initSound();
     }
 
     finishGame = function() {
@@ -85,14 +97,6 @@ class Game {
         }
     }
 
-    sound = function(type) {
-        this.clickAudio.currentTime = 0;
-        this.clickAudio.play();
-        if ( navigator.vibrate ) { // есть поддержка Vibration API?
-            window.navigator.vibrate(100); // вибрация 100мс
-        }
-    }
-
     updateProgress = function() {
         this.level.pointsCurr = this.field.points;
         this.level.squareCurr = window.utils.calculateSquare(this.field.rects);
@@ -114,8 +118,8 @@ class Game {
 
     saveLocalStorageData = function() {
         var gameData = {};
-        if (this.lsData.bestScore) {
-            gameData.bestScore = (Number(this.lsData.bestScore)<this.level.count)?this.level.count:Number(this.lsData.bestScore);    
+        if (this.bestScore) {
+            gameData.bestScore = (Number(this.bestScore)<this.level.count)?this.level.count:Number(this.bestScore);    
         } else {
             gameData.bestScore = this.level.count;
         }
@@ -132,11 +136,10 @@ class Game {
         this.field.pointsBg = this.field.points;
         this.field.rectsBg = this.field.createRects(this.field.pointsBg);
         this.level.squareStart = window.utils.calculateSquare(this.field.rectsBg);
-        this.blade = new Blade(this.fieldSize);
+        this.blade = new Blade();
         this.updateBlade();
         this.updateBallRect();
         this.myView.updateBlade();
-        this.myView.updateLevel();
     }
 
     finishLevel = function() {
@@ -157,6 +160,7 @@ class Game {
         this.isScaling = true;
         this.scaleCount = 0;
         this.saveLocalStorageData();
+        this.myView.updateLevel();
     }    
 
     //********************************************************BLADE
@@ -174,7 +178,6 @@ class Game {
             this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*2,this.slitWidth);
             this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*2,this.slitWidth);
             this.isCutting = true;
-            setTimeout(this.sound.bind(this),10);
         }
     }
 
