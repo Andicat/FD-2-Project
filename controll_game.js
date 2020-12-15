@@ -202,6 +202,6 @@ class GameController {
     startGame = function(evt) { 
         location.hash = "Play";
         setTimeout(this.myModel.startGame.bind(this.myModel),0);
-        this.myModel.startGame();
+        //this.myModel.startGame();
     }
 }

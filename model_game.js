@@ -8,7 +8,8 @@ class Game {
         this.slitWidth = canvasSize*0.006;
         this.fieldSize = canvasSize - this.borderSize*2;
         this.myView = null;
-        this.speed = Math.round(60*3/data.fps);
+        this.speed = Number(60*this.fieldSize*0.03/6/data.fps).toFixed(2);
+        console.log(this.speed);
         this.field = null;
         this.ball = null;
         this.blade = null;
@@ -77,6 +78,8 @@ class Game {
         this.field = null;
         this.blade.isActive = false;
         this.ball = null;
+        this.slit1 = null;
+        this.slit2 = null;
         this.updateView();
     }
 
@@ -139,7 +142,7 @@ class Game {
         this.blade = new Blade();
         this.updateBlade();
         this.updateBallRect();
-        this.myView.updateBlade();
+        setTimeout(this.myView.updateBlade.bind(this.myView),0);
         this.myView.updateLevel();
     }
 
@@ -175,8 +178,8 @@ class Game {
             this.blade.isTurn = false;
             this.myView.updateBlade();
             this.cutInfo = window.utils.takeCutInfo(this.field.points,this.blade.type,pointX,pointY);
-            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*2,this.slitWidth);
-            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*2,this.slitWidth);
+            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed,this.slitWidth);
+            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed,this.slitWidth);
             this.isCutting = true;
         }
     }

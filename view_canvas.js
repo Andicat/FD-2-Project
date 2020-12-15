@@ -36,15 +36,31 @@ class ViewCanvas {
         if (this.myModel.soundOff) {
             return;
         }
-        this.soundBlade.play();
-        this.soundBlade.pause();        
-        this.soundCut.play();
-        this.soundCut.pause();
-        this.soundEnd.play();
-        this.soundEnd.pause();
-        this.soundStart.volume = 0.6;
-        this.soundStart.play();
-        //this.soundStart.pause();
+        var playPromise = this.soundBlade.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            this.soundBlade.pause();
+            })
+        }
+        var playPromise = this.soundCut.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            this.soundCut.pause();
+            })
+        }
+        var playPromise = this.soundEnd.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            this.soundEnd.pause();
+            })
+        }
+        var playPromise = this.soundStart.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            //this.soundStart.volume = 0.6;
+            //this.soundStart.pause();
+            })
+        }
     }
 
 
@@ -94,11 +110,16 @@ class ViewCanvas {
         }*/
         //"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%)"
         //this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
-        this.field.style.opacity = 0;
-        setTimeout(function(){location.hash = "Menu";
-
+        //this.setOpacity(0);
+        setTimeout(function(){
+            //setOpacity("").bind(this);
+            location.hash = "Menu";
         },1000);
         
+    }
+
+    setOpacity = function(val) {
+        this.field.style.opacity = val;
     }
 
     draw = function(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball) {
