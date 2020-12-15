@@ -5,8 +5,10 @@ class ViewCanvas {
     constructor(container) {
         this.blade = container.querySelector('.blade');
         this.field = container.querySelector('.game__field');
+        this.btnStart = container.querySelector('.game__button--start');
         this.btnBall = container.querySelector('.game__button--ball');
         this.btnSound = container.querySelector('.game__button--sound');
+        this.cntProgress = container.querySelector('.progress');
         this.progress = container.querySelector('.progress__value');
         this.count = container.querySelector('.game__level');
         this.cntScore = container.querySelector('.game__score-value');
@@ -111,6 +113,9 @@ class ViewCanvas {
         //"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%)"
         //this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
         //this.setOpacity(0);
+        if (this.myModel.bestScore) {
+            this.cntScore.textContent = this.myModel.bestScore;
+        }
         setTimeout(function(){
             //setOpacity("").bind(this);
             location.hash = "Menu";
@@ -176,16 +181,21 @@ class ViewCanvas {
     }
 
     update = function() {
-        if (!this.myModel.InProgress&&!this.myModel.isScaling) {
-            //this.field.style.opacity = "0";
-            this.progress.style.opacity = "0";
-            this.progress.textContent = "FINISH";
+        if (!this.myModel.inProgress&&!this.myModel.isScaling) {
+            this.field.style.opacity = "0";
+            this.cntProgress.style.opacity = "0";
             var fieldSize = this.myModel.fieldSize; 
             var borderSize = this.myModel.borderSize;
+            this.count.style.opacity = "0";
+            this.btnStart.textContent = "Again";
             this.sound("soundEnd");
             this.drawFinish(fieldSize,borderSize,this.myModel.levels);
             return;
         }
+        this.field.style.opacity = "1";
+        this.cntProgress.style.opacity = "1";
+        this.count.style.opacity = "1";
+            
         var rectsBg = this.myModel.field.rectsBg;
         var rects = this.myModel.field.rects;
         var slits = [];
@@ -199,7 +209,7 @@ class ViewCanvas {
         var fieldSize = this.myModel.fieldSize; 
         var borderSize = this.myModel.borderSize;
         var slitWidth = this.myModel.slitWidth; 
-        this.InProgress = this.myModel.InProgress;
+        this.inProgress = this.myModel.inProgress;
         this.draw(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball);
     }
 

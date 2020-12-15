@@ -88,7 +88,7 @@
     Promise.all([prFPS,prAJAX,prLS]).then( result => {setTimeout(renderGame,500)});
 
 
-    
+    /*
    var btnColors = blockGame.querySelector('.game__button--colors');
    var btnStart = blockGame.querySelector('.game__button--start');
    var btnBall = blockGame.querySelector('.game__button--ball');
@@ -115,7 +115,7 @@
               colorIndex++;
   
           }
-  
+  */
           
   
  

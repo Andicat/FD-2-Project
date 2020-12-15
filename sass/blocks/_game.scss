@@ -37,6 +37,8 @@
         font-size: 42px;
         line-height: normal;
         font-weight: 400;
+        transition-property: opacity;
+        transition-duration: 1s;
     }
 
     &__field {
@@ -83,8 +85,8 @@
         }
 
         &--start {
-            min-height: 200px;
-            min-width: 200px;
+            min-height: 30vh;
+            min-width: 30vh;
             margin-bottom: 50px;        }
     
         &--colors {
