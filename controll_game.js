@@ -6,6 +6,7 @@ class GameController {
     constructor() {
         this.myModel = null;
         this.myContainer = null;
+        this.fieldSizes = null;
         this.blade = null;
         this.mouseStart = null;
         this.mouseShift = null;
@@ -19,9 +20,7 @@ class GameController {
         this.myModel = model;
         this.myContainer = container;
         this.cntField = container.querySelector('.game__field');
-        this.fieldSizes = window.utils.getElementCoords(this.cntField);
-        this.cntPlay = container.querySelector('.game__play');
-        this.cntIntro = container.querySelector('.game__intro');
+        //this.fieldSizes = window.utils.getElementCoords(this.cntField);
 
         this.cntBlade = container.querySelector('.blade');
         this.cntBlade.classList.remove("blade--hidden");
@@ -66,6 +65,10 @@ class GameController {
 
         if (blade.classList.contains("blade--active")) {
             return;
+        }
+
+        if (!this.fieldSizes) {
+            this.fieldSizes = window.utils.getElementCoords(this.cntField);
         }
 
         blade.style.transitionProperty = "transform";
@@ -197,8 +200,8 @@ class GameController {
     }
 
     startGame = function(evt) { 
-        this.cntPlay.classList.remove("hidden");
-        this.cntIntro.classList.add("hidden");
+        location.hash = "Play";
+        setTimeout(this.myModel.startGame.bind(this.myModel),0);
         this.myModel.startGame();
     }
 }

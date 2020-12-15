@@ -16,10 +16,19 @@
   <body>
     <main class="game">
       <h1 class="visually-hidden">Andreeva Katerina. It-Academy. FD-2. PROJECT. SCALE-game</h1>
-      <!--<button class="game__button game__button--colors">Colors</button>-->
-      <div class="game__playground">
+      <button class="game__button game__button--colors">Colors</button>
+      <div class="game__container">
         <h2 class="game__name">SCALE</h2>
-        <div class="game__intro hidden">
+        <div class="game__loader load">
+          <div class="load__circle load__circle-1"></div>
+          <div class="load__circle load__circle-2"></div>
+          <div class="load__circle load__circle-3"></div>
+          <div class="load__circle load__circle-4"></div>
+          <div class="load__circle load__circle-5"></div>
+          <div class="load__circle load__circle-6"></div>
+          <div class="load__circle load__circle-7"></div>
+        </div>        
+        <div class="game__menu hidden">
           <span class="game__score-title">BEST SCORE</span>
           <span class="game__score-value"></span>
           <div class="game__buttons">
@@ -32,7 +41,7 @@
           </div>
         </div>
         <div class="game__play hidden">
-          <span class="game__level">1</span>
+          <span class="game__level"></span>
           <div class="progress">
             <div class="progress__value"></div>
           </div>
@@ -54,6 +63,7 @@
     <footer></footer>
     <!--<script defer src="js/pixi.js"></script>
     <script defer src="index.js"></script>-->
+    <script src="SPA.js"></script>
     <script src="utils.js"></script>
     <script src="script.js"></script>
     <script src="controll_game.js"></script>

@@ -140,6 +140,7 @@ class Game {
         this.updateBlade();
         this.updateBallRect();
         this.myView.updateBlade();
+        this.myView.updateLevel();
     }
 
     finishLevel = function() {
@@ -160,7 +161,6 @@ class Game {
         this.isScaling = true;
         this.scaleCount = 0;
         this.saveLocalStorageData();
-        this.myView.updateLevel();
     }    
 
     //********************************************************BLADE
