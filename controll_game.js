@@ -301,6 +301,7 @@ class GameController {
             if (this.myModel.name == recordsArr[i].name) {
                 rowTable.classList.add(".records__row--you");
             }
+            rowTable.style.background = "linear-gradient(90deg, " + recordsArr[i].color + " 0%, rgba(0,0,0,0) 100%)";
             this.recordsTable.appendChild(rowTable);
             var playerScore = document.createElement("span");
             playerScore.classList.add("records__score");

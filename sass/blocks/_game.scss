@@ -85,8 +85,10 @@
         }
 
         &--start {
-            min-height: 30vh;
-            min-width: 30vh;
+            height: 30vh;
+            width: 30vh;
+            min-width: 150px;
+            min-height: 150px;
             margin-bottom: 50px;        }
     
         &--colors {
@@ -191,7 +193,7 @@
                 outline: none;
                 border-color: #020030;
                 &::placeholder {
-                    color: white;
+                    color: transparent;
                 }   
             }
         }
@@ -233,6 +235,21 @@
                 color: brown;
             }
         }
+    }
+
+    @include mobile {
+        &__player-name {
+            padding: 0;
+
+            input {
+                min-width: 200px;
+            }
+        }
+
+        &__button--start {
+            //margin-bottom: auto;
+        }
+
     }
 }
 

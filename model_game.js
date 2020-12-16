@@ -124,7 +124,7 @@ class Level {
         this.pointsCurr = pointsStart;
         this.percent = percent;
         this.colors = colors;
-        this.color = window.utils.convertColorHEXtoRGB(this.colors[count%this.colors.length-1]);
+        this.color = window.utils.convertColorHEXtoRGB(this.colors[((count%this.colors.length===0)?this.colors.length:count%this.colors.length)-1]);
         this.squareStart;
         this.squareCurr;
         this.progress;
@@ -422,8 +422,8 @@ class Game {
             this.blade.isTurn = false;
             this.myView.updateBlade();
             this.cutInfo = window.utils.takeCutInfo(this.field.points,this.blade.type,pointX,pointY);
-            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*2,this.slitWidth);
-            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*2,this.slitWidth);
+            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*4,this.slitWidth);
+            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*4,this.slitWidth);
             this.isCutting = true;
         }
     }
