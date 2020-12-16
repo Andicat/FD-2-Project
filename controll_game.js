@@ -51,13 +51,13 @@ class GameController {
         this.formBalls.addEventListener("change",this.changeBall.bind(this));
         this.btnSound.addEventListener("click", this.changeSound.bind(this));
 
-        window.addEventListener("mousedown", this.startMoveBlade.bind(this));
-        window.addEventListener('touchstart', this.startMoveBlade.bind(this),{passive: false});
+        window.addEventListener("mousedown", this.startMove.bind(this));
+        window.addEventListener('touchstart', this.startMove.bind(this),{passive: false});
         window.addEventListener("keydown",this.keyDown.bind(this));
+        this.formBalls.addEventListener("touchstart",this.startSwipe.bind(this),{passive: false});
     }
 
-    startMoveBlade = function(evt) {
-    
+    startMove = function(evt) {
         var blade = this.cntBlade;
        
         if (evt.target!==blade) {
@@ -80,8 +80,8 @@ class GameController {
         //перемещаем объект
         blade.style.top = blade.offsetTop - this.topShiftTouch + "px";
         
-        this.moveBladeListener = this.moveBlade.bind(this);
-        this.endMoveBladeListener = this.endMoveBlade.bind(this);
+        this.moveBladeListener = this.move.bind(this);
+        this.endMoveBladeListener = this.endMove.bind(this);
         window.addEventListener('mousemove', this.moveBladeListener);
         window.addEventListener('mouseup', this.endMoveBladeListener);
         window.addEventListener('touchmove', this.moveBladeListener,{ passive: false });
@@ -99,7 +99,7 @@ class GameController {
         };
     }
 
-    moveBlade = function(evt) {
+    move = function(evt) {
         var blade = this.cntBlade;
 
         evt.preventDefault();
@@ -132,7 +132,7 @@ class GameController {
         
     }
 
-    endMoveBlade = function(evt) {
+    endMove = function(evt) {
         var blade = this.cntBlade;
         var centerX = blade.offsetLeft + (blade.offsetWidth-1)/2 + 1;
         var centerY = blade.offsetTop + (blade.offsetHeight-1)/2 + 1;
@@ -144,6 +144,31 @@ class GameController {
         window.removeEventListener('mouseup', this.endMoveBladeListener);
         window.removeEventListener('touchmove', this.moveBladeListener,{ passive: false });
         window.removeEventListener('touchend', this.endMoveBladeListener);
+    }
+
+    startSwipe = function(evt) {
+       
+        if ( evt.touches.length==1 ) {
+            // возможно, начался свайп
+            // запомним координаты и начнём слушать движение
+            this.mouseStart = {
+                x: evt.touches[0].pageX,
+                y: evt.touches[0].pageY
+            };
+            this.formBalls.addEventListener("touchmove",this.moveSwipe.bind(this),false);
+        }
+    }
+
+    moveSwipe = function(evt) {
+   
+        var HorzShift = Math.round(evt.touches[0].pageX - this.mouseStart.x);
+        var VertShift = Math.round(evt.touches[0].pageY - this.mouseStart.y);
+        if ( Math.abs(HorzShift) < Math.abs(VertShift) ) {
+            //evt.currentTarget.style.transform = "translateY(" + String(-VertShift) + "px";
+            evt.currentTarget.style.top = String(-VertShift) + "px";
+        }
+        else
+        this.formBalls.removeEventListener("touchmove",this.moveSwipe,false);
     }
 
     changeSound = function(evt) {
