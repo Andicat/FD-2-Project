@@ -14,9 +14,9 @@
     left: 0;
     justify-content: center;
 
-    &__playground {
+    &__container {
         box-sizing: border-box;
-        padding: 10px 20px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
     }
@@ -37,9 +37,12 @@
         font-size: 42px;
         line-height: normal;
         font-weight: 400;
+        transition-property: opacity;
+        transition-duration: 1s;
     }
 
     &__field {
+        width: 100%;
         margin: 0 auto 10px;
         display: flex;
         transition-property: opacity;
@@ -82,8 +85,8 @@
         }
 
         &--start {
-            min-height: 200px;
-            min-width: 200px;
+            min-height: 30vh;
+            min-width: 30vh;
             margin-bottom: 50px;        }
     
         &--colors {
@@ -112,8 +115,15 @@
         }
     }
 
-    &__intro {
+    &__menu {
         width: auto;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__play {
+        width: 100%;
         flex-grow: 1;
         display: flex;
         flex-direction: column;

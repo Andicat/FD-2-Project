@@ -6,6 +6,7 @@ class GameController {
     constructor() {
         this.myModel = null;
         this.myContainer = null;
+        this.fieldSizes = null;
         this.blade = null;
         this.mouseStart = null;
         this.mouseShift = null;
@@ -13,15 +14,13 @@ class GameController {
         this.topShift = 0;
         this.moveBladeListener;
         this.endMoveBladeListener;
+        this.swipeShift = 0;
     }
     
     start = function(model,container) {
         this.myModel = model;
         this.myContainer = container;
         this.cntField = container.querySelector('.game__field');
-        this.fieldSizes = window.utils.getElementCoords(this.cntField);
-        this.cntPlay = container.querySelector('.game__play');
-        this.cntIntro = container.querySelector('.game__intro');
 
         this.cntBlade = container.querySelector('.blade');
         this.cntBlade.classList.remove("blade--hidden");
@@ -49,11 +48,59 @@ class GameController {
             }
         });
         this.formBalls.addEventListener("change",this.changeBall.bind(this));
+        this.formBalls.addEventListener("mousedown",this.startSwipe.bind(this));
+        this.formBalls.addEventListener('touchstart', this.startSwipe.bind(this),{passive: false});
         this.btnSound.addEventListener("click", this.changeSound.bind(this));
 
         window.addEventListener("mousedown", this.startMoveBlade.bind(this));
         window.addEventListener('touchstart', this.startMoveBlade.bind(this),{passive: false});
         window.addEventListener("keydown",this.keyDown.bind(this));
+
+        window.onbeforeunload = this.beforeUnload.bind(this);
+    }
+
+    beforeUnload = function(evt) {
+        if (this.myModel.inProgress||this.myModel.isScaling) {
+            evt.returnValue = 'А у вас есть несохранённые изменения!';
+        }
+    } 
+
+    startSwipe = function(evt) {
+
+        if ( evt.touches.length!=1 ) {
+            return;
+        }
+        if (evt.currentTarget!==this.formBalls) {
+            return;
+        }
+
+        this.mouseStart = { x:evt.touches[0].pageX, y:evt.touches[0].pageY };
+        this.formBalls.addEventListener("mousemove",this.moveSwipe.bind(this));
+        this.formBalls.addEventListener("touchmove",this.moveSwipe.bind(this));
+        this.formBalls.addEventListener('mouseup', this.endSwipe.bind(this));
+        this.formBalls.addEventListener('touchend', this.endSwipe.bind(this));
+    }
+
+    moveSwipe = function(evt) {
+        var HorzShift = Math.round(evt.touches[0].pageX - this.mouseStart.x);
+        var VertShift = Math.round(evt.touches[0].pageY - this.mouseStart.y);
+        //новые стартовые координаты мышки
+        this.mouseStart = {
+            x: evt.touches[0].pageX,
+            y: evt.touches[0].pageY
+        };
+
+        if (Math.abs(VertShift) > Math.abs(HorzShift)) {
+            evt.currentTarget.removeEventListener("touchmove",this.moveSwipe.bind(this));
+            this.swipeShift = Math.min(this.swipeShift + VertShift,0);
+            //console.log("have to swipe " + VertShift + "   " + this.swipeShift);
+            evt.currentTarget.style.transform = "translateY(" + Math.max(this.swipeShift,Math.min((evt.currentTarget.parentNode.offsetHeight-evt.currentTarget.offsetHeight),0)) + "px)";
+        }
+    }
+
+    endSwipe = function(evt) {
+        this.formBalls.removeEventListener('mouseup', this.endSwipe);
+        this.formBalls.removeEventListener('touchmove', this.moveSwipe);
     }
 
     startMoveBlade = function(evt) {
@@ -66,6 +113,10 @@ class GameController {
 
         if (blade.classList.contains("blade--active")) {
             return;
+        }
+
+        if (!this.fieldSizes) {
+            this.fieldSizes = window.utils.getElementCoords(this.cntField);
         }
 
         blade.style.transitionProperty = "transform";
@@ -197,8 +248,9 @@ class GameController {
     }
 
     startGame = function(evt) { 
-        this.cntPlay.classList.remove("hidden");
-        this.cntIntro.classList.add("hidden");
-        this.myModel.startGame();
+        location.hash = "Play";
+        setTimeout(this.myModel.clearGame.bind(this.myModel),0);
+        setTimeout(this.myModel.startGame.bind(this.myModel),100);
+        //this.myModel.startGame();
     }
 }

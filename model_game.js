@@ -1,5 +1,167 @@
 'use strict';
 
+class Slit {
+
+    constructor(startX,startY,finishX,finishY,speed,width) {
+        this.startX = startX;
+        this.startY = startY;
+        this.finishX = finishX;
+        this.finishY = finishY;
+        this.currX = startX;
+        this.currY = startY;
+        this.direction;
+        this.speedX;
+        this.speedY;
+        this.width = width;
+        if (startX!==finishX) {
+            this.direction = "X";
+            this.speedY = 0;
+            this.speedX = Math.sign(finishX - startX)*speed;
+        }
+        if (startY!==finishY) {
+            this.direction = "Y";
+            this.speedX = 0;
+            this.speedY = Math.sign(finishY - startY)*speed;
+        }
+    };
+
+    move = function() {
+        if (this.direction==="X") {
+            var lenghtX = Math.abs(this.startX - this.finishX);
+            var currLenghtX = Math.abs(this.startX - this.currX);
+            if (currLenghtX<=lenghtX) {
+                this.currX += this.speedX;
+            } else {
+                this.currX = this.finishX;
+                this.direction = null;
+            }
+            return true;
+        }
+        if (this.direction==="Y") {
+            var lenghtY = Math.abs(this.startY - this.finishY);
+            var currLenghtY = Math.abs(this.startY - this.currY);
+            if (currLenghtY<=lenghtY) {
+                this.currY += this.speedY;
+            }
+            else {
+                this.currY = this.finishY;
+                this.direction = null;
+            }
+            return true;
+        }
+        return false;
+    };
+}
+
+class Rect {
+    constructor(top,bottom,left,right) {
+        this.top = top;
+        this.bottom = bottom;
+        this.left = left;
+        this.right = right;
+        this.square = Math.round((right-left)*(bottom-top));
+    };
+};
+
+class Field {
+    
+    constructor(pointsBg,points) {
+        this.pointsBg = pointsBg;
+        this.points = points;
+        this.rectsBg = this.createRects(this.pointsBg);
+        this.rects = this.createRects(this.points);
+    };
+
+    createRects = function(pointsArr) {
+        var rect;
+        var rects = [];
+        var left;
+        var right;
+        var top;
+        var bottom;
+        var leftPrev;
+        var rightPrev;
+        var sortY = Array.from(new Set(pointsArr.map(p => p.y).sort((a,b) => {return a-b})));
+        
+        for (var i = 0; i < sortY.length-1; i++) {
+            top = sortY[i];
+            bottom = sortY[i+1];
+            var pointsX = pointsArr.filter(p => {return p.y===top}).map(p => p.x).sort((a,b) => {return a-b});
+            if (pointsX.length===4) { //если точек 4
+                left = pointsX[0]!==leftPrev?pointsX[0]:pointsX[1];
+                right = pointsX[3]!==rightPrev?pointsX[3]:pointsX[2];
+            } else { //если точек 2
+                if (!leftPrev&&!rightPrev) { //самый первый 
+                    left = pointsX[0];
+                    right = pointsX[1];
+                } else if(pointsX[0]===leftPrev) { //сужение слева
+                    left = pointsX[1];
+                    right = rightPrev;
+                } else if(pointsX[1]===leftPrev) { //расширение слева
+                    left = pointsX[0];
+                    right = rightPrev;
+                } else if(pointsX[1]===rightPrev) { //сужение справа
+                    left = leftPrev;
+                    right = pointsX[0];
+                } else if(pointsX[0]===rightPrev) { //расширение справа
+                    left = leftPrev;
+                    right = pointsX[1];
+                }
+            }
+            leftPrev = left;
+            rightPrev = right;
+            rect = new Rect(top,bottom,left,right);
+            rects.push(rect);
+        }
+        return rects;
+    };
+};
+
+class Level {
+    constructor(count,pointsStart,field,percent,colors) {
+        this.count = count;
+        this.pointsStart = pointsStart;
+        this.pointsCurr = pointsStart;
+        this.percent = percent;
+        this.colors = colors;
+        this.color = window.utils.convertColorHEXtoRGB(this.colors[count%this.colors.length-1]);
+        this.squareStart;
+        this.squareCurr;
+        this.progress;
+        this.squareStart = window.utils.calculateSquare(field.rectsBg);
+    }
+}
+
+class Ball {
+
+    constructor(fieldSize,field,imageSrc,speed) {
+        this.field = field;
+        this.radius = fieldSize*0.03;
+        this.speedX = window.utils.randomSign()*speed;
+        this.speedY = window.utils.randomSign()*speed;
+        this.x;
+        this.y;
+        this.actualRect;
+        this.imageSrc = imageSrc;
+        this.image = new Image();
+        this.image.src = "img/" + this.imageSrc;
+        this.rotation = 0;
+        this.actualRect = field.rects[0];
+        this.x = this.actualRect.left + (this.actualRect.right-this.actualRect.left)/2 - this.radius;
+        this.y = this.actualRect.top + (this.actualRect.bottom-this.actualRect.top)/2 - this.radius;
+    }
+}
+
+class Blade {
+
+    constructor() {
+        this.bladeTypes = ["top-right","top-left","bottom-right","bottom-left","left-right","top-bottom"];
+        this.isTurn;
+        this.isActive;
+        this.type = null;
+    }  
+}
+
 class Game {
     
     constructor(canvasSize, data) {
@@ -8,7 +170,8 @@ class Game {
         this.slitWidth = canvasSize*0.006;
         this.fieldSize = canvasSize - this.borderSize*2;
         this.myView = null;
-        this.speed = Math.round(60*3/data.fps);
+        this.speed = Number(60*this.fieldSize*0.03/6/data.fps).toFixed(2);
+        //console.log(this.speed);
         this.field = null;
         this.ball = null;
         this.blade = null;
@@ -24,7 +187,7 @@ class Game {
             {x:this.borderSize + this.fieldSize,y:this.fieldSize + this.borderSize},
             {x:this.borderSize,y: this.borderSize + this.fieldSize},
         ],
-        this.InProgress = false;
+        this.inProgress = false;
         this.isScaling = false;
         this.isCutting = false;
         this.soundOff = data.soundOff;
@@ -58,7 +221,8 @@ class Game {
     }
 
     startGame = function() {
-        this.InProgress = true;
+        this.inProgress = false;
+        this.inProgress = true;
         this.field = new Field(this.pointsStart,this.pointsStart);
         this.level = new Level(1,this.pointsStart,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
@@ -67,8 +231,22 @@ class Game {
         this.myView.initSound();
     }
 
+    clearGame = function() {
+        this.inProgress = false;
+        this.isCutting = false;
+        this.level = null;
+        this.field = null;
+        this.ball = null;
+        this.slit1 = null;
+        this.slit2 = null;
+        if (this.blade) {
+            this.blade.isActive = false;
+            this.myView.updateBlade();
+        }
+    }
+
     finishGame = function() {
-        this.InProgress = false;
+        this.inProgress = false;
         this.isCutting = false;
         for (var i = 0; i < this.levels.length; i++) {
             this.levels[i].rects = this.field.createRects(this.levels[i].pointsCurr);
@@ -77,12 +255,14 @@ class Game {
         this.field = null;
         this.blade.isActive = false;
         this.ball = null;
+        this.slit1 = null;
+        this.slit2 = null;
         this.updateView();
     }
 
 
     tick = function() {
-        if (this.InProgress) {
+        if (this.inProgress) {
             this.moveBall();
         }
         if (this.isCutting) {
@@ -91,7 +271,7 @@ class Game {
         if (this.isScaling) {
             this.scaleField();
         }
-        if (this.InProgress||this.isScaling) {
+        if (this.inProgress||this.isScaling) {
             this.updateView();
             this.RAF.call(window, this.tick.bind(this));
         }
@@ -118,11 +298,7 @@ class Game {
 
     saveLocalStorageData = function() {
         var gameData = {};
-        if (this.bestScore) {
-            gameData.bestScore = (Number(this.bestScore)<this.level.count)?this.level.count:Number(this.bestScore);    
-        } else {
-            gameData.bestScore = this.level.count;
-        }
+        gameData.bestScore = this.bestScore;
         gameData.soundOff = this.soundOff;
         gameData.ballImageSrc = this.ball.imageSrc;
         localStorage.setItem(this.lsName,JSON.stringify(gameData));
@@ -131,7 +307,7 @@ class Game {
     //********************************************************LEVEL
     startLevel = function() {
         this.isScaling = false;
-        this.InProgress = true;
+        this.inProgress = true;
         this.level.progress = 0;
         this.field.pointsBg = this.field.points;
         this.field.rectsBg = this.field.createRects(this.field.pointsBg);
@@ -139,12 +315,14 @@ class Game {
         this.blade = new Blade();
         this.updateBlade();
         this.updateBallRect();
-        this.myView.updateBlade();
+        setTimeout(this.myView.updateBlade.bind(this.myView),0);
+        this.myView.updateLevel();
     }
 
     finishLevel = function() {
-        this.InProgress = false;
+        this.inProgress = false;
         this.isCutting = false;
+        this.bestScore = (this.bestScore<this.level.count)?this.level.count:this.bestScore;
         this.levels.push(this.level);
         var scalingInfo = window.utils.scaleField(this.level.pointsCurr,this.fieldSize, this.borderSize,this.ball);
         this.level = new Level(this.level.count + 1, scalingInfo.points, this.field, 50, this.levelColors);
@@ -160,7 +338,6 @@ class Game {
         this.isScaling = true;
         this.scaleCount = 0;
         this.saveLocalStorageData();
-        this.myView.updateLevel();
     }    
 
     //********************************************************BLADE
@@ -175,8 +352,8 @@ class Game {
             this.blade.isTurn = false;
             this.myView.updateBlade();
             this.cutInfo = window.utils.takeCutInfo(this.field.points,this.blade.type,pointX,pointY);
-            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*2,this.slitWidth);
-            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*2,this.slitWidth);
+            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed,this.slitWidth);
+            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed,this.slitWidth);
             this.isCutting = true;
         }
     }
@@ -194,6 +371,10 @@ class Game {
         this.ball.y += this.ball.speedY;   
         this.ball.rotation += 5;      
         var nextRect;
+
+        if (this.ball.actualRect===undefined) {
+            debugger
+        }
         
         //проверка области
         if ((this.ball.x + this.ball.radius) > this.ball.actualRect.right) { //right

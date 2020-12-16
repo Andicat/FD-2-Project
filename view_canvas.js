@@ -5,8 +5,10 @@ class ViewCanvas {
     constructor(container) {
         this.blade = container.querySelector('.blade');
         this.field = container.querySelector('.game__field');
+        this.btnStart = container.querySelector('.game__button--start');
         this.btnBall = container.querySelector('.game__button--ball');
         this.btnSound = container.querySelector('.game__button--sound');
+        this.cntProgress = container.querySelector('.progress');
         this.progress = container.querySelector('.progress__value');
         this.count = container.querySelector('.game__level');
         this.cntScore = container.querySelector('.game__score-value');
@@ -36,15 +38,31 @@ class ViewCanvas {
         if (this.myModel.soundOff) {
             return;
         }
-        this.soundBlade.play();
-        this.soundBlade.pause();        
-        this.soundCut.play();
-        this.soundCut.pause();
-        this.soundEnd.play();
-        this.soundEnd.pause();
-        this.soundStart.volume = 0.6;
-        this.soundStart.play();
-        //this.soundStart.pause();
+        var playPromise = this.soundBlade.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            this.soundBlade.pause();
+            })
+        }
+        var playPromise = this.soundCut.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            this.soundCut.pause();
+            })
+        }
+        var playPromise = this.soundEnd.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            this.soundEnd.pause();
+            })
+        }
+        var playPromise = this.soundStart.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            //this.soundStart.volume = 0.6;
+            //this.soundStart.pause();
+            })
+        }
     }
 
 
@@ -94,11 +112,19 @@ class ViewCanvas {
         }*/
         //"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%)"
         //this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
-        this.field.style.opacity = 0;
+        //this.setOpacity(0);
+        if (this.myModel.bestScore) {
+            this.cntScore.textContent = this.myModel.bestScore;
+        }
         setTimeout(function(){
-
+            //setOpacity("").bind(this);
+            location.hash = "Menu";
         },1000);
         
+    }
+
+    setOpacity = function(val) {
+        this.field.style.opacity = val;
     }
 
     draw = function(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball) {
@@ -155,16 +181,21 @@ class ViewCanvas {
     }
 
     update = function() {
-        if (!this.myModel.InProgress&&!this.myModel.isScaling) {
-            //this.field.style.opacity = "0";
-            this.progress.style.opacity = "0";
-            this.progress.textContent = "FINISH";
+        if (!this.myModel.inProgress&&!this.myModel.isScaling) {
+            this.field.style.opacity = "0";
+            this.cntProgress.style.opacity = "0";
             var fieldSize = this.myModel.fieldSize; 
             var borderSize = this.myModel.borderSize;
+            this.count.style.opacity = "0";
+            this.btnStart.textContent = "Again";
             this.sound("soundEnd");
             this.drawFinish(fieldSize,borderSize,this.myModel.levels);
             return;
         }
+        this.field.style.opacity = "1";
+        this.cntProgress.style.opacity = "1";
+        this.count.style.opacity = "1";
+            
         var rectsBg = this.myModel.field.rectsBg;
         var rects = this.myModel.field.rects;
         var slits = [];
@@ -178,7 +209,7 @@ class ViewCanvas {
         var fieldSize = this.myModel.fieldSize; 
         var borderSize = this.myModel.borderSize;
         var slitWidth = this.myModel.slitWidth; 
-        this.InProgress = this.myModel.InProgress;
+        this.inProgress = this.myModel.inProgress;
         this.draw(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball);
     }
 
@@ -186,6 +217,7 @@ class ViewCanvas {
         this.progress.style.width = Math.min(this.myModel.level.progress,100) + "%";
         this.progress.style.backgroundColor = "rgb(" + this.myModel.level.color.red + "," + this.myModel.level.color.green + "," + this.myModel.level.color.blue + ")";
         this.progress.style.transitionDuration = "0.5s";
+        this.count.textContent = this.myModel.level.count;
         if (this.myModel.isScaling) {
             this.progress.style.transitionDuration = "";
             this.count.textContent = this.myModel.level.count;
