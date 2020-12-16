@@ -71,9 +71,6 @@ class GameController {
         window.addEventListener("mousedown", this.startMove.bind(this));
         window.addEventListener('touchstart', this.startMove.bind(this),{passive: false});
         window.addEventListener("keydown",this.keyDown.bind(this));
-<<<<<<< HEAD
-        this.formBalls.addEventListener("touchstart",this.startSwipe.bind(this),{passive: false});
-=======
         window.onbeforeunload = this.beforeUnload.bind(this);
     }
 
@@ -143,7 +140,6 @@ class GameController {
         //evt.preventDefault();
         this.formBalls.removeEventListener('mouseup', this.endSwipe);
         this.formBalls.removeEventListener('touchmove', this.moveSwipe);
->>>>>>> e6cdd3dd02812ba8373cf9d836fb55807ad6e8c8
     }
 
     startMove = function(evt) {
