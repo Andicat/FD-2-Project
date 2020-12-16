@@ -42,20 +42,31 @@
 
 		&:hover,
 		&:focus {
+			transform: scale(1.1);
 			outline: none;
 			opacity: 0.8;
 		}
 	}
 
+	&--records { 
+		.modal__inner {
+			width: 450px;
+			padding-top: 30px;
+		}
+
+		.modal__button-close {
+			background-image: url("img/icon-back.svg");
+			width: 20px;
+			height: 20px;
+			right: 5px;
+			left: unset;
+		}
+
+	}
+
 	@include tablet {
 		&__inner {
 			width: 550px;
-			//padding: 30px;
-		}
-
-		&__button-close {
-			//right: 18px;
-			//top: 17px;
 		}
 	}
 

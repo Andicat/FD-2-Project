@@ -65,7 +65,9 @@
     }
 
     window.utils.findActualRect = function(rects,posX,posY,radius) {
-        //return rects.filter(r => {return (r.top<=posY&&r.bottom>posY&&r.left<=posX&&r.right>posX)})[0];
+        if (radius===0) {
+            return rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];    
+        }
         return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
     };
 

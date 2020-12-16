@@ -25,41 +25,52 @@ class GameController {
         this.cntBlade = container.querySelector('.blade');
         this.cntBlade.classList.remove("blade--hidden");
 
-        //находим все кнопки
-        this.btnStart = container.querySelector('.game__button--start');
+        //звук
         this.btnSound = container.querySelector('.game__button--sound');
-        this.btnBall = container.querySelector('.game__button--ball');
-        this.btnRecord = container.querySelector('.game__button--record');
+        this.btnSound.addEventListener("click", this.changeSound.bind(this));
 
-        this.formName = document.forms.formName;
-        this.formName.addEventListener("submit",this.enterName.bind(this));
-
-        //модальное окно выбора мячика
-        this.modalBall = document.querySelector('.modal');
-        this.btnBallModalClose = this.modalBall.querySelector('.modal__button-close');
-        this.formBalls = document.forms.formBalls;
-
-        //назначаем обработчики
+        //старт игры
+        this.btnStart = container.querySelector('.game__button--start');
         this.btnStart.addEventListener("click", this.startGame.bind(this));
+        
+        //мячики
+        this.btnBall = container.querySelector('.game__button--ball');
         this.btnBall.addEventListener('click', this.openModalBall.bind(this));
-        this.btnBallModalClose.addEventListener("click", this.closeModalBall.bind(this));
-
+        this.modalBall = document.querySelector('.modal--balls');
         this.modalBall.addEventListener('click', function(evt) {
             if (evt.target === this) {
                 evt.target.classList.remove('modal--show');
                 document.body.classList.remove('stop-scrolling');
             }
         });
-        
+        this.btnBallModalClose = this.modalBall.querySelector('.modal__button-close');
+        this.btnBallModalClose.addEventListener("click", this.closeModalBall.bind(this));
+        this.formBalls = document.forms.formBalls;
         this.formBalls.addEventListener("change",this.changeBall.bind(this));
         this.formBalls.addEventListener("mousedown",this.startSwipe.bind(this));
         this.formBalls.addEventListener('touchstart', this.startSwipe.bind(this),{passive: false});
-        this.btnSound.addEventListener("click", this.changeSound.bind(this));
+
+        //рекорды
+        this.btnRecord = container.querySelector('.game__button--record');
+        this.btnRecord.addEventListener("click",this.openModalRecords.bind(this))
+        this.modalRecord = document.querySelector('.modal--records');
+        this.modalRecord.addEventListener('click', function(evt) {
+            if (evt.target === this) {
+                evt.target.classList.remove('modal--show');
+                document.body.classList.remove('stop-scrolling');
+            }
+        });
+        this.btnRecordModalClose = this.modalRecord.querySelector('.modal__button-close');
+        this.btnRecordModalClose.addEventListener("click", this.closeModalRecords.bind(this));
+        this.recordsTable = this.modalRecord.querySelector(".records");
+
+        //имя
+        this.formName = document.forms.formName;
+        this.formName.addEventListener("change",this.enterName.bind(this));
 
         window.addEventListener("mousedown", this.startMoveBlade.bind(this));
         window.addEventListener('touchstart', this.startMoveBlade.bind(this),{passive: false});
         window.addEventListener("keydown",this.keyDown.bind(this));
-
         window.onbeforeunload = this.beforeUnload.bind(this);
     }
 
@@ -70,7 +81,7 @@ class GameController {
     }
 
     enterName = function(evt) {
-        var inputName = evt.target.querySelector('input[name="name"]');
+        var inputName = evt.currentTarget.querySelector('input[name="name"]');
         if (inputName.value.length===0) {
             evt.target.classList.add("game__player-name--error");
             return;
@@ -81,6 +92,10 @@ class GameController {
     }
 
     startSwipe = function(evt) {
+
+        if (!evt.touches) {
+            return
+        }
 
         if ( evt.touches.length!=1 ) {
             return;
@@ -99,8 +114,11 @@ class GameController {
     }
 
     moveSwipe = function(evt) {
-        
 
+        if (!evt.touches) {
+            return
+        }
+        
         var HorzShift = Math.round(evt.touches[0].pageX - this.mouseStart.x);
         var VertShift = Math.round(evt.touches[0].pageY - this.mouseStart.y);
         //новые стартовые координаты мышки
@@ -231,6 +249,7 @@ class GameController {
         if (evt.keyCode === 27) {
             evt.preventDefault();
             this.closeModalBall();
+            this.closeModalRecords();
         }
     }
 
@@ -269,10 +288,40 @@ class GameController {
         document.body.classList.remove('stop-scrolling');
     }
 
+    // модальное окнo рекордов
+    openModalRecords = function(evt) {
+        evt.preventDefault();
+        document.body.classList.add('stop-scrolling');
+        this.modalRecord.classList.add('modal--show');
+        this.recordsTable.innerHTML = "";
+        var recordsArr = this.myModel.recordsTable;
+        for (var i = 0; i < recordsArr.length; i++) {
+            var rowTable = document.createElement("div");
+            rowTable.classList.add("records__row");
+            if (this.myModel.name == recordsArr[i].name) {
+                rowTable.classList.add(".records__row--you");
+            }
+            this.recordsTable.appendChild(rowTable);
+            var playerScore = document.createElement("span");
+            playerScore.classList.add("records__score");
+            playerScore.textContent = recordsArr[i].score;
+            playerScore.style.backgroundColor = recordsArr[i].color;
+            rowTable.appendChild(playerScore);
+            var playerName = document.createElement("span");
+            playerName.classList.add("records__name");
+            playerName.textContent = recordsArr[i].name;
+            rowTable.appendChild(playerName);
+        }
+    }
+
+    closeModalRecords = function(evt) {
+        this.modalRecord.classList.remove('modal--show');
+        document.body.classList.remove('stop-scrolling');
+    }
+
     startGame = function(evt) { 
         location.hash = "Play";
         setTimeout(this.myModel.clearGame.bind(this.myModel),0);
         setTimeout(this.myModel.startGame.bind(this.myModel),100);
-        //this.myModel.startGame();
     }
 }

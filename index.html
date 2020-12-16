@@ -32,7 +32,7 @@
           <span class="game__score-title">BEST SCORE</span>
           <span class="game__score-value"></span>
           <form class="game__player-name" name="formName">
-            <input type="text" name="name" placeholder="Your name..."></input>
+            <input type="text" name="name" maxlength="30" placeholder="Your name..."></input>
             <button type="submit"></button>
           </form>
           <div class="game__buttons">
@@ -55,7 +55,7 @@
           </div> 
         </div>
       </div>
-      <section class="modal">
+      <section class="modal modal--balls">
         <div class="modal__inner">
             <button class="modal__button-close" type="button">Закрыть</button>
             <div class="modal__container">
@@ -63,6 +63,12 @@
             </div>
         </div>
     </section>
+    <section class="modal modal--records">
+      <div class="modal__inner">
+          <button class="modal__button-close" type="button">Закрыть</button>
+          <div class="records"></div>
+      </div>
+  </section>
     </main>
     <footer></footer>
     <script src="https://fe.it-academy.by/JQ/jquery.js"></script>

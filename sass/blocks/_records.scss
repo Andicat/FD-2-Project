@@ -1,0 +1,28 @@
+.records {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    color: #020030;
+    font-size: 20px;
+    padding: 0 20px;
+
+    &__row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    &__score {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 45px;
+        height: 45px;
+        font-size: 25px;
+        border: 2px solid #020030;
+        border-radius: 50%;
+        margin-right: 15px;
+        font-style: normal;
+    }
+
+}
