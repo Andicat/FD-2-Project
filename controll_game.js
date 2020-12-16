@@ -31,10 +31,13 @@ class GameController {
         this.btnBall = container.querySelector('.game__button--ball');
         this.btnRecord = container.querySelector('.game__button--record');
 
+        this.formName = document.forms.formName;
+        this.formName.addEventListener("submit",this.enterName.bind(this));
+
         //модальное окно выбора мячика
         this.modalBall = document.querySelector('.modal');
         this.btnBallModalClose = this.modalBall.querySelector('.modal__button-close');
-        this.formBalls = this.modalBall.querySelector(".balls");
+        this.formBalls = document.forms.formBalls;
 
         //назначаем обработчики
         this.btnStart.addEventListener("click", this.startGame.bind(this));
@@ -47,6 +50,7 @@ class GameController {
                 document.body.classList.remove('stop-scrolling');
             }
         });
+        
         this.formBalls.addEventListener("change",this.changeBall.bind(this));
         this.formBalls.addEventListener("mousedown",this.startSwipe.bind(this));
         this.formBalls.addEventListener('touchstart', this.startSwipe.bind(this),{passive: false});
@@ -63,7 +67,18 @@ class GameController {
         if (this.myModel.inProgress||this.myModel.isScaling) {
             evt.returnValue = 'А у вас есть несохранённые изменения!';
         }
-    } 
+    }
+
+    enterName = function(evt) {
+        var inputName = evt.target.querySelector('input[name="name"]');
+        if (inputName.value.length===0) {
+            evt.target.classList.add("game__player-name--error");
+            return;
+        } else {
+            evt.target.classList.remove("game__player-name--error");
+            this.myModel.setName(inputName.value);
+        }
+    }
 
     startSwipe = function(evt) {
 
@@ -74,6 +89,8 @@ class GameController {
             return;
         }
 
+        //evt.preventDefault();
+
         this.mouseStart = { x:evt.touches[0].pageX, y:evt.touches[0].pageY };
         this.formBalls.addEventListener("mousemove",this.moveSwipe.bind(this));
         this.formBalls.addEventListener("touchmove",this.moveSwipe.bind(this));
@@ -82,6 +99,8 @@ class GameController {
     }
 
     moveSwipe = function(evt) {
+        
+
         var HorzShift = Math.round(evt.touches[0].pageX - this.mouseStart.x);
         var VertShift = Math.round(evt.touches[0].pageY - this.mouseStart.y);
         //новые стартовые координаты мышки
@@ -91,6 +110,7 @@ class GameController {
         };
 
         if (Math.abs(VertShift) > Math.abs(HorzShift)) {
+            evt.preventDefault();
             evt.currentTarget.removeEventListener("touchmove",this.moveSwipe.bind(this));
             this.swipeShift = Math.min(this.swipeShift + VertShift,0);
             //console.log("have to swipe " + VertShift + "   " + this.swipeShift);
@@ -99,6 +119,7 @@ class GameController {
     }
 
     endSwipe = function(evt) {
+        //evt.preventDefault();
         this.formBalls.removeEventListener('mouseup', this.endSwipe);
         this.formBalls.removeEventListener('touchmove', this.moveSwipe);
     }
@@ -222,7 +243,7 @@ class GameController {
         //создаем мячики
         var ballsArr = this.myModel.ballsImage;
         for (var i = 0; i < ballsArr.length; i++) {
-            var ballItem = document.createElement("li");
+            var ballItem = document.createElement("fieldset");
             ballItem.classList.add("balls__item");
             this.formBalls.appendChild(ballItem);
             var ballInput = document.createElement("input");
@@ -235,6 +256,7 @@ class GameController {
                 ballInput.setAttribute("checked","true");
             }
             ballItem.appendChild(ballInput);
+            //ballInput.addEventListener("click",this.changeBall.bind(this));
             var ballLabel = document.createElement("label");
             ballLabel.setAttribute("for","ball-" + (i+1));
             ballLabel.style.backgroundImage = "url('img/" + ballsArr[i] + "')";

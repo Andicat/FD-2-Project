@@ -71,6 +71,33 @@
         }
     });
 
+    //загрузка таблицы рекордов AJAX (fe.it-academy.by/AjaxStringStorage2)
+    var prAJAXRecords= new Promise( (resolve,reject) => {
+
+        var ajaxHandlerScript = "https://fe.it-academy.by/AjaxStringStorage2.php";
+        var stringName = 'Andreeva_ScaleRecords';
+        $.ajax( {
+                url: ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
+                data: { f: 'READ', n: stringName },
+                success: readReady, error: errorHandler
+            }
+        );  
+        
+        function readReady(callresult) {
+            if ( callresult.error!=undefined ) {             
+                alert(callresult.error);
+            } else {
+                data.recordsTable = JSON.parse(callresult.result);
+                resolve(true);
+            }
+        }
+
+        function errorHandler(jqXHR,statusStr,errorStr) {
+            alert(statusStr + ' ' + errorStr);
+        }
+    });
+
+
     //загрузка данных local Storage
     var prLS= new Promise( (resolve,reject) => {
         var lsName = "gameScale";
@@ -85,7 +112,7 @@
         resolve(true);
     });
 
-    Promise.all([prFPS,prAJAX,prLS]).then( result => {setTimeout(renderGame,500)});
+    Promise.all([prFPS,prAJAX,prAJAXRecords,prLS]).then( result => {setTimeout(renderGame,500)});
 
 
     /*
@@ -120,7 +147,7 @@
   
  
     function renderGame () {
-        console.log("данные загружены");
+        //console.log("данные загружены");
         cntGame.style.height = GAME_HEIGHT + "px";
         cntGame.style.width = GAME_WIDTH + "px";
 

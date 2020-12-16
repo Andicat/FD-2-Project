@@ -180,6 +180,9 @@ class Game {
         this.ballImageSrc = data.ballImageSrc?data.ballImageSrc:data.balls[0];
         this.bestScore = data.bestScore?data.bestScore:0;
         this.levelColors = data.colors;
+        this.name = data.name;
+        this.recordsTable = data.recordsTable;
+        this.recordTableMin;
         this.levels = [];
         this.pointsStart = [
             {x:this.borderSize,y:this.borderSize},
@@ -220,9 +223,14 @@ class Game {
         this.myView.updateBallImage();
     }
 
+    setName = function(value) {
+        this.name = value;
+        this.saveLocalStorageData();
+    }
+
     startGame = function() {
-        this.inProgress = false;
         this.inProgress = true;
+        this.recordTableMin = this.recordsTable.reduce(function (p, v) { return ( p > v.score ? v.score : p);},Infinity);
         this.field = new Field(this.pointsStart,this.pointsStart);
         this.level = new Level(1,this.pointsStart,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
@@ -246,6 +254,10 @@ class Game {
     }
 
     finishGame = function() {
+        if (this.bestScore < this.level.count) {
+            this.bestScore = this.level.count;
+            this.saveRecord();
+        }
         this.inProgress = false;
         this.isCutting = false;
         for (var i = 0; i < this.levels.length; i++) {
@@ -298,10 +310,57 @@ class Game {
 
     saveLocalStorageData = function() {
         var gameData = {};
+        gameData.name = this.name;
         gameData.bestScore = this.bestScore;
         gameData.soundOff = this.soundOff;
-        gameData.ballImageSrc = this.ball.imageSrc;
+        gameData.ballImageSrc = this.ballImageSrc;
         localStorage.setItem(this.lsName,JSON.stringify(gameData));
+    }
+
+    saveRecord = function() {
+        console.log("actual records");
+        console.log(this.recordsTable);
+        if (this.bestScore < this.recordTableMin) {
+            console.log("your record less then recordsMin");
+            return
+        }
+        var ajaxHandlerScript="https://fe.it-academy.by/AjaxStringStorage2.php";
+        var updatePassword;
+        var stringName = 'Andreeva_ScaleRecords';
+        updatePassword = Math.random();
+        $.ajax( {
+                url: ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
+                data: { f: 'LOCKGET', n: stringName, p: updatePassword },
+                success: lockGetReady.bind(this), error: errorHandler
+            }
+        );     
+
+        function lockGetReady(callresult) {
+            if ( callresult.error!=undefined ) {
+                alert(callresult.error);
+            }
+            else {
+                var recordsTable = JSON.parse(callresult.result);
+                //recordsTable.push({name:"Tayo",score:15});
+                recordsTable.push({name:this.name,score:this.bestScore});
+                this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,20);
+                $.ajax({
+                    url : ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
+                    data : { f: 'UPDATE', n: stringName, v: JSON.stringify(this.recordsTable), p: updatePassword },
+                    success : updateReady, error : errorHandler
+                });
+            }
+        }
+
+        function updateReady(callresult) {
+            if ( callresult.error!=undefined ) {
+                alert(callresult.error);
+            }
+        }
+      
+        function errorHandler(jqXHR,statusStr,errorStr) {
+            alert(statusStr + ' ' + errorStr);
+        }
     }
 
     //********************************************************LEVEL
@@ -322,7 +381,6 @@ class Game {
     finishLevel = function() {
         this.inProgress = false;
         this.isCutting = false;
-        this.bestScore = (this.bestScore<this.level.count)?this.level.count:this.bestScore;
         this.levels.push(this.level);
         var scalingInfo = window.utils.scaleField(this.level.pointsCurr,this.fieldSize, this.borderSize,this.ball);
         this.level = new Level(this.level.count + 1, scalingInfo.points, this.field, 50, this.levelColors);
