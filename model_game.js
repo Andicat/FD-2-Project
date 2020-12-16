@@ -193,7 +193,7 @@ class Game {
         this.inProgress = false;
         this.isScaling = false;
         this.isCutting = false;
-        this.soundOff = data.soundOff;
+        this.soundOff = data.soundOff?true:false;
         this.lsName = data.lsName;
         this.RAF =
             // находим, какой метод доступен
@@ -216,11 +216,13 @@ class Game {
     setSound = function(value) {
         this.soundOff = value;
         this.myView.updateSound();
+        this.saveLocalStorageData();
     }
 
     setBall = function(value) {
         this.ballImageSrc = value;
         this.myView.updateBallImage();
+        this.saveLocalStorageData();
     }
 
     setName = function(value) {
@@ -254,9 +256,9 @@ class Game {
     }
 
     finishGame = function() {
-        if (this.bestScore < this.level.count) {
-            this.bestScore = this.level.count;
-            this.saveRecord();
+        if (this.bestScore < this.level.count-1) {
+            this.bestScore = this.level.count-1;
+            this.saveRecord(this.level.color);
         }
         this.inProgress = false;
         this.isCutting = false;
@@ -269,6 +271,7 @@ class Game {
         this.ball = null;
         this.slit1 = null;
         this.slit2 = null;
+        this.saveLocalStorageData()
         this.updateView();
     }
 
@@ -317,10 +320,10 @@ class Game {
         localStorage.setItem(this.lsName,JSON.stringify(gameData));
     }
 
-    saveRecord = function() {
+    saveRecord = function(color) {
         console.log("actual records");
         console.log(this.recordsTable);
-        if (this.bestScore < this.recordTableMin) {
+        if ((this.bestScore < this.recordTableMin)&&this.recordsTable.length>=10) {
             console.log("your record less then recordsMin");
             return
         }
@@ -341,9 +344,19 @@ class Game {
             }
             else {
                 var recordsTable = JSON.parse(callresult.result);
-                //recordsTable.push({name:"Tayo",score:15});
-                recordsTable.push({name:this.name,score:this.bestScore});
-                this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,20);
+                /*var recordsTable = [];
+                recordsTable.push({name:"Tayo",score:15,color:this.levelColors[0]});
+                recordsTable.push({name:"Peter",score:10,color:this.levelColors[2]});
+                recordsTable.push({name:"Kate",score:5,color:this.levelColors[4]});
+                recordsTable.push({name:"Tosha",score:25,color:this.levelColors[7]});
+                recordsTable.push({name:"Suslik",score:4,color:this.levelColors[6]});
+                recordsTable.push({name:"Musya",score:1,color:this.levelColors[3]});
+                recordsTable.push({name:"Pasya",score:11,color:this.levelColors[1]});
+                recordsTable.push({name:"Patrik",score:5,color:this.levelColors[5]});
+                recordsTable.push({name:"Stasik",score:8,color:this.levelColors[4]});
+                recordsTable.push({name:"Porsh",score:7,color:this.levelColors[3]});*/
+                recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
+                this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,10);
                 $.ajax({
                     url : ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
                     data : { f: 'UPDATE', n: stringName, v: JSON.stringify(this.recordsTable), p: updatePassword },
@@ -395,7 +408,6 @@ class Game {
          };
         this.isScaling = true;
         this.scaleCount = 0;
-        this.saveLocalStorageData();
     }    
 
     //********************************************************BLADE
@@ -410,8 +422,8 @@ class Game {
             this.blade.isTurn = false;
             this.myView.updateBlade();
             this.cutInfo = window.utils.takeCutInfo(this.field.points,this.blade.type,pointX,pointY);
-            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed,this.slitWidth);
-            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed,this.slitWidth);
+            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*2,this.slitWidth);
+            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*2,this.slitWidth);
             this.isCutting = true;
         }
     }
