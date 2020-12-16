@@ -147,6 +147,12 @@
   
  
     function renderGame () {
+
+       /* for (var i = 1; i < 35; i++) {
+            
+            var number = ((i%data.colors.length===0)?data.colors.length:i%data.colors.length)-1;
+            console.log(i + " " + number);
+        }*/
         //console.log("данные загружены");
         cntGame.style.height = GAME_HEIGHT + "px";
         cntGame.style.width = GAME_WIDTH + "px";
