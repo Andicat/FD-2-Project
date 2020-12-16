@@ -17,11 +17,24 @@
     <main class="game">
       <h1 class="visually-hidden">Andreeva Katerina. It-Academy. FD-2. PROJECT. SCALE-game</h1>
       <!--<button class="game__button game__button--colors">Colors</button>-->
-      <div class="game__playground">
+      <div class="game__container">
         <h2 class="game__name">SCALE</h2>
-        <div class="game__intro hidden">
+        <div class="game__loader load">
+          <div class="load__circle load__circle-1"></div>
+          <div class="load__circle load__circle-2"></div>
+          <div class="load__circle load__circle-3"></div>
+          <div class="load__circle load__circle-4"></div>
+          <div class="load__circle load__circle-5"></div>
+          <div class="load__circle load__circle-6"></div>
+          <div class="load__circle load__circle-7"></div>
+        </div>        
+        <div class="game__menu hidden">
           <span class="game__score-title">BEST SCORE</span>
           <span class="game__score-value"></span>
+          <form class="game__player-name" name="formName">
+            <input type="text" name="name" maxlength="30" placeholder="Your name..."></input>
+            <button type="submit"></button>
+          </form>
           <div class="game__buttons">
             <button class="game__button game__button--start">Play</button>
             <div class="game__settings">
@@ -32,7 +45,7 @@
           </div>
         </div>
         <div class="game__play hidden">
-          <span class="game__level">1</span>
+          <span class="game__level"></span>
           <div class="progress">
             <div class="progress__value"></div>
           </div>
@@ -42,23 +55,28 @@
           </div> 
         </div>
       </div>
-      <section class="modal">
+      <section class="modal modal--balls">
         <div class="modal__inner">
             <button class="modal__button-close" type="button">Закрыть</button>
             <div class="modal__container">
-              <form class="balls" name="balls"></form>
+              <form class="balls" name="formBalls"></form>
             </div>
         </div>
     </section>
+    <section class="modal modal--records">
+      <div class="modal__inner">
+          <button class="modal__button-close" type="button">Закрыть</button>
+          <div class="records"></div>
+      </div>
+  </section>
     </main>
     <footer></footer>
-    <!--<script defer src="js/pixi.js"></script>
-    <script defer src="index.js"></script>-->
+    <script src="https://fe.it-academy.by/JQ/jquery.js"></script>
+    <script src="SPA.js"></script>
     <script src="utils.js"></script>
     <script src="script.js"></script>
     <script src="controll_game.js"></script>
     <script src="view_canvas.js"></script>
-    <script src="elements.js"></script>
     <script src="model_game.js"></script>
   </body>
 </html>

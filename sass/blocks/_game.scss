@@ -14,9 +14,9 @@
     left: 0;
     justify-content: center;
 
-    &__playground {
+    &__container {
         box-sizing: border-box;
-        padding: 10px 20px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
     }
@@ -27,7 +27,7 @@
         font-size: 36px;
         line-height: normal;
         font-weight: 400;
-        margin-bottom: 20px;
+        margin: 10px 0;
     }
     
     &__level {
@@ -37,9 +37,12 @@
         font-size: 42px;
         line-height: normal;
         font-weight: 400;
+        transition-property: opacity;
+        transition-duration: 1s;
     }
 
     &__field {
+        width: 100%;
         margin: 0 auto 10px;
         display: flex;
         transition-property: opacity;
@@ -82,8 +85,10 @@
         }
 
         &--start {
-            min-height: 200px;
-            min-width: 200px;
+            height: 30vh;
+            width: 30vh;
+            min-width: 150px;
+            min-height: 150px;
             margin-bottom: 50px;        }
     
         &--colors {
@@ -112,8 +117,15 @@
         }
     }
 
-    &__intro {
+    &__menu {
         width: auto;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__play {
+        width: 100%;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
@@ -152,6 +164,92 @@
     &__settings {
         display: flex;
         flex-direction: row;
+    }
+
+    &__player-name {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: 30px;
+
+        input {
+            display: block;
+            box-sizing: border-box;
+            min-width: 300px;
+            min-height: 40px;
+            margin: 0;
+            padding: 5px 10px;
+            background-color: rgba($color: white, $alpha: 0.2);
+            border: 1px solid white;
+            color: white;
+            border-radius: 5px;
+            font-size: 20px;
+
+            &::placeholder {
+                color: white;
+            }
+
+            &:focus {
+                outline: none;
+                border-color: #020030;
+                &::placeholder {
+                    color: transparent;
+                }   
+            }
+        }
+
+        button {
+            @include transition(all);
+            cursor: pointer;
+            display: block;
+            box-sizing: border-box;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            //border: 1px solid white;
+            border: none;
+            background-color: transparent;
+            background-image: url("img/icon-enter.svg");
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin-left: 15px;
+
+            &:hover,
+            &:focus {
+                background-color: rgba($color: white, $alpha: 0.2);
+                transform: scale(1.4);    
+                border: 1px solid white;
+                background-size: 70%;
+                outline: none;
+            }
+
+            &:active {
+                outline: none;
+            }
+        }
+
+        &--error input {
+            border-color: brown;
+            &::placeholder {
+                color: brown;
+            }
+        }
+    }
+
+    @include mobile {
+        &__player-name {
+            padding: 0;
+
+            input {
+                min-width: 200px;
+            }
+        }
+
+        &__button--start {
+            //margin-bottom: auto;
+        }
+
     }
 }
 

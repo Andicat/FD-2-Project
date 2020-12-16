@@ -6,20 +6,21 @@
 
     try {
         var blockGame = document.querySelector('.game');
-        var cntPlayground = blockGame.querySelector('.game__playground');
-        var cntIntro = blockGame.querySelector('.game__intro');
+        var cntGame = blockGame.querySelector('.game__container');
         var cntPlay = blockGame.querySelector('.game__play');
         var cntField = blockGame.querySelector('.game__field');
         
     } catch {
         return;
     }
+    location.hash = "";
 
     //настройка размеров игры
     var clientWidth = document.documentElement.clientWidth;
     var clientHeight = document.documentElement.clientHeight;
     const GAME_HEIGHT = clientHeight;
     const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*3,clientWidth));
+    const CANVAS_SIZE = GAME_WIDTH - 20;
     var data = {};
     
     //узнаем частоту экрана
@@ -70,6 +71,33 @@
         }
     });
 
+    //загрузка таблицы рекордов AJAX (fe.it-academy.by/AjaxStringStorage2)
+    var prAJAXRecords= new Promise( (resolve,reject) => {
+
+        var ajaxHandlerScript = "https://fe.it-academy.by/AjaxStringStorage2.php";
+        var stringName = 'Andreeva_ScaleRecords';
+        $.ajax( {
+                url: ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
+                data: { f: 'READ', n: stringName },
+                success: readReady, error: errorHandler
+            }
+        );  
+        
+        function readReady(callresult) {
+            if ( callresult.error!=undefined ) {             
+                alert(callresult.error);
+            } else {
+                data.recordsTable = JSON.parse(callresult.result);
+                resolve(true);
+            }
+        }
+
+        function errorHandler(jqXHR,statusStr,errorStr) {
+            alert(statusStr + ' ' + errorStr);
+        }
+    });
+
+
     //загрузка данных local Storage
     var prLS= new Promise( (resolve,reject) => {
         var lsName = "gameScale";
@@ -84,79 +112,25 @@
         resolve(true);
     });
 
-    Promise.all([prFPS,prAJAX,prLS]).then( result => {renderGame();});
-        
-    function renderGame () {
-        cntPlay.classList.remove("hidden");
-        console.log("данные загружены");
-        cntPlayground.style.height = GAME_HEIGHT + "px";
-        cntPlayground.style.width = GAME_WIDTH + "px";
-        const CANVAS_SIZE = cntField.offsetWidth;
-
-        //создаем канвас
-        var gameCanvas = document.createElement("canvas");
-        gameCanvas.setAttribute("width",CANVAS_SIZE);
-        gameCanvas.setAttribute("height",CANVAS_SIZE);
-        cntField.appendChild(gameCanvas);
-        var context = gameCanvas.getContext("2d");
-
-        var myGame = new Game(CANVAS_SIZE,data);
-        var viewCanvas = new ViewCanvas(blockGame);
-        var controller = new GameController();
-        myGame.start(viewCanvas);
-        controller.start(myGame,blockGame);
-        viewCanvas.start(context,myGame);
-
-        cntIntro.classList.remove("hidden");
-        cntPlay.classList.add("hidden");
-
-        
-    }
-})();
+    Promise.all([prFPS,prAJAX,prAJAXRecords,prLS]).then( result => {setTimeout(renderGame,500)});
 
 
-
-/**
- *         //var btnColors = blockGame.querySelector('.game__button--colors');
-        //btnColors.addEventListener("click", showColors);
+    /*
+   var btnColors = blockGame.querySelector('.game__button--colors');
+   var btnStart = blockGame.querySelector('.game__button--start');
+   var btnBall = blockGame.querySelector('.game__button--ball');
+   btnColors.addEventListener("click", showColors);
         var colorIndex = 0;
         function showColors() {
             var colors = [
-            "#e6bf32", 
-            "#FBCB2C", 
-            "#ebd726", 
-            "#FAC221",  
-            "#ffd333",
-            "#F79F1F", 
-            "#A3CB38", 
-            "#009966", 
-            "#00CC66",  
-            "#66CC66",  
-            "#66CC33", 
-            "#009432", 
-            "#1289A7", 
-            "#006266", 
-            "#0033CC", 
-            "#0066FF", 
-            "#0099CC", 
-            "#00CCCC", 
-            "#33CCCC", 
-            "#1B1464", 
-            "#5758BB", 
-            "#993399", 
-            "#6633CC", 
-            "#B53471", 
-            "#9980FA", 
-            "#833471", 
-            "#6F1E51", 
-            "#993366", 
-            "#ED4C67", 
-            "#EE5A24", 
-            "#EA2027", 
-            "#ff6d69", 
-            "#FF3300", 
-            "#FF3333", 
-            "#FF3366"];
+                "#A52A2A","#FF8C00","#DAA520","#228B22","#4682B4","#4169E1","#483D8B",
+                "#FF3333","#F79F1F","#e6bf32","#A3CB38","#0099CC",
+                "#FBCB2C","#ebd726","#FAC221","#ffd333","#F79F1F",
+                "#009966","#00CC66","#66CC66","#66CC33","#009432","#1289A7", 
+                "#006266","#0033CC","#0066FF","#0099CC","#00CCCC","#33CCCC","#1B1464", 
+                "#5758BB","#993399","#6633CC","#B53471","#9980FA","#833471","#6F1E51", 
+                "#993366","#ED4C67","#EE5A24","#EA2027","#ff6d69","#FF3300","#FF3333", 
+                "#FF3366"];
 
 
               btnStart.style.backgroundColor = colors[colorIndex];
@@ -168,7 +142,35 @@
               colorIndex++;
   
           }
-  
+  */
           
   
- */
+ 
+    function renderGame () {
+
+       /* for (var i = 1; i < 35; i++) {
+            
+            var number = ((i%data.colors.length===0)?data.colors.length:i%data.colors.length)-1;
+            console.log(i + " " + number);
+        }*/
+        //console.log("данные загружены");
+        cntGame.style.height = GAME_HEIGHT + "px";
+        cntGame.style.width = GAME_WIDTH + "px";
+
+        //создаем канвас
+        var gameCanvas = document.createElement("canvas");
+        gameCanvas.setAttribute("width",CANVAS_SIZE);
+        gameCanvas.setAttribute("height",CANVAS_SIZE);
+        cntField.appendChild(gameCanvas);
+        var context = gameCanvas.getContext("2d");
+
+        var myGame = new Game(CANVAS_SIZE,data);
+        var viewCanvas = new ViewCanvas(cntGame);
+        var controller = new GameController();
+        myGame.start(viewCanvas);
+        controller.start(myGame,cntGame);
+        viewCanvas.start(context,myGame);
+        
+        location.hash = "Menu";      
+    }
+})();
