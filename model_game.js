@@ -442,10 +442,6 @@ class Game {
         this.ball.rotation += 5;      
         var nextRect;
 
-        if (this.ball.actualRect===undefined) {
-            debugger
-        }
-        
         //проверка области
         if ((this.ball.x + this.ball.radius) > this.ball.actualRect.right) { //right
             this.ball.speedX =- this.ball.speedX;
@@ -482,6 +478,11 @@ class Game {
 
     updateBallRect = function() {
         this.ball.actualRect = window.utils.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
+        
+        if (this.ball.actualRect===undefined) {
+            debugger
+        }
+        
     }
 
     //********************************************************FIELD
@@ -509,6 +510,8 @@ class Game {
 
     scaleField = function() {
         if (this.scaleCount > 100) {
+            this.ball.x -= this.ball.speedX;
+            this.ball.y -= this.ball.speedY;
             this.startLevel();
             return;
         }

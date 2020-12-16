@@ -1,3 +1,6 @@
+$blade-width: 4px;
+$blade-shift: 2px;
+
 .blade {
     background-color: white;
     background-repeat: no-repeat;
@@ -5,42 +8,136 @@
     background-position: center;
     border-radius: 50%;
     z-index: 1;
-    width: 61px;
-    height: 61px;
-    opacity: 0.8;
+    width: 45px;
+    height: 45px;
+    opacity: 0.7;
     position: absolute;
     top: calc(50% - 30px);
     left: calc(50% - 30px);
-    //transition-property: none;
-    //transition-duration: 1s;
-    
+
     &--active {
         transform-origin: center center;
-        opacity: 0.4;
+        opacity: 0.3;
+    }
+
+    /*&::before,
+    &::after {
+        content: "";
+        position: absolute;
+        background-color: black;
     }
 
     &--top-right {
-        background-image: url("img/blade-top-right.svg");
+        &::before {
+            box-sizing: border-box;
+            background-color: transparent;
+            width: 50%;
+            height: 50%;
+            border-left: $blade-width solid black;
+            border-bottom: $blade-width solid black;
+            //border-radius: 1px;
+            left: 50%;
+            //transform: translate(-$blade-shift,$blade-shift);
+        }
+        &::after {
+            //width: 50%;
+            //height: $blade-width;
+            //top: 50%;
+            //transform: translateY(-50%);
+        }
     }
 
     &--top-left {
-        background-image: url("img/blade-top-left.svg");
-    }
-
-    &--bottom-right {
-        background-image: url("img/blade-bottom-right.svg");
-    }
-
-    &--bottom-left {
-        background-image: url("img/blade-bottom-left.svg");
-    }
-
-    &--left-right {
-        background-image: url("img/blade-left-right.svg");
+        &::before {
+            width: $blade-width;
+            height: calc(50% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        &::after {
+            width: 50%;
+            height: $blade-width;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
     }
 
     &--top-bottom {
-        background-image: url("img/blade-top-bottom.svg");
+        &::before {
+            width: $blade-width;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+    
+    &--bottom-right {
+        &::before {
+            width: $blade-width;
+            height: calc(50% + 2px);
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%);
+        }
+        &::after {
+            width: 50%;
+            height: $blade-width;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+
+    &--bottom-left {
+        &::before {
+            width: $blade-width;
+            height: calc(50% + 2px);
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%);
+        }
+        &::after {
+            width: 50%;
+            height: $blade-width;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+    }
+
+    &--left-right {
+        &::after {
+            width: 100%;
+            height: $blade-width;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+    }*/
+    
+
+    &--top-right {
+        background-image: url("img/blade-top-right2.svg");
+    }
+
+    &--top-left {
+        background-image: url("img/blade-top-left2.svg");
+    }
+
+    &--bottom-right {
+        background-image: url("img/blade-bottom-right2.svg");
+    }
+
+    &--bottom-left {
+        background-image: url("img/blade-bottom-left2.svg");
+    }
+
+    &--left-right {
+        background-image: url("img/blade-left-right2.svg");
+    }
+
+    &--top-bottom {
+        background-image: url("img/blade-top-bottom2.svg");
     }
 }
 

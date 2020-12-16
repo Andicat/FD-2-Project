@@ -66,7 +66,8 @@ class GameController {
 
         //имя
         this.formName = document.forms.formName;
-        this.formName.addEventListener("change",this.enterName.bind(this));
+        this.formName.addEventListener("change",this.checkName.bind(this));
+        this.inputName = this.formName.querySelector('input[name="name"]');
 
         window.addEventListener("mousedown", this.startMove.bind(this));
         window.addEventListener('touchstart', this.startMove.bind(this),{passive: false});
@@ -80,14 +81,16 @@ class GameController {
         }
     }
 
-    enterName = function(evt) {
-        var inputName = evt.currentTarget.querySelector('input[name="name"]');
-        if (inputName.value.length===0) {
-            evt.target.classList.add("game__player-name--error");
+    checkName = function(evt) {
+        if (String(this.inputName.value).trim().length===0) {
+            this.formName.classList.add("game__player-name--error");
+            evt.preventDefault();
             return;
         } else {
-            evt.target.classList.remove("game__player-name--error");
-            this.myModel.setName(inputName.value);
+            this.formName.classList.remove("game__player-name--error");
+            this.myModel.setName(String(this.inputName.value).trim());
+            evt.preventDefault();
+            this.btnStart.focus();
         }
     }
 
@@ -344,7 +347,11 @@ class GameController {
         document.body.classList.remove('stop-scrolling');
     }
 
-    startGame = function(evt) { 
+    startGame = function(evt) {
+        if (!this.myModel.name && String(this.inputName.value).trim()===0) {
+            this.formName.classList.add("game__player-name--error");
+            return;
+        }
         location.hash = "Play";
         setTimeout(this.myModel.clearGame.bind(this.myModel),0);
         setTimeout(this.myModel.startGame.bind(this.myModel),100);

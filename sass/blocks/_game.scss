@@ -170,12 +170,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding-left: 30px;
 
         input {
             display: block;
             box-sizing: border-box;
-            min-width: 300px;
+            width: 90%;
             min-height: 40px;
             margin: 0;
             padding: 5px 10px;
@@ -198,7 +197,7 @@
             }
         }
 
-        button {
+        /*button {
             @include transition(all);
             cursor: pointer;
             display: block;
@@ -227,7 +226,7 @@
             &:active {
                 outline: none;
             }
-        }
+        }*/
 
         &--error input {
             border-color: brown;
@@ -239,10 +238,10 @@
 
     @include mobile {
         &__player-name {
-            padding: 0;
+            //padding: 0;
 
             input {
-                min-width: 200px;
+                //min-width: 200px;
             }
         }
 

@@ -79,7 +79,7 @@ class ViewCanvas {
         }
         this[type].currentTime = 0;
         if (type==="soundCut") {
-            this[type].playbackRate = 1 + 1*(this.myModel.level.progress?this.myModel.level.progress:100)/100;
+            this[type].playbackRate = 1 + Math.max(1*(this.myModel.level.progress?this.myModel.level.progress:100)/100,0);
         }
         this[type].play();
         if ( navigator.vibrate ) {
@@ -241,13 +241,13 @@ class ViewCanvas {
             this.blade.classList.remove("blade--active");
             if (this.myModel.blade.isTurn) {
                 this.blade.style.transitionProperty = "top, left";
-                this.blade.style.transitionDuration = "0.5s";
+                this.blade.style.transitionDuration = "0.7s";
             } else {
                 this.blade.style.transitionProperty = "";
                 this.blade.style.transitionDuration = "";
             }
             this.blade.style.transform = "";
-            this.blade.style.top = this.field.offsetTop + this.field.offsetHeight + this.blade.offsetHeight/6 + "px";
+            this.blade.style.top = this.field.offsetTop + this.field.offsetHeight + this.blade.offsetHeight + "px";
             this.blade.style.left = this.field.offsetLeft + this.field.offsetWidth/2 - this.blade.offsetWidth/2 + "px";
             this.blade.classList.add("blade--" + this.myModel.blade.type);
            
