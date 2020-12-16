@@ -8,6 +8,8 @@
     margin: 0;
 
     &__item {
+        padding: 0;
+        border: none;
 
         input {
             &:hover ~ label,
