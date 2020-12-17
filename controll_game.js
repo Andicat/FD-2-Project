@@ -140,7 +140,7 @@ class GameController {
         }
 
         if (!this.fieldSizes) {
-            this.fieldSizes = window.utils.getElementCoords(this.cntField);
+            this.fieldSizes = getElementCoords(this.cntField);
         }
 
         blade.classList.add("blade--work");
@@ -173,6 +173,32 @@ class GameController {
             bottom: document.documentElement.clientHeight - blade.offsetHeight,
             right: document.documentElement.clientWidth - blade.offsetWidth,
         };
+
+        
+        function getElementCoords(elem) {
+            var bbox = elem.getBoundingClientRect();
+        
+            var body = document.body;
+            var docEl = document.documentElement;
+        
+            var scrollTop = window.pageYOffset||docEl.scrollTop||body.scrollTop;
+            var scrollLeft = window.pageXOffset||docEl.scrollLeft||body.scrollLeft;
+        
+            var clientTop = docEl.clientTop||body.clientTop||0;
+            var clientLeft = docEl.clientLeft||body.clientLeft||0;
+        
+            var top = bbox.top + scrollTop - clientTop;
+            var left = bbox.left + scrollLeft - clientLeft;
+        
+            return {
+                width: elem.offsetWidth,
+                height: elem.offsetHeight,
+                left: left,
+                top: top,
+                bottom: top + elem.offsetHeight,
+                right: left + elem.offsetWidth,
+            };
+        }
     }
 
     move = function(evt) {
@@ -311,10 +337,14 @@ class GameController {
 
     //кпопка "Старт"
     startGame = function(evt) {
-        if (!this.myModel.name && String(this.inputName.value).trim().length===0) {
-            this.formName.classList.add("game__player-name--error");
-            return;
-        }
+        if (!this.myModel.name) {
+            if (String(this.inputName.value).trim().length===0) {
+                this.formName.classList.add("game__player-name--error");
+                return;
+            }
+            this.myModel.setName(String(this.inputName.value).trim());
+        } 
+        
         location.hash = "Play";
         setTimeout(this.myModel.clearGame.bind(this.myModel),0);
         setTimeout(this.myModel.startGame.bind(this.myModel),100);
