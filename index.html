@@ -15,6 +15,9 @@
   </head>
   <body>
     <main class="game">
+      <div class="bg-star bg-star--1"></div>
+      <div class="bg-star bg-star--2"></div>
+      <div class="bg-star bg-star--3"></div>
       <h1 class="visually-hidden">Andreeva Katerina. It-Academy. FD-2. PROJECT. SCALE-game</h1>
       <!--<button class="game__button game__button--colors">Colors</button>-->
       <div class="game__container">
@@ -29,24 +32,28 @@
           <div class="load__circle load__circle-7"></div>
         </div>        
         <div class="game__menu hidden">
-          <span class="game__score-title">BEST SCORE</span>
-          <span class="game__score-value"></span>
+          <div class="game__score">
+            <span class="game__score-title">your best score</span>
+            <span class="game__score-value"></span>  
+          </div>
           <form class="game__player-name" name="formName">
             <input type="text" name="name" maxlength="30" placeholder="Your name..."></input>
           </form>
-          <div class="game__buttons">
+          <div class="game__start">
             <button class="game__button game__button--start">Play</button>
-            <div class="game__settings">
-              <button class="game__button game__button--small game__button--record"></button>
-              <button class="game__button game__button--small game__button--ball"></button>
-              <button class="game__button game__button--small game__button--sound"></button>
-            </div>
+          </div>
+          <div class="game__settings">
+            <button class="game__button game__button--small game__button--record"></button>
+            <button class="game__button game__button--small game__button--ball"></button>
+            <button class="game__button game__button--small game__button--sound"></button>
           </div>
         </div>
         <div class="game__play hidden">
-          <span class="game__level"></span>
-          <div class="progress">
-            <div class="progress__value"></div>
+          <div class="game__progress">
+            <span class="game__progress-value"></span>
+            <div class="game__progress-view">
+              <div class="game__progress-view-value"></div>
+            </div>  
           </div>
           <div class="game__field"></div>
           <div class="game__blade">
@@ -65,7 +72,9 @@
     <section class="modal modal--records">
       <div class="modal__inner">
           <button class="modal__button-close" type="button">Закрыть</button>
-          <div class="records"></div>
+          <div class="modal__container">
+            <div class="records"></div>
+          </div>
       </div>
   </section>
     </main>

@@ -7,19 +7,23 @@
     try {
         var blockGame = document.querySelector('.game');
         var cntGame = blockGame.querySelector('.game__container');
-        var cntPlay = blockGame.querySelector('.game__play');
+        var cntGameName = blockGame.querySelector('.game__name');
+        var cntGameScore = blockGame.querySelector('.game__score');
+        var cntGameSettings = blockGame.querySelector('.game__settings');
         var cntField = blockGame.querySelector('.game__field');
-        
     } catch {
         return;
     }
+
     location.hash = "";
 
     //настройка размеров игры
     var clientWidth = document.documentElement.clientWidth;
     var clientHeight = document.documentElement.clientHeight;
+    //const GAME_HEIGHT = clientHeight - cntGameName.offsetHeight - cntGameScore.offsetHeight - cntGameSettings.offsetHeight;
+    //const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT,clientWidth));
     const GAME_HEIGHT = clientHeight;
-    const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*2.5,clientWidth));
+    const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT-60-80-100,clientWidth));
     const CANVAS_SIZE = GAME_WIDTH - 20;
     var data = {};
     
@@ -97,8 +101,7 @@
         }
     });
 
-
-    //загрузка данных local Storage
+    //загрузка данных localStorage
     var prLS= new Promise( (resolve,reject) => {
         var lsName = "gameScale";
         data.lsName = lsName;
@@ -115,45 +118,46 @@
     Promise.all([prFPS,prAJAX,prAJAXRecords,prLS]).then( result => {setTimeout(renderGame,500)});
 
 
-    /*
+/*
    var btnColors = blockGame.querySelector('.game__button--colors');
    var btnStart = blockGame.querySelector('.game__button--start');
    var btnBall = blockGame.querySelector('.game__button--ball');
    btnColors.addEventListener("click", showColors);
-        var colorIndex = 0;
         function showColors() {
+            btnStart.style.display = "none";
+            var cntGameStart = blockGame.querySelector('.game__start');
+            cntGameStart.style.display = "flex";
+            cntGameStart.style.flexWrap = "wrap";
+            cntGameStart.style.overflow = "auto";
             var colors = [
-                "#A52A2A","#FF8C00","#DAA520","#228B22","#4682B4","#4169E1","#483D8B",
-                "#FF3333","#F79F1F","#e6bf32","#A3CB38","#0099CC",
-                "#FBCB2C","#ebd726","#FAC221","#ffd333","#F79F1F",
-                "#009966","#00CC66","#66CC66","#66CC33","#009432","#1289A7", 
-                "#006266","#0033CC","#0066FF","#0099CC","#00CCCC","#33CCCC","#1B1464", 
-                "#5758BB","#993399","#6633CC","#B53471","#9980FA","#833471","#6F1E51", 
-                "#993366","#ED4C67","#EE5A24","#EA2027","#ff6d69","#FF3300","#FF3333", 
-                "#FF3366"];
+                "#A52A2A","#E56C19","#DAA520","#009432","#0099CC","#4169E1","#483D8B",
+                "#FF3333","#F79F1F","#e6bf32","#A3CB38","#4682B4","#FBCB2C",
+                "#FAC221","#ffd333","#F79F1F","#009966","#00CC66","#66CC66","#66CC33",
+                "#228B22","#1289A7","#006266","#0033CC","#0066FF","#0099CC","#00CCCC",
+                "#33CCCC","#1B1464","#5758BB","#993399","#6633CC","#B53471","#9980FA",
+                "#833471","#6F1E51","#993366","#ED4C67","#EE5A24","#EA2027","#ff6d69",
+                "#FF3300","#FF3333","#FF3366"];
+                for (var i = 0; i < colors.length; i++) {
+                    var cntColor = document.createElement("div");
+                    cntColor.classList.add("game__button");
+                    cntColor.classList.add("game__button--TEST");
+                    cntColor.textContent = colors[i];
+                    cntColor.style.backgroundColor = colors[i];
+                    cntColor.style.backgroundSize = "30%";
+                    cntColor.style.backgroundImage = btnBall.style.backgroundImage;
+                    cntColor.style.backgroundPosition = "center";
+                    cntColor.style.backgroundRepeat = "no-repeat";
+                    cntColor.style.fontSize = "10px";
+                    cntColor.style.width = "70px";
+                    cntColor.style.height = "70px";
+                    cntColor.style.margin = "10px";
+                    cntGameStart.appendChild(cntColor);      
+                }
 
-
-              btnStart.style.backgroundColor = colors[colorIndex];
-              btnStart.style.backgroundImage = btnBall.style.backgroundImage;
-              btnStart.style.backgroundSize = "10%";
-              btnStart.style.backgroundPosition = "70px 10px";
-              btnStart.textContent = colors[colorIndex];
-              btnStart.style.fontSize = "20px";
-              colorIndex++;
-  
           }
   */
-          
-  
- 
-    function renderGame () {
 
-       /* for (var i = 1; i < 35; i++) {
-            
-            var number = ((i%data.colors.length===0)?data.colors.length:i%data.colors.length)-1;
-            console.log(i + " " + number);
-        }*/
-        //console.log("данные загружены");
+    function renderGame () {
         cntGame.style.height = GAME_HEIGHT + "px";
         cntGame.style.width = GAME_WIDTH + "px";
 

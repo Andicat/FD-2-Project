@@ -68,7 +68,16 @@
         /*if (radius===0) {
             return rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];    
         }*/
-        return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
+        var rectsSuitableWidth = rects.filter(r => {return(r.left<=posX-radius&&r.right>=posX+radius)});
+        var rectsSuitableHeight = rectsSuitableWidth.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
+        if (rectsSuitableHeight.length===0) {
+            console.log("suitable for width " + rectsSuitableWidth.length);
+            console.log("suitable for height " + rectsSuitableHeight.length);
+            //debugger    
+        }
+        return rectsSuitableHeight[0];
+        
+        //return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
     };
 
     window.utils.findVertical = function(arr1,arr2) {

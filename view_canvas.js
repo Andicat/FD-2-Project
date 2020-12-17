@@ -8,11 +8,11 @@ class ViewCanvas {
         this.btnStart = container.querySelector('.game__button--start');
         this.btnBall = container.querySelector('.game__button--ball');
         this.btnSound = container.querySelector('.game__button--sound');
-        this.cntProgress = container.querySelector('.progress');
-        this.progress = container.querySelector('.progress__value');
-        this.count = container.querySelector('.game__level');
-        this.cntScoreTitle = container.querySelector('.game__score-title');
-        this.cntScore = container.querySelector('.game__score-value');
+        this.cntProgress = container.querySelector('.game__progress-view');
+        this.progress = container.querySelector('.game__progress-view-value');
+        this.count = container.querySelector('.game__progress-value');
+        this.cntScore = container.querySelector('.game__score');
+        this.cntScoreValue = container.querySelector('.game__score-value');
         this.formName = container.querySelector('.game__player-name');
         this.myModel;
         this.colorBg = "rgba(255, 255, 255, 0.3)";
@@ -31,13 +31,17 @@ class ViewCanvas {
         this.cnt = context;
         this.updateBallImage();
         this.updateSound();
+        this.updateStartScore();
+    }
+
+    updateStartScore = function() {
         if (this.myModel.name) {
             this.formName.classList.add("hidden");
         }
         if (this.myModel.bestScore) {
-            this.cntScore.textContent = this.myModel.bestScore;
+            this.cntScoreValue.textContent = this.myModel.bestScore;
         } else {
-            this.cntScoreTitle.classList.add("hidden");
+            this.cntScore.classList.add("hidden");
         }
     }
 
@@ -72,7 +76,6 @@ class ViewCanvas {
         }
     }
 
-
     sound = function(type) {
         if (this.myModel.soundOff) {
             return;
@@ -90,7 +93,6 @@ class ViewCanvas {
             }
         }
     }
-
 
     drawFinish = function(fieldSize,borderSize,levels) {
         //this.cnt.save();
@@ -121,8 +123,8 @@ class ViewCanvas {
         //this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
         //this.setOpacity(0);
         if (this.myModel.bestScore) {
-            this.cntScore.textContent = this.myModel.bestScore;
-            this.cntScoreTitle.classList.remove("hidden");
+            this.cntScoreValue.textContent = this.myModel.bestScore;
+            this.cntScore.classList.remove("hidden");
         }
         setTimeout(function(){
             //setOpacity("").bind(this);
