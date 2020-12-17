@@ -248,7 +248,8 @@
                 return {x:newX, y:newY};
             });
         }
-        return {points:points, ball:{x:centerBallX,y:centerBallY}};
+        var ballActualRectIndex = ball.field.rects.indexOf(ball.actualRect);
+        return {points:points, ball:{x:centerBallX,y:centerBallY,ballActualRectIndex:ballActualRectIndex}};
     }
 
     window.utils.getMaxCoords = function(points) {
