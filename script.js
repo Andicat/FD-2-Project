@@ -128,15 +128,12 @@
             var cntGameStart = blockGame.querySelector('.game__start');
             cntGameStart.style.display = "flex";
             cntGameStart.style.flexWrap = "wrap";
-            cntGameStart.style.overflow = "auto";
+            cntGame.style.width = "auto";
             var colors = [
-                "#A52A2A","#E56C19","#DAA520","#009432","#0099CC","#4169E1","#483D8B",
-                "#FF3333","#F79F1F","#e6bf32","#A3CB38","#4682B4","#FBCB2C",
-                "#FAC221","#ffd333","#F79F1F","#009966","#00CC66","#66CC66","#66CC33",
-                "#228B22","#1289A7","#006266","#0033CC","#0066FF","#0099CC","#00CCCC",
-                "#33CCCC","#1B1464","#5758BB","#993399","#6633CC","#B53471","#9980FA",
-                "#833471","#6F1E51","#993366","#ED4C67","#EE5A24","#EA2027","#ff6d69",
-                "#FF3300","#FF3333","#FF3366"];
+                "#A52A2A","#E56C19","#DAA520","#228B22","#0099CC","#4169E1","#483D8B","#1B1464","#6F1E51",
+                "#EA2027","#EE5A24","#F79F1F","#FFD333","#A3CB38","#006266","#4682B4","#993366","#ED4C67",
+                "#FF6D69","#FF3333","#FF3300","#FBCB2C","#66CC33","#33CCCC","#1289A7","#5758BB","#833471",
+                "#000000"];
                 for (var i = 0; i < colors.length; i++) {
                     var cntColor = document.createElement("div");
                     cntColor.classList.add("game__button");
