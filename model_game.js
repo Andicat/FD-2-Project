@@ -177,8 +177,8 @@ class Game {
                 alert(callresult.error);
             }
             else {
-                //var recordsTable = JSON.parse(callresult.result);
-                var recordsTable = [];
+                var recordsTable = JSON.parse(callresult.result);
+                /*var recordsTable = [];
                 recordsTable.push({name:"Andik",score:10,color:this.levelColors[9]});
                 recordsTable.push({name:"Pasya",score:9,color:this.levelColors[8]});
                 recordsTable.push({name:"Patrik",score:8,color:this.levelColors[7]});
@@ -188,8 +188,8 @@ class Game {
                 recordsTable.push({name:"Peter",score:4,color:this.levelColors[3]});
                 recordsTable.push({name:"Kate",score:3,color:this.levelColors[2]});
                 recordsTable.push({name:"Tosha",score:2,color:this.levelColors[1]});
-                recordsTable.push({name:"Suslik",score:1,color:this.levelColors[0]});
-                //recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
+                recordsTable.push({name:"Suslik",score:1,color:this.levelColors[0]});*/
+                recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
                 this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,10);
                 $.ajax({
                     url : ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
