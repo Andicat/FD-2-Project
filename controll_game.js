@@ -66,10 +66,11 @@ class GameController {
 
         //имя
         this.formName = document.forms.formName;
-        this.formName.addEventListener("change",this.enterName.bind(this));
+        this.formName.addEventListener("change",this.checkName.bind(this));
+        this.inputName = this.formName.querySelector('input[name="name"]');
 
-        window.addEventListener("mousedown", this.startMoveBlade.bind(this));
-        window.addEventListener('touchstart', this.startMoveBlade.bind(this),{passive: false});
+        window.addEventListener("mousedown", this.startMove.bind(this));
+        window.addEventListener('touchstart', this.startMove.bind(this),{passive: false});
         window.addEventListener("keydown",this.keyDown.bind(this));
         window.onbeforeunload = this.beforeUnload.bind(this);
     }
@@ -80,14 +81,16 @@ class GameController {
         }
     }
 
-    enterName = function(evt) {
-        var inputName = evt.currentTarget.querySelector('input[name="name"]');
-        if (inputName.value.length===0) {
-            evt.target.classList.add("game__player-name--error");
+    checkName = function(evt) {
+        if (String(this.inputName.value).trim().length===0) {
+            this.formName.classList.add("game__player-name--error");
+            evt.preventDefault();
             return;
         } else {
-            evt.target.classList.remove("game__player-name--error");
-            this.myModel.setName(inputName.value);
+            this.formName.classList.remove("game__player-name--error");
+            this.myModel.setName(String(this.inputName.value).trim());
+            evt.preventDefault();
+            this.btnStart.focus();
         }
     }
 
@@ -142,8 +145,7 @@ class GameController {
         this.formBalls.removeEventListener('touchmove', this.moveSwipe);
     }
 
-    startMoveBlade = function(evt) {
-    
+    startMove = function(evt) {
         var blade = this.cntBlade;
        
         if (evt.target!==blade) {
@@ -170,8 +172,8 @@ class GameController {
         //перемещаем объект
         blade.style.top = blade.offsetTop - this.topShiftTouch + "px";
         
-        this.moveBladeListener = this.moveBlade.bind(this);
-        this.endMoveBladeListener = this.endMoveBlade.bind(this);
+        this.moveBladeListener = this.move.bind(this);
+        this.endMoveBladeListener = this.endMove.bind(this);
         window.addEventListener('mousemove', this.moveBladeListener);
         window.addEventListener('mouseup', this.endMoveBladeListener);
         window.addEventListener('touchmove', this.moveBladeListener,{ passive: false });
@@ -189,7 +191,7 @@ class GameController {
         };
     }
 
-    moveBlade = function(evt) {
+    move = function(evt) {
         var blade = this.cntBlade;
 
         evt.preventDefault();
@@ -222,7 +224,7 @@ class GameController {
         
     }
 
-    endMoveBlade = function(evt) {
+    endMove = function(evt) {
         var blade = this.cntBlade;
         var centerX = blade.offsetLeft + (blade.offsetWidth-1)/2 + 1;
         var centerY = blade.offsetTop + (blade.offsetHeight-1)/2 + 1;
@@ -234,6 +236,31 @@ class GameController {
         window.removeEventListener('mouseup', this.endMoveBladeListener);
         window.removeEventListener('touchmove', this.moveBladeListener,{ passive: false });
         window.removeEventListener('touchend', this.endMoveBladeListener);
+    }
+
+    startSwipe = function(evt) {
+       
+        if ( evt.touches.length==1 ) {
+            // возможно, начался свайп
+            // запомним координаты и начнём слушать движение
+            this.mouseStart = {
+                x: evt.touches[0].pageX,
+                y: evt.touches[0].pageY
+            };
+            this.formBalls.addEventListener("touchmove",this.moveSwipe.bind(this),false);
+        }
+    }
+
+    moveSwipe = function(evt) {
+   
+        var HorzShift = Math.round(evt.touches[0].pageX - this.mouseStart.x);
+        var VertShift = Math.round(evt.touches[0].pageY - this.mouseStart.y);
+        if ( Math.abs(HorzShift) < Math.abs(VertShift) ) {
+            //evt.currentTarget.style.transform = "translateY(" + String(-VertShift) + "px";
+            evt.currentTarget.style.top = String(-VertShift) + "px";
+        }
+        else
+        this.formBalls.removeEventListener("touchmove",this.moveSwipe,false);
     }
 
     changeSound = function(evt) {
@@ -320,7 +347,11 @@ class GameController {
         document.body.classList.remove('stop-scrolling');
     }
 
-    startGame = function(evt) { 
+    startGame = function(evt) {
+        if (!this.myModel.name && String(this.inputName.value).trim()===0) {
+            this.formName.classList.add("game__player-name--error");
+            return;
+        }
         location.hash = "Play";
         setTimeout(this.myModel.clearGame.bind(this.myModel),0);
         setTimeout(this.myModel.startGame.bind(this.myModel),100);

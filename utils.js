@@ -65,9 +65,9 @@
     }
 
     window.utils.findActualRect = function(rects,posX,posY,radius) {
-        if (radius===0) {
+        /*if (radius===0) {
             return rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];    
-        }
+        }*/
         return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
     };
 
@@ -248,7 +248,8 @@
                 return {x:newX, y:newY};
             });
         }
-        return {points:points, ball:{x:centerBallX,y:centerBallY}};
+        var ballActualRectIndex = ball.field.rects.indexOf(ball.actualRect);
+        return {points:points, ball:{x:centerBallX,y:centerBallY,ballActualRectIndex:ballActualRectIndex}};
     }
 
     window.utils.getMaxCoords = function(points) {

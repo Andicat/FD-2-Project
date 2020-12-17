@@ -19,7 +19,7 @@
     var clientWidth = document.documentElement.clientWidth;
     var clientHeight = document.documentElement.clientHeight;
     const GAME_HEIGHT = clientHeight;
-    const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*3,clientWidth));
+    const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT/4*2.5,clientWidth));
     const CANVAS_SIZE = GAME_WIDTH - 20;
     var data = {};
     
