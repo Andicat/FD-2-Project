@@ -1,6 +1,10 @@
 .game {
     margin: auto;
-    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%);
+    //background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%);
+    background-color: #303641;
+	background-image: 
+		linear-gradient(135deg, rgba(0,0,0, 0.2) 0%, rgba(0,0,0, 0.1) 25%, rgba(0,0,0, 0.2) 50%, rgba(0,0,0, 0.1) 75%, rgba(0,0,0, 0.2) 100%);
+	background-size: 8px 8px, 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,102 +25,6 @@
         flex-direction: column;
     }
 
-    &__name {
-        color: #ffffff;
-        margin: 0;
-        font-size: 36px;
-        line-height: normal;
-        font-weight: 400;
-        margin: 10px 0;
-    }
-    
-    &__level {
-        display: block;
-        color: #ffffff;
-        margin: 0;
-        font-size: 42px;
-        line-height: normal;
-        font-weight: 400;
-        transition-property: opacity;
-        transition-duration: 1s;
-    }
-
-    &__field {
-        width: 100%;
-        margin: 0 auto 10px;
-        display: flex;
-        transition-property: opacity;
-        transition-duration: 1s;
-    }
-
-    &__blade {
-        height: 61px;
-        min-width: 100%;
-    }
-
-    &__button {
-        //width: 50%;
-        //position: absolute;
-        @include transition(all);
-        font-size: 42px;
-        text-transform: uppercase;
-        margin: 20px;
-        padding: 10px;
-        border-radius: 5px;
-        border: none;
-        background-color: rgba($color: white, $alpha: 0.2);
-        border: 3px solid white;
-        color: white;
-        cursor: pointer;
-        background-repeat: no-repeat;
-        background-size: 70%;
-        background-position: center;
-        border-radius: 50%;
-        outline: none;
-        //transform: translateX(-50%);
-
-        &:hover,
-        &:focus {
-            //font-size: 42px;
-            outline: none;
-            background-color: rgba($color: white, $alpha: 0.4);
-            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-            transform: scale(1.1);
-        }
-
-        &--start {
-            height: 30vh;
-            width: 30vh;
-            min-width: 150px;
-            min-height: 150px;
-            margin-bottom: 50px;        }
-    
-        &--colors {
-            position: absolute;
-            bottom: 0;
-            left: 20%;
-        }
-
-        &--small {
-            
-            min-height: 70px;
-            min-width: 70px;
-        }
-
-        &--sound {
-            background-image: url("img/sound-on.svg");
-        }
-
-        &--sound-off {
-            background-image: url("img/sound-off.svg");
-        }
-
-        &--record {
-            background-image: url("img/icon-table.svg");
-            background-size: 60%;
-        }
-    }
-
     &__menu {
         width: auto;
         flex-grow: 1;
@@ -131,47 +39,47 @@
         flex-direction: column;
     }
 
-    &__score-title {
-        display: block;
+    &__name {
+        box-sizing: border-box;
         color: #ffffff;
         margin: 0;
-        font-size: 20px;
+        font-size: 36px;
         line-height: normal;
         font-weight: 400;
-        margin-top: 20px;
-        text-transform: lowercase;
+        padding: 10px 0;
+        height: 60px;
     }
 
-    &__score-value {
-        display: block;
+    &__score {
+        box-sizing: border-box;
+        height: 80px;
+        padding: 10px;
         color: #ffffff;
-        margin: 0;
-        font-size: 40px;
         line-height: normal;
-        font-weight: 400;
-        margin-top: 10px;
-    }
+        font-weight: 400;    
 
-    &__buttons {
-        margin-top: auto;
-        margin-bottom: auto;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    &__settings {
-        display: flex;
-        flex-direction: row;
+        &-title {
+            display: block;
+            font-size: 20px;
+            text-transform: lowercase;
+        }
+    
+        &-value {
+            display: block;
+            font-size: 40px;
+        }
     }
 
     &__player-name {
+        box-sizing: border-box;
+        height: 80px;
+        padding: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
 
         input {
+            @include transition(all);
             display: block;
             box-sizing: border-box;
             width: 90%;
@@ -189,6 +97,7 @@
             }
 
             &:focus {
+                transform: scale(1);
                 outline: none;
                 border-color: #020030;
                 &::placeholder {
@@ -197,38 +106,8 @@
             }
         }
 
-        /*button {
-            @include transition(all);
-            cursor: pointer;
-            display: block;
-            box-sizing: border-box;
-            height: 30px;
-            width: 30px;
-            border-radius: 50%;
-            //border: 1px solid white;
-            border: none;
-            background-color: transparent;
-            background-image: url("img/icon-enter.svg");
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            margin-left: 15px;
-
-            &:hover,
-            &:focus {
-                background-color: rgba($color: white, $alpha: 0.2);
-                transform: scale(1.4);    
-                border: 1px solid white;
-                background-size: 70%;
-                outline: none;
-            }
-
-            &:active {
-                outline: none;
-            }
-        }*/
-
         &--error input {
+            transform: scale(1.2);
             border-color: brown;
             &::placeholder {
                 color: brown;
@@ -236,6 +115,144 @@
         }
     }
 
+    &__progress {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 80px;
+        padding: 10px 0;
+
+        &-value {
+            display: block;
+            height: 40px;
+            color: #ffffff;
+            font-size: 40px;
+            line-height: 40px;
+            font-weight: 400;
+            transition-property: opacity;
+            transition-duration: 1s;
+        }
+        
+        &-view {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+            background-color: rgba(255, 255, 255, 0.3);
+            height: 15px;
+            //margin: 0 auto 15px;
+            transition-property: opacity;
+            transition-duration: 1s;
+        }
+        
+        &-view-value {
+            transition-property: width;
+            height: 100%;
+            width: 0%;
+        }
+    }
+
+    &__start {
+        margin-top: auto;
+        margin-bottom: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__field {
+        width: 100%;
+        display: flex;
+        transition-property: opacity;
+        transition-duration: 1s;
+    }
+
+    &__settings {
+        height: 100px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    &__blade {
+        height: 100px;
+        min-width: 100%;
+    }
+
+    &__button {
+        @include transition(all);
+        font-size: 42px;
+        text-transform: uppercase;
+        margin: auto 20px;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background-color: rgba($color: white, $alpha: 0.2);
+        border: 3px solid white;
+        color: white;
+        cursor: pointer;
+        background-repeat: no-repeat;
+        background-size: 70%;
+        background-position: center;
+        border-radius: 50%;
+        outline: none;
+
+        &:hover,
+        &:focus {
+            outline: none;
+            background-color: rgba($color: white, $alpha: 0.4);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+            transform: scale(1.1);
+        }
+
+        &--start {
+            height: 30vh;
+            width: 30vh;
+            min-width: 150px;
+            min-height: 150px;
+            margin: auto;
+        }
+    
+        &--colors {
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+        }
+
+        &--small {
+            min-height: 70px;
+            min-width: 70px;
+        }
+
+        &--sound {
+            background-image: url("img/sound-on.svg");
+        }
+
+        &--sound-off {
+            background-image: url("img/sound-off.svg");
+        }
+
+        &--record {
+            background-image: url("img/icon-table.svg");
+            background-size: 60%;
+        }
+
+        &--TEST {
+            &:hover,
+            &:focus {
+                transform: scale(3);
+            }
+        }
+    }
+
+    
+
+    
+
+   
+
+    
     @include mobile {
         &__player-name {
             //padding: 0;

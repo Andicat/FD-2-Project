@@ -63,11 +63,14 @@ class GameController {
         this.btnRecordModalClose = this.modalRecord.querySelector('.modal__button-close');
         this.btnRecordModalClose.addEventListener("click", this.closeModalRecords.bind(this));
         this.recordsTable = this.modalRecord.querySelector(".records");
+        this.recordsTable.addEventListener("mousedown",this.startSwipe.bind(this));
+        this.recordsTable.addEventListener('touchstart', this.startSwipe.bind(this),{passive: false});
 
         //имя
         this.formName = document.forms.formName;
-        this.formName.addEventListener("change",this.checkName.bind(this));
+        this.formName.addEventListener("submit",this.checkName.bind(this));
         this.inputName = this.formName.querySelector('input[name="name"]');
+        //this.inputName.addEventListener("keypress", this.checkName.bind(this));
 
         window.addEventListener("mousedown", this.startMove.bind(this));
         window.addEventListener('touchstart', this.startMove.bind(this),{passive: false});
@@ -75,25 +78,7 @@ class GameController {
         window.onbeforeunload = this.beforeUnload.bind(this);
     }
 
-    beforeUnload = function(evt) {
-        if (this.myModel.inProgress||this.myModel.isScaling) {
-            evt.returnValue = 'А у вас есть несохранённые изменения!';
-        }
-    }
-
-    checkName = function(evt) {
-        if (String(this.inputName.value).trim().length===0) {
-            this.formName.classList.add("game__player-name--error");
-            evt.preventDefault();
-            return;
-        } else {
-            this.formName.classList.remove("game__player-name--error");
-            this.myModel.setName(String(this.inputName.value).trim());
-            evt.preventDefault();
-            this.btnStart.focus();
-        }
-    }
-
+    //обработка свайпа - пролистывание таблицы рекордовб списка мячиков
     startSwipe = function(evt) {
 
         if (!evt.touches) {
@@ -103,17 +88,16 @@ class GameController {
         if ( evt.touches.length!=1 ) {
             return;
         }
-        if (evt.currentTarget!==this.formBalls) {
+        if ((evt.currentTarget!==this.formBalls)&&(evt.currentTarget!==this.recordsTable)) {
             return;
         }
 
         //evt.preventDefault();
-
         this.mouseStart = { x:evt.touches[0].pageX, y:evt.touches[0].pageY };
-        this.formBalls.addEventListener("mousemove",this.moveSwipe.bind(this));
-        this.formBalls.addEventListener("touchmove",this.moveSwipe.bind(this));
-        this.formBalls.addEventListener('mouseup', this.endSwipe.bind(this));
-        this.formBalls.addEventListener('touchend', this.endSwipe.bind(this));
+        evt.currentTarget.addEventListener("mousemove",this.moveSwipe.bind(this));
+        evt.currentTarget.addEventListener("touchmove",this.moveSwipe.bind(this));
+        evt.currentTarget.addEventListener('mouseup', this.endSwipe.bind(this));
+        evt.currentTarget.addEventListener('touchend', this.endSwipe.bind(this));
     }
 
     moveSwipe = function(evt) {
@@ -134,17 +118,16 @@ class GameController {
             evt.preventDefault();
             evt.currentTarget.removeEventListener("touchmove",this.moveSwipe.bind(this));
             this.swipeShift = Math.min(this.swipeShift + VertShift,0);
-            //console.log("have to swipe " + VertShift + "   " + this.swipeShift);
             evt.currentTarget.style.transform = "translateY(" + Math.max(this.swipeShift,Math.min((evt.currentTarget.parentNode.offsetHeight-evt.currentTarget.offsetHeight),0)) + "px)";
         }
     }
 
     endSwipe = function(evt) {
-        //evt.preventDefault();
-        this.formBalls.removeEventListener('mouseup', this.endSwipe);
-        this.formBalls.removeEventListener('touchmove', this.moveSwipe);
+        evt.currentTarget.removeEventListener('mouseup', this.endSwipe);
+        evt.currentTarget.removeEventListener('touchmove', this.moveSwipe);
     }
 
+    //обработка мышки/тача - перемещение фигурки
     startMove = function(evt) {
         var blade = this.cntBlade;
        
@@ -160,6 +143,7 @@ class GameController {
             this.fieldSizes = window.utils.getElementCoords(this.cntField);
         }
 
+        blade.classList.add("blade--work");
         blade.style.transitionProperty = "transform";
         blade.style.transitionDuration = "1s";
 
@@ -232,52 +216,22 @@ class GameController {
         var pointY = Math.round(centerY - this.fieldSizes.top);
         evt.preventDefault();
         this.myModel.dropBlade(pointX,pointY);
+        blade.classList.remove("blade--work");
         window.removeEventListener('mousemove', this.moveBladeListener);
         window.removeEventListener('mouseup', this.endMoveBladeListener);
         window.removeEventListener('touchmove', this.moveBladeListener,{ passive: false });
         window.removeEventListener('touchend', this.endMoveBladeListener);
     }
 
-    startSwipe = function(evt) {
-       
-        if ( evt.touches.length==1 ) {
-            // возможно, начался свайп
-            // запомним координаты и начнём слушать движение
-            this.mouseStart = {
-                x: evt.touches[0].pageX,
-                y: evt.touches[0].pageY
-            };
-            this.formBalls.addEventListener("touchmove",this.moveSwipe.bind(this),false);
-        }
-    }
-
-    moveSwipe = function(evt) {
-   
-        var HorzShift = Math.round(evt.touches[0].pageX - this.mouseStart.x);
-        var VertShift = Math.round(evt.touches[0].pageY - this.mouseStart.y);
-        if ( Math.abs(HorzShift) < Math.abs(VertShift) ) {
-            //evt.currentTarget.style.transform = "translateY(" + String(-VertShift) + "px";
-            evt.currentTarget.style.top = String(-VertShift) + "px";
-        }
-        else
-        this.formBalls.removeEventListener("touchmove",this.moveSwipe,false);
-    }
-
+    //смена звука (on-off)
     changeSound = function(evt) {
         this.myModel.setSound(this.btnSound.classList.contains("game__button--sound-off")?false:true);
     }
 
+    //смена мячика
     changeBall = function(evt) {
         this.myModel.setBall(evt.target.value);
         this.closeModalBall();
-    }
-
-    keyDown = function(evt) {
-        if (evt.keyCode === 27) {
-            evt.preventDefault();
-            this.closeModalBall();
-            this.closeModalRecords();
-        }
     }
 
     // модальное окнo выбора мячиков
@@ -302,7 +256,6 @@ class GameController {
                 ballInput.setAttribute("checked","true");
             }
             ballItem.appendChild(ballInput);
-            //ballInput.addEventListener("click",this.changeBall.bind(this));
             var ballLabel = document.createElement("label");
             ballLabel.setAttribute("for","ball-" + (i+1));
             ballLabel.style.backgroundImage = "url('img/" + ballsArr[i] + "')";
@@ -347,8 +300,18 @@ class GameController {
         document.body.classList.remove('stop-scrolling');
     }
 
+    //закрытие модальных окон по клавише Esc
+    keyDown = function(evt) {
+        if (evt.keyCode === 27) {
+            evt.preventDefault();
+            this.closeModalBall();
+            this.closeModalRecords();
+        }
+    }
+
+    //кпопка "Старт"
     startGame = function(evt) {
-        if (!this.myModel.name && String(this.inputName.value).trim()===0) {
+        if (!this.myModel.name && String(this.inputName.value).trim().length===0) {
             this.formName.classList.add("game__player-name--error");
             return;
         }
@@ -356,4 +319,28 @@ class GameController {
         setTimeout(this.myModel.clearGame.bind(this.myModel),0);
         setTimeout(this.myModel.startGame.bind(this.myModel),100);
     }
+    
+    //проверка заполненности имени
+    checkName = function(evt) {
+
+        if (String(this.inputName.value).trim().length===0) {
+            this.formName.classList.add("game__player-name--error");
+            evt.preventDefault();
+            return;
+        } else {
+            this.formName.classList.remove("game__player-name--error");
+            this.myModel.setName(String(this.inputName.value).trim());
+            evt.preventDefault();
+            this.btnStart.focus();
+        }
+    }
+
+    //уход со страницы    
+    beforeUnload = function(evt) {
+        if (this.myModel.inProgress||this.myModel.isScaling) {
+            evt.returnValue = 'А у вас есть несохранённые изменения!';
+        }
+    }
+
+
 }

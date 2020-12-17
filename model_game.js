@@ -9,7 +9,6 @@ class Game {
         this.fieldSize = canvasSize - this.borderSize*2;
         this.myView = null;
         this.speed = Number(60*this.fieldSize*0.03/6/data.fps).toFixed(2);
-        //console.log(this.speed);
         this.field = null;
         this.ball = null;
         this.blade = null;
@@ -66,6 +65,7 @@ class Game {
     setName = function(value) {
         this.name = value;
         this.saveLocalStorageData();
+        this.myView.updateStartScore();
     }
 
     startGame = function() {
@@ -181,19 +181,19 @@ class Game {
                 alert(callresult.error);
             }
             else {
-                var recordsTable = JSON.parse(callresult.result);
-                /*var recordsTable = [];
-                recordsTable.push({name:"Tayo",score:15,color:this.levelColors[0]});
-                recordsTable.push({name:"Peter",score:10,color:this.levelColors[2]});
-                recordsTable.push({name:"Kate",score:5,color:this.levelColors[4]});
-                recordsTable.push({name:"Tosha",score:25,color:this.levelColors[7]});
-                recordsTable.push({name:"Suslik",score:4,color:this.levelColors[6]});
-                recordsTable.push({name:"Musya",score:1,color:this.levelColors[3]});
-                recordsTable.push({name:"Pasya",score:11,color:this.levelColors[1]});
-                recordsTable.push({name:"Patrik",score:5,color:this.levelColors[5]});
-                recordsTable.push({name:"Stasik",score:8,color:this.levelColors[4]});
-                recordsTable.push({name:"Porsh",score:7,color:this.levelColors[3]});*/
-                recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
+                //var recordsTable = JSON.parse(callresult.result);
+                var recordsTable = [];
+                recordsTable.push({name:"Andik",score:10,color:this.levelColors[1]});
+                recordsTable.push({name:"Pasya",score:9,color:this.levelColors[0]});
+                recordsTable.push({name:"Patrik",score:8,color:this.levelColors[7]});
+                recordsTable.push({name:"Stasik",score:7,color:this.levelColors[6]});
+                recordsTable.push({name:"Porsh",score:6,color:this.levelColors[5]});
+                recordsTable.push({name:"Tayo",score:5,color:this.levelColors[4]});
+                recordsTable.push({name:"Peter",score:4,color:this.levelColors[3]});
+                recordsTable.push({name:"Kate",score:3,color:this.levelColors[2]});
+                recordsTable.push({name:"Tosha",score:2,color:this.levelColors[1]});
+                recordsTable.push({name:"Suslik",score:1,color:this.levelColors[0]});
+                //recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
                 this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,10);
                 $.ajax({
                     url : ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
@@ -317,11 +317,6 @@ class Game {
 
     updateBallRect = function() {
         this.ball.actualRect = window.utils.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
-        
-        if (this.ball.actualRect===undefined) {
-            //debugger
-        }
-        
     }
 
     //********************************************************FIELD
@@ -362,7 +357,6 @@ class Game {
             console.log("rects new");
             console.log(this.field.rects);
             
-            //debugger;
             this.ball.x -= this.ball.speedX;
             this.ball.y -= this.ball.speedY;
             this.ball.actualRect = this.field.rects[this.scalingInfo.ballActualRectIndex];
