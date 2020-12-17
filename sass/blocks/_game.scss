@@ -2,8 +2,7 @@
     margin: auto;
     //background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%);
     background-color: #303641;
-	background-image: 
-		linear-gradient(135deg, rgba(0,0,0, 0.2) 0%, rgba(0,0,0, 0.1) 25%, rgba(0,0,0, 0.2) 50%, rgba(0,0,0, 0.1) 75%, rgba(0,0,0, 0.2) 100%);
+	background-image: linear-gradient(135deg, rgba(0,0,0, 0.2) 0%, rgba(0,0,0, 0.1) 25%, rgba(0,0,0, 0.2) 50%, rgba(0,0,0, 0.1) 75%, rgba(0,0,0, 0.2) 100%);
 	background-size: 8px 8px, 100%;
     display: flex;
     flex-direction: column;
@@ -141,7 +140,6 @@
             align-items: stretch;
             background-color: rgba(255, 255, 255, 0.3);
             height: 15px;
-            //margin: 0 auto 15px;
             transition-property: opacity;
             transition-duration: 1s;
         }
@@ -245,28 +243,4 @@
             }
         }
     }
-
-    
-
-    
-
-   
-
-    
-    @include mobile {
-        &__player-name {
-            //padding: 0;
-
-            input {
-                //min-width: 200px;
-            }
-        }
-
-        &__button--start {
-            //margin-bottom: auto;
-        }
-
-    }
 }
-
-
