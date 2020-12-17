@@ -21,9 +21,10 @@ class ViewCanvas {
         this.borderSize = null;
         this.slitWidth = null;
         this.soundBlade = new Audio('sound/click.mp3');
-        this.soundCut = new Audio('sound/click-2.mp3');
-        this.soundEnd = new Audio('sound/click-end.mp3');
+        this.soundCut = new Audio('sound/cut.mp3');
+        this.soundEnd = new Audio('sound/end.mp3');
         this.soundStart = new Audio('sound/start.mp3');
+        this.soundScale = new Audio('sound/scale.mp3');
     };
 
     start = function(context,model) {
@@ -65,6 +66,12 @@ class ViewCanvas {
         if (playPromise !== undefined) {
             playPromise.then(_ => {
             this.soundEnd.pause();
+            })
+        }
+        var playPromise = this.soundScale.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+            this.soundScale.pause();
             })
         }
         var playPromise = this.soundStart.play();

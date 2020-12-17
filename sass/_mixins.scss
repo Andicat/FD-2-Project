@@ -1,5 +1,0 @@
-// транзишн
-@mixin transition($args...) {
-    transition-property: $args;
-    transition-duration: 0.3s;
-  }
