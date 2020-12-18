@@ -161,6 +161,7 @@ class Game {
     }
 
     tick = function() {
+        console.log(this.isCutting);
         if (this.inProgress) {
             this.moveBall();
         }
@@ -341,6 +342,7 @@ class Game {
         if (!actualRect) {
             this.blade.isTurn = true;
             this.myView.updateBlade();
+            this.isCutting = false;
         } else {
             this.blade.isActive = false;
             this.blade.isTurn = false;
@@ -507,6 +509,13 @@ class Game {
         } else if (((this.ball.y + this.ball.radius) > this.ball.actualRect.bottom)&&this.ball.speedY>0) { //bottom
             nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius);
             if (!nextRect) {
+                //var nextX = this.ball.x + this.ball.speedX;
+                //var nextY = this.ball.y - this.ball.speedY;
+                //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                //if (!next2Rect) {
+                    //debugger
+                    //this.ball.speedX =- this.ball.speedX;
+                //}
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
             } else {
@@ -515,6 +524,13 @@ class Game {
         } else if (((this.ball.y - this.ball.radius) < this.ball.actualRect.top)&&this.ball.speedY<0) { //top
             nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius);
             if (!nextRect) {
+                //var nextX = this.ball.x + this.ball.speedX;
+                //var nextY = this.ball.y - this.ball.speedY;
+                //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                //if (!next2Rect) {
+                    //debugger
+                //    this.ball.speedX =- this.ball.speedX;
+                //}
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.top + this.ball.radius;
             } else {
@@ -570,19 +586,23 @@ class Game {
         if (!this.isCutting) {
             this.slit1 = null;
             this.slit2 = null;
+            var isBall;
             for (var i = 0; i< this.cutInfo.arrNew.length; i++) {
                 var arr = this.cutInfo.arrNew[i].concat(this.cutInfo.pointsNew);
                 var rects = this.field.createRects(arr);
-                var isBall = this.findActualRect(rects,this.ball.x,this.ball.y,this.ball.radius);
+                isBall = this.findActualRect(rects,this.ball.x,this.ball.y,this.ball.radius);
                 if (isBall) {
                     this.field.points = arr;
                     this.field.rects = this.field.createRects(this.field.points);
                     this.updateBallRect();
                     this.updateProgress();
                     return;
-                } else {
-                    debugger;
-                }
+                } //else {
+                    //debugger;
+                //}
+            }
+            if (!isBall) {
+                debugger
             }
         }
     }
@@ -674,19 +694,32 @@ class Game {
 
     //utils
     findActualRect = function(rects,posX,posY,radius) {
-        /*if (radius===0) {
-            return rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];    
-        }*/
-        var rectsSuitableWidth = rects.filter(r => {return(r.left<=posX-radius&&r.right>=posX+radius)});
+        /*var rectsSuitableWidth = rects.filter(r => {return(r.left<=posX-radius&&r.right>=posX+radius)});
         var rectsSuitableHeight = rectsSuitableWidth.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
         if (rectsSuitableHeight.length===0) {
+            if (rectsSuitableHeight[0].bottom-rectsSuitableHeight[0].top<radius) {
+                debugger;
+            }
             //console.log("suitable for width " + rectsSuitableWidth.length);
             //console.log("suitable for height " + rectsSuitableHeight.length);
             //debugger    
         }
-        return rectsSuitableHeight[0];
-        
-        //return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
+        return rectsSuitableHeight[0];*/
+
+        /*var nextRect = rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
+        //если узкий, проверим дальнейшие
+        if (radius!==0&&nextRect) {
+            if (nextRect.bottom-nextRect.top<radius) {
+                var nextX = this.ball.x + this.ball.speedX;
+                var nextY = this.ball.y + this.ball.speedY;
+                var nextRect2 = rects.filter(r => {return (r.top<=nextY&&r.bottom>=nextY&&r.left<=nextX-radius&&r.right>=nextX+radius)})[0];
+                if (!nextRect2) {
+                    debugger
+                }
+            }
+        }
+        return nextRect;*/
+        return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
     };
 };
 
