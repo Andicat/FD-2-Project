@@ -75,7 +75,25 @@ class GameController {
         window.addEventListener("mousedown", this.startMove.bind(this));
         window.addEventListener('touchstart', this.startMove.bind(this),{passive: false});
         window.addEventListener("keydown",this.keyDown.bind(this));
+        window.addEventListener("resize",debounce(this.resizeWindow.bind(this)));
         window.onbeforeunload = this.beforeUnload.bind(this);
+
+        //дебоусинг
+        function debounce(cb) {
+            var DEBOUNCE_INTERVAL = 500;
+            var lastTimeout = null;
+            return function () {
+                var parameters = arguments;
+                if (lastTimeout) {
+                    window.clearTimeout(lastTimeout);
+                }
+                lastTimeout = window.setTimeout(function () {
+                    cb.apply(this, parameters);
+                }, DEBOUNCE_INTERVAL);
+            };
+        }
+
+        this.resizeWindow();
     }
 
     //обработка свайпа - пролистывание таблицы рекордовб списка мячиков
@@ -139,9 +157,9 @@ class GameController {
             return;
         }
 
-        if (!this.fieldSizes) {
-            this.fieldSizes = getElementCoords(this.cntField);
-        }
+        //if (!this.fieldSizes) {
+        this.fieldSizes = getElementCoords(this.cntField);
+        //}
 
         blade.classList.add("blade--work");
         blade.style.transitionProperty = "transform";
@@ -372,5 +390,11 @@ class GameController {
         }
     }
 
-
+     //ресайз окна
+    resizeWindow = function(evt) {
+        var clientWidth = document.documentElement.clientWidth;
+        var clientHeight = document.documentElement.clientHeight;
+        var canvasSize = (clientWidth/clientHeight>2/3)?clientHeight*0.6:clientWidth*0.9;
+        this.myModel.setSizes(canvasSize);    
+    }
 }

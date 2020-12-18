@@ -4,27 +4,14 @@
 
 (function () {
 
-    try {
+    //try {
         var blockGame = document.querySelector('.game');
         var cntGame = blockGame.querySelector('.game__container');
-        var cntGameName = blockGame.querySelector('.game__name');
-        var cntGameScore = blockGame.querySelector('.game__score');
-        var cntGameSettings = blockGame.querySelector('.game__settings');
-        var cntField = blockGame.querySelector('.game__field');
-    } catch {
-        return;
-    }
+    //} catch {
+    //    return;
+    //}
 
     location.hash = "";
-
-    //настройка размеров игры
-    var clientWidth = document.documentElement.clientWidth;
-    var clientHeight = document.documentElement.clientHeight;
-    //const GAME_HEIGHT = clientHeight - cntGameName.offsetHeight - cntGameScore.offsetHeight - cntGameSettings.offsetHeight;
-    //const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT,clientWidth));
-    const GAME_HEIGHT = clientHeight;
-    const GAME_WIDTH = Math.round(Math.min(GAME_HEIGHT-60-80-100,clientWidth));
-    const CANVAS_SIZE = GAME_WIDTH - 20;
     var data = {};
     
     //узнаем частоту экрана
@@ -155,23 +142,12 @@
   */
 
     function renderGame () {
-        cntGame.style.height = GAME_HEIGHT + "px";
-        cntGame.style.width = GAME_WIDTH + "px";
-
-        //создаем канвас
-        var gameCanvas = document.createElement("canvas");
-        gameCanvas.setAttribute("width",CANVAS_SIZE);
-        gameCanvas.setAttribute("height",CANVAS_SIZE);
-        cntField.appendChild(gameCanvas);
-        var context = gameCanvas.getContext("2d");
-
-        var myGame = new Game(CANVAS_SIZE,data);
+        var myGame = new Game(data);
         var viewCanvas = new ViewCanvas(cntGame);
         var controller = new GameController();
-        myGame.start(viewCanvas);
         controller.start(myGame,cntGame);
-        viewCanvas.start(context,myGame);
-        
+        viewCanvas.start(myGame);
+        myGame.start(viewCanvas);
         location.hash = "Menu";      
     }
 })();
