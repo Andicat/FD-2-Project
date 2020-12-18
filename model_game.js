@@ -2,13 +2,13 @@
 
 class Game {
     
-    constructor(canvasSize, data) {
-        this.canvasSize = canvasSize;
-        this.borderSize = canvasSize*0.008;
-        this.slitWidth = canvasSize*0.006;
-        this.fieldSize = canvasSize - this.borderSize*2;
+    constructor(data) {
+        this.canvasSize = null;
+        this.borderSize = null;
+        this.slitWidth = null;
+        this.fieldSize = null;
         this.myView = null;
-        this.speed = Number(60*this.fieldSize*0.03/6/data.fps).toFixed(2);
+        this.speed = null;
         this.field = null;
         this.ball = null;
         this.blade = null;
@@ -20,16 +20,12 @@ class Game {
         this.name = data.name;
         this.recordsTable = data.recordsTable;
         this.recordTableMin;
-        this.levels = [];
-        this.pointsStart = [
-            {x:this.borderSize,y:this.borderSize},
-            {x:this.borderSize + this.fieldSize,y:this.borderSize},
-            {x:this.borderSize + this.fieldSize,y:this.fieldSize + this.borderSize},
-            {x:this.borderSize,y: this.borderSize + this.fieldSize},
-        ],
+        this.fps = data.fps;
+        this.pointsStart = [];
         this.inProgress = false;
         this.isScaling = false;
         this.isCutting = false;
+        this.isResizing = false;
         this.soundOff = data.soundOff?true:false;
         this.lsName = data.lsName;
         this.RAF =
@@ -45,6 +41,53 @@ class Game {
                 { window.setTimeout(callback, 1000 / 60); }
             ;
     };
+
+    setSizes = function(canvasSize) {
+        /*console.log("PREVIOUS----------------------");
+        console.log("canvas " + this.canvasSize + " field " + this.fieldSize);
+        console.log(this.field);
+        console.log(this.level);
+        //debugger*/
+        var fieldSizePrev = this.fieldSize;
+        this.canvasSize = canvasSize;
+        this.borderSize = canvasSize*0.008;
+        this.slitWidth = canvasSize*0.006;
+        this.fieldSize = canvasSize - this.borderSize*2;
+        this.speed = Number(60*this.fieldSize*0.03/6/this.fps).toFixed(2);
+        if (this.inProgress) {
+            this.inProgress = false;
+            var resizingInfo = resizeField(this.field.pointsBg,this.field.points,this.fieldSize, fieldSizePrev,this.ball);
+            this.resizingInfo = {
+                pointsNewStart: resizingInfo.pointsStart,
+                pointsNew: resizingInfo.points,
+                ballPrev: {x:this.ball.x,y:this.ball.y},
+                ballNew: resizingInfo.ball,
+                ballActualRectIndex: resizingInfo.ball.ballActualRectIndex,
+            };
+            this.isResizing = true;
+            this.scaleCount = 0;
+        }
+
+        function resizeField(pointsStart, points, fieldSize, fieldSizePrev, ball) {
+            var scale = fieldSize/fieldSizePrev;
+            var center = fieldSizePrev/2;
+            var centerBallX = (fieldSize/2 + (ball.x - center)*scale).toFixed(2);
+            var centerBallY = (fieldSize/2 + (ball.y - center)*scale).toFixed(2);
+            pointsStart = pointsStart.map(function(p) {
+                let newX = (fieldSize/2 + (p.x-center)*scale).toFixed(2);
+                let newY = (fieldSize/2 + (p.y-center)*scale).toFixed(2);
+                return {x:newX, y:newY};
+            });
+            points = points.map(function(p) {
+                let newX = (fieldSize/2 + (p.x-center)*scale).toFixed(2);
+                let newY = (fieldSize/2 + (p.y-center)*scale).toFixed(2);
+                return {x:newX, y:newY};
+            });
+    
+            var ballActualRectIndex = ball.field.rects.indexOf(ball.actualRect);
+            return {pointsStart:pointsStart, points:points, ball:{x:centerBallX,y:centerBallY,ballActualRectIndex:ballActualRectIndex}};
+        }
+    }
 
     start = function(view) {
         this.myView = view;
@@ -69,13 +112,20 @@ class Game {
     }
 
     startGame = function() {
+        this.setSizes(this.canvasSize);
         this.inProgress = true;
         this.recordTableMin = this.recordsTable.reduce(function (p, v) { return ( p > v.score ? v.score : p);},Infinity);
+        this.pointsStart = [
+            {x:this.borderSize,y:this.borderSize},
+            {x:this.borderSize + this.fieldSize,y:this.borderSize},
+            {x:this.borderSize + this.fieldSize,y:this.fieldSize + this.borderSize},
+            {x:this.borderSize,y: this.borderSize + this.fieldSize}];
         this.field = new Field(this.pointsStart,this.pointsStart);
-        this.level = new Level(1,this.pointsStart,this.field,50,this.levelColors);
+        this.level = new Level(1,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
         this.startLevel();
         this.tick();
+        this.myView.updateSizes();
         this.myView.initSound();
     }
 
@@ -100,9 +150,6 @@ class Game {
         }
         this.inProgress = false;
         this.isCutting = false;
-        for (var i = 0; i < this.levels.length; i++) {
-            this.levels[i].rects = this.field.createRects(this.levels[i].pointsCurr);
-        }
         this.level = null;
         this.field = null;
         this.blade.isActive = false;
@@ -114,6 +161,7 @@ class Game {
     }
 
     tick = function() {
+        console.log(this.isCutting);
         if (this.inProgress) {
             this.moveBall();
         }
@@ -123,14 +171,16 @@ class Game {
         if (this.isScaling) {
             this.scaleField();
         }
-        if (this.inProgress||this.isScaling) {
+        if (this.isResizing) {
+            this.resizeField();
+        }
+        if (this.inProgress||this.isScaling||this.isResizing) {
             this.updateView();
             this.RAF.call(window, this.tick.bind(this));
         }
     }
 
     updateProgress = function() {
-        this.level.pointsCurr = this.field.points;
         this.level.squareCurr = this.level.calculateSquare(this.field.rects);
         this.level.progress = Math.round((this.level.squareStart - this.level.squareCurr)/(this.level.squareStart/100*(100-this.level.percent))*100);
         this.myView.updateLevel();
@@ -158,7 +208,7 @@ class Game {
     }
 
     saveRecord = function(color) {
-        if ((this.bestScore < this.recordTableMin)&&this.recordsTable.length>=10) {
+        if ((this.bestScore < this.recordTableMin)&&this.recordsTable.length>=20) {
             return
         }
         var ajaxHandlerScript="https://fe.it-academy.by/AjaxStringStorage2.php";
@@ -190,7 +240,7 @@ class Game {
                 recordsTable.push({name:"Tosha",score:2,color:this.levelColors[1]});
                 recordsTable.push({name:"Suslik",score:1,color:this.levelColors[0]});*/
                 recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
-                this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,10);
+                this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,20);
                 $.ajax({
                     url : ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
                     data : { f: 'UPDATE', n: stringName, v: JSON.stringify(this.recordsTable), p: updatePassword },
@@ -227,21 +277,22 @@ class Game {
     finishLevel = function() {
         this.inProgress = false;
         this.isCutting = false;
-        this.levels.push(this.level);
-        var scalingInfo = scaleField(this.level.pointsCurr,this.fieldSize, this.borderSize,this.ball);
-        this.level = new Level(this.level.count + 1, scalingInfo.points, this.field, 50, this.levelColors);
+        var levelColorPrev = this.level.color;
+        var scalingInfo = scaleField(this.field.points,this.fieldSize, this.borderSize,this.ball);
+        this.level = new Level(this.level.count + 1, this.field, 50, this.levelColors);
         this.field.rectsBg = [];
         this.scalingInfo = {
-            colorPrev: this.levels[this.levels.length-1].color,
+            colorPrev: levelColorPrev,
             colorNew: {red:this.level.color.red,green:this.level.color.green,blue:this.level.color.blue},
-            pointsPrev: this.levels[this.levels.length-1].pointsCurr,
-            pointsNew: this.level.pointsStart,
+            pointsPrev: this.field.points,
+            pointsNew: scalingInfo.points,
             ballPrev: {x:this.ball.x,y:this.ball.y},
             ballNew: scalingInfo.ball,
             ballActualRectIndex: scalingInfo.ball.ballActualRectIndex,
          };
         this.isScaling = true;
         this.scaleCount = 0;
+        this.myView.sound("soundScale");
 
         function scaleField(points, fieldSize, borderSize, ball) {
             var sortY = Array.from(new Set(points.map(p => p.y).sort((a,b) => {return a-b})));
@@ -291,6 +342,7 @@ class Game {
         if (!actualRect) {
             this.blade.isTurn = true;
             this.myView.updateBlade();
+            this.isCutting = false;
         } else {
             this.blade.isActive = false;
             this.blade.isTurn = false;
@@ -457,6 +509,13 @@ class Game {
         } else if (((this.ball.y + this.ball.radius) > this.ball.actualRect.bottom)&&this.ball.speedY>0) { //bottom
             nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius);
             if (!nextRect) {
+                //var nextX = this.ball.x + this.ball.speedX;
+                //var nextY = this.ball.y - this.ball.speedY;
+                //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                //if (!next2Rect) {
+                    //debugger
+                    //this.ball.speedX =- this.ball.speedX;
+                //}
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
             } else {
@@ -465,6 +524,13 @@ class Game {
         } else if (((this.ball.y - this.ball.radius) < this.ball.actualRect.top)&&this.ball.speedY<0) { //top
             nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius);
             if (!nextRect) {
+                //var nextX = this.ball.x + this.ball.speedX;
+                //var nextY = this.ball.y - this.ball.speedY;
+                //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                //if (!next2Rect) {
+                    //debugger
+                //    this.ball.speedX =- this.ball.speedX;
+                //}
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.top + this.ball.radius;
             } else {
@@ -520,17 +586,23 @@ class Game {
         if (!this.isCutting) {
             this.slit1 = null;
             this.slit2 = null;
+            var isBall;
             for (var i = 0; i< this.cutInfo.arrNew.length; i++) {
                 var arr = this.cutInfo.arrNew[i].concat(this.cutInfo.pointsNew);
                 var rects = this.field.createRects(arr);
-                var isBall = this.findActualRect(rects,this.ball.x,this.ball.y,this.ball.radius);
+                isBall = this.findActualRect(rects,this.ball.x,this.ball.y,this.ball.radius);
                 if (isBall) {
                     this.field.points = arr;
                     this.field.rects = this.field.createRects(this.field.points);
                     this.updateBallRect();
                     this.updateProgress();
                     return;
-                }
+                } //else {
+                    //debugger;
+                //}
+            }
+            if (!isBall) {
+                debugger
             }
         }
     }
@@ -575,21 +647,79 @@ class Game {
         this.scaleCount = this.scaleCount + 4;
     }
 
+    resizeField = function() {
+        if (this.scaleCount > 100) {
+            this.level.squareStart = this.level.calculateSquare(this.field.rectsBg);
+            this.level.squareCurr = this.level.calculateSquare(this.field.rects);
+            this.ball.actualRect = this.field.rects[this.resizingInfo.ballActualRectIndex];
+            this.ball.updateSizes(this.fieldSize,this.speed);
+            this.isResizing = false;
+            this.inProgress = true;
+            return;
+        }
+        var newFieldPoints = [];
+        var newFieldPointsStart = [];
+        
+        var pointsPrevStart = this.field.pointsBg;
+        var pointsNewStart = this.resizingInfo.pointsNewStart;
+
+        var pointsPrev = this.field.points;
+        var pointsNew = this.resizingInfo.pointsNew;
+
+        var ballPrev = this.resizingInfo.ballPrev;
+        var ballNew = this.resizingInfo.ballNew;
+
+        var scaleBallX = Math.round(ballPrev.x + (ballNew.x - ballPrev.x)/100*this.scaleCount);
+        var scaleBallY = Math.round(ballPrev.y + (ballNew.y - ballPrev.y)/100*this.scaleCount);
+        for (var i = 0; i < pointsPrevStart.length; i++) {
+            var scaleX = Math.round(pointsPrevStart[i].x + (pointsNewStart[i].x - pointsPrevStart[i].x)/100*this.scaleCount);
+            var scaleY = Math.round(pointsPrevStart[i].y + (pointsNewStart[i].y - pointsPrevStart[i].y)/100*this.scaleCount);
+            newFieldPointsStart.push({x:scaleX, y:scaleY});
+        };
+        for (var i = 0; i < pointsPrev.length; i++) {
+            var scaleX = Math.round(pointsPrev[i].x + (pointsNew[i].x - pointsPrev[i].x)/100*this.scaleCount);
+            var scaleY = Math.round(pointsPrev[i].y + (pointsNew[i].y - pointsPrev[i].y)/100*this.scaleCount);
+            newFieldPoints.push({x:scaleX, y:scaleY});
+        };
+        this.ball.x = scaleBallX;
+        this.ball.y = scaleBallY;
+
+        this.field.pointsBg = newFieldPointsStart;
+        this.field.points = newFieldPoints;
+        this.field.rectsBg = this.field.createRects(newFieldPointsStart);
+        this.field.rects = this.field.createRects(newFieldPoints);
+
+        this.scaleCount = this.scaleCount + 10;
+    }
+
     //utils
     findActualRect = function(rects,posX,posY,radius) {
-        /*if (radius===0) {
-            return rects.filter(r => {return (r.top<posY&&r.bottom>posY&&r.left<posX&&r.right>posX)})[0];    
-        }*/
-        var rectsSuitableWidth = rects.filter(r => {return(r.left<=posX-radius&&r.right>=posX+radius)});
+        /*var rectsSuitableWidth = rects.filter(r => {return(r.left<=posX-radius&&r.right>=posX+radius)});
         var rectsSuitableHeight = rectsSuitableWidth.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
         if (rectsSuitableHeight.length===0) {
+            if (rectsSuitableHeight[0].bottom-rectsSuitableHeight[0].top<radius) {
+                debugger;
+            }
             //console.log("suitable for width " + rectsSuitableWidth.length);
             //console.log("suitable for height " + rectsSuitableHeight.length);
             //debugger    
         }
-        return rectsSuitableHeight[0];
-        
-        //return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
+        return rectsSuitableHeight[0];*/
+
+        /*var nextRect = rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
+        //если узкий, проверим дальнейшие
+        if (radius!==0&&nextRect) {
+            if (nextRect.bottom-nextRect.top<radius) {
+                var nextX = this.ball.x + this.ball.speedX;
+                var nextY = this.ball.y + this.ball.speedY;
+                var nextRect2 = rects.filter(r => {return (r.top<=nextY&&r.bottom>=nextY&&r.left<=nextX-radius&&r.right>=nextX+radius)})[0];
+                if (!nextRect2) {
+                    debugger
+                }
+            }
+        }
+        return nextRect;*/
+        return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
     };
 };
 
@@ -712,17 +842,14 @@ class Field {
 };
 
 class Level {
-    constructor(count,pointsStart,field,percent,colors) {
+    constructor(count,field,percent,colors) {
         this.count = count;
-        this.pointsStart = pointsStart;
-        this.pointsCurr = pointsStart;
         this.percent = percent;
         this.colors = colors;
-        this.color = this.convertColorHEXtoRGB(this.colors[((count%this.colors.length===0)?this.colors.length:count%this.colors.length)-1]);
-        this.squareStart;
-        this.squareCurr;
         this.progress;
+        this.color = this.convertColorHEXtoRGB(this.colors[((count%this.colors.length===0)?this.colors.length:count%this.colors.length)-1]);
         this.squareStart = this.calculateSquare(field.rectsBg);
+        this.squareCurr;
     }
 
     convertColorHEXtoRGB = function(color) {
@@ -763,6 +890,12 @@ class Ball {
 
     randomSign = function() {
         return Math.sign(0.5-Math.random());
+    }
+
+    updateSizes = function(fieldSize,speed) {
+        this.radius = fieldSize*0.03;
+        this.speedX = this.randomSign()*speed;
+        this.speedY = this.randomSign()*speed;
     }
 }
 

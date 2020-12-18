@@ -3,6 +3,7 @@
 class ViewCanvas {
     
     constructor(container) {
+        this.canvas;
         this.blade = container.querySelector('.blade');
         this.field = container.querySelector('.game__field');
         this.btnStart = container.querySelector('.game__button--start');
@@ -27,9 +28,14 @@ class ViewCanvas {
         this.soundScale = new Audio('sound/scale.mp3');
     };
 
-    start = function(context,model) {
+    start = function(model) {
         this.myModel = model;
-        this.cnt = context;
+        //создаем канвас
+        this.canvas = document.createElement("canvas");
+        this.canvas.setAttribute("width",this.myModel.canvasSize);
+        this.canvas.setAttribute("height",this.myModel.canvasSize);
+        this.field.appendChild(this.canvas);
+        this.cnt = this.canvas.getContext("2d");
         this.updateBallImage();
         this.updateSound();
         this.updateStartScore();
@@ -101,7 +107,7 @@ class ViewCanvas {
         }
     }
 
-    drawFinish = function(fieldSize,borderSize,levels) {
+    //drawFinish = function(fieldSize,borderSize,levels) {
         //this.cnt.save();
         //this.cnt.translate(this.field.offsetWidth/2,this.field.offsetHeight/2);
         //this.cnt.restore();
@@ -128,17 +134,8 @@ class ViewCanvas {
         }*/
         //"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%)"
         //this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
-        //this.setOpacity(0);
-        if (this.myModel.bestScore) {
-            this.cntScoreValue.textContent = this.myModel.bestScore;
-            this.cntScore.classList.remove("hidden");
-        }
-        setTimeout(function(){
-            //setOpacity("").bind(this);
-            location.hash = "Menu";
-        },1000);
-        
-    }
+        //this.setOpacity(0);  
+    //}
 
     setOpacity = function(val) {
         this.field.style.opacity = val;
@@ -198,7 +195,10 @@ class ViewCanvas {
     }
 
     update = function() {
-        if (!this.myModel.inProgress&&!this.myModel.isScaling) {
+        if (this.myModel.isResizing) {
+            this.updateSizes();
+        }
+        if (!this.myModel.inProgress&&!this.myModel.isScaling&&!this.myModel.isResizing) {
             this.field.style.opacity = "0";
             this.cntProgress.style.opacity = "0";
             var fieldSize = this.myModel.fieldSize; 
@@ -206,7 +206,12 @@ class ViewCanvas {
             this.count.style.opacity = "0";
             this.btnStart.textContent = "Again";
             this.sound("soundEnd");
-            this.drawFinish(fieldSize,borderSize,this.myModel.levels);
+            if (this.myModel.bestScore) {
+                this.cntScoreValue.textContent = this.myModel.bestScore;
+                this.cntScore.classList.remove("hidden");
+            }
+            this.updateSizes();
+            setTimeout(function(){ location.hash = "Menu";},1000);
             return;
         }
         this.field.style.opacity = "1";
@@ -226,8 +231,14 @@ class ViewCanvas {
         var fieldSize = this.myModel.fieldSize; 
         var borderSize = this.myModel.borderSize;
         var slitWidth = this.myModel.slitWidth; 
-        this.inProgress = this.myModel.inProgress;
         this.draw(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball);
+    }
+
+    updateSizes = function() {
+        this.canvas.setAttribute("width",this.myModel.canvasSize);
+        this.canvas.setAttribute("height",this.myModel.canvasSize);
+        this.blade.style.top = this.field.offsetTop + this.field.offsetHeight + this.blade.offsetHeight + "px";
+        this.blade.style.left = this.field.offsetLeft + this.field.offsetWidth/2 - this.blade.offsetWidth/2 + "px";
     }
 
     updateLevel = function() {

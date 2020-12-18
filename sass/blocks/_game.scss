@@ -19,9 +19,12 @@
 
     &__container {
         box-sizing: border-box;
-        padding: 10px;
+        //padding: 10px;
+        padding: 2vh;
         display: flex;
         flex-direction: column;
+        justify-content: center;
+        height: 100vh;
     }
 
     &__menu {
@@ -42,37 +45,48 @@
         box-sizing: border-box;
         color: #ffffff;
         margin: 0;
-        font-size: 36px;
-        line-height: normal;
+        //font-size: 36px;
+        font-size: calc(1em + 4vh);
+        line-height: 100%;
         font-weight: 400;
-        padding: 10px 0;
-        height: 60px;
+        margin: 0.3em auto;
+        //padding: 0.2em 0;
+        //padding: 10px 0;
+        //min-height: 60px;
+        //height: 10vh;
     }
 
     &__score {
         box-sizing: border-box;
-        height: 80px;
-        padding: 10px;
+        //height: 80px;
+        //padding: 10px;
+        margin: 0.6em auto;
         color: #ffffff;
-        line-height: normal;
+        //line-height: normal;
         font-weight: 400;    
+        //height: 15vh;
 
         &-title {
             display: block;
-            font-size: 20px;
+            //font-size: 20px;
+            font-size: calc(1em + 2vh);
+            line-height: 100%;
             text-transform: lowercase;
         }
     
         &-value {
             display: block;
-            font-size: 40px;
+            font-size: calc(1em + 4vh);
+            line-height: 110%;
+            //font-size: 40px;
         }
     }
 
     &__player-name {
         box-sizing: border-box;
-        height: 80px;
-        padding: 10px;
+        //height: 80px;
+        margin: 5em auto 1em;
+        //padding: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -82,14 +96,16 @@
             display: block;
             box-sizing: border-box;
             width: 90%;
-            min-height: 40px;
+            //min-height: 40px;
             margin: 0;
             padding: 5px 10px;
             background-color: rgba($color: white, $alpha: 0.2);
             border: 1px solid white;
             color: white;
             border-radius: 5px;
-            font-size: 20px;
+            //font-size: 20px;
+            font-size: calc(1em + 1vh);
+            line-height: 100%;
 
             &::placeholder {
                 color: white;
@@ -119,15 +135,18 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 80px;
-        padding: 10px 0;
+        //height: 80px;
+        //padding: 10px 0;
+        margin: 1em 0;
 
         &-value {
             display: block;
-            height: 40px;
+            //height: 40px;
             color: #ffffff;
-            font-size: 40px;
-            line-height: 40px;
+            //font-size: 40px;
+            //line-height: 40px;
+            font-size: calc(1em + 4vh);
+            line-height: 100%;
             font-weight: 400;
             transition-property: opacity;
             transition-duration: 1s;
@@ -160,30 +179,35 @@
     }
 
     &__field {
-        width: 100%;
-        display: flex;
+        //width: 100%;
+        width: 60vh;
+        height: 60vh;
+        //display: flex;
         transition-property: opacity;
         transition-duration: 1s;
     }
 
     &__settings {
-        height: 100px;
+        //height: 100px;
+        height: 16vh;
         display: flex;
         flex-direction: row;
         justify-content: center;
     }
 
     &__blade {
-        height: 100px;
+        //height: 100px;
+        height: 16vh;
         min-width: 100%;
     }
 
     &__button {
         @include transition(all);
-        font-size: 42px;
+        //font-size: 42px;
         text-transform: uppercase;
-        margin: auto 20px;
-        padding: 10px;
+        //margin: auto 20px;
+        margin: auto 2vh;
+        //padding: 10px;
         border-radius: 5px;
         border: none;
         background-color: rgba($color: white, $alpha: 0.2);
@@ -205,8 +229,9 @@
         }
 
         &--start {
-            height: 30vh;
-            width: 30vh;
+            font-size: calc(1em + 5vh);
+            height: 40vh;
+            width: 40vh;
             min-width: 150px;
             min-height: 150px;
             margin: auto;
@@ -219,8 +244,10 @@
         }
 
         &--small {
-            min-height: 70px;
-            min-width: 70px;
+            //min-height: 70px;
+            //min-width: 70px;
+            min-height: 10vh;
+            min-width: 10vh;
         }
 
         &--sound {
@@ -240,6 +267,28 @@
             &:hover,
             &:focus {
                 transform: scale(3);
+            }
+        }
+    }
+
+    //@media (orientation: portrait) {
+    @media (max-aspect-ratio: 2/3) {
+        &__container {
+            padding: 5vw;
+        }
+        &__field {
+            width: 90vw;
+            height: 90vw;
+        }
+        &__button {
+            &--start {
+                height: 80vw;
+                width: 80vw;
+            }
+            &--small {
+                min-height: 25vw;
+                min-width: 25vw;
+                margin: auto 2.5vw;
             }
         }
     }
