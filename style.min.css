@@ -390,13 +390,9 @@ a {
   background-size: 60%;
 }
 
-.game__button--TEST:hover, .game__button--TEST:focus {
-  transform: scale(3);
-}
-
 @media (max-aspect-ratio: 2 / 3) {
   .game__container {
-    padding: 5vw;
+    padding: 8vw 5vw;
   }
   .game__field {
     width: 90vw;

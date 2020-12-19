@@ -262,19 +262,12 @@
             background-image: url("img/icon-table.svg");
             background-size: 60%;
         }
-
-        &--TEST {
-            &:hover,
-            &:focus {
-                transform: scale(3);
-            }
-        }
     }
 
     //@media (orientation: portrait) {
     @media (max-aspect-ratio: 2/3) {
         &__container {
-            padding: 5vw;
+            padding: 8vw 5vw;
         }
         &__field {
             width: 90vw;

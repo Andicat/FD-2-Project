@@ -4,12 +4,12 @@
 
 (function () {
 
-    //try {
+    try {
         var blockGame = document.querySelector('.game');
         var cntGame = blockGame.querySelector('.game__container');
-    //} catch {
-    //    return;
-    //}
+    } catch {
+        return;
+    }
 
     location.hash = "";
     var data = {};
@@ -103,43 +103,6 @@
     });
 
     Promise.all([prFPS,prAJAX,prAJAXRecords,prLS]).then( result => {setTimeout(renderGame,500)});
-
-
-/*
-   var btnColors = blockGame.querySelector('.game__button--colors');
-   var btnStart = blockGame.querySelector('.game__button--start');
-   var btnBall = blockGame.querySelector('.game__button--ball');
-   btnColors.addEventListener("click", showColors);
-        function showColors() {
-            btnStart.style.display = "none";
-            var cntGameStart = blockGame.querySelector('.game__start');
-            cntGameStart.style.display = "flex";
-            cntGameStart.style.flexWrap = "wrap";
-            cntGame.style.width = "auto";
-            var colors = [
-                "#A52A2A","#E56C19","#DAA520","#228B22","#0099CC","#4169E1","#483D8B","#1B1464","#6F1E51",
-                "#EA2027","#EE5A24","#F79F1F","#FFD333","#A3CB38","#006266","#4682B4","#993366","#ED4C67",
-                "#FF6D69","#FF3333","#FF3300","#FBCB2C","#66CC33","#33CCCC","#1289A7","#5758BB","#833471",
-                "#000000"];
-                for (var i = 0; i < colors.length; i++) {
-                    var cntColor = document.createElement("div");
-                    cntColor.classList.add("game__button");
-                    cntColor.classList.add("game__button--TEST");
-                    cntColor.textContent = colors[i];
-                    cntColor.style.backgroundColor = colors[i];
-                    cntColor.style.backgroundSize = "30%";
-                    cntColor.style.backgroundImage = btnBall.style.backgroundImage;
-                    cntColor.style.backgroundPosition = "center";
-                    cntColor.style.backgroundRepeat = "no-repeat";
-                    cntColor.style.fontSize = "10px";
-                    cntColor.style.width = "70px";
-                    cntColor.style.height = "70px";
-                    cntColor.style.margin = "10px";
-                    cntGameStart.appendChild(cntColor);      
-                }
-
-          }
-  */
 
     function renderGame () {
         var myGame = new Game(data);
