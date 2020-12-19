@@ -49,7 +49,7 @@
         font-size: calc(1em + 4vh);
         line-height: 100%;
         font-weight: 400;
-        margin: 0.3em auto;
+        margin: 3vh auto 1vh;
         max-height: 18vh;
         //padding: 0.2em 0;
         //padding: 10px 0;
@@ -195,6 +195,7 @@
     &__settings {
         //height: 100px;
         height: 16vh;
+        margin-bottom: 4vh;
         display: flex;
         flex-direction: row;
         justify-content: center;
