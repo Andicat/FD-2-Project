@@ -390,7 +390,7 @@ a {
   background-size: 60%;
 }
 
-@media (max-aspect-ratio: 2 / 3) {
+@media (max-aspect-ratio: 2 / 4) {
   .game__container {
     padding: 5vw 5vw 12vw 5vw;
   }

@@ -166,7 +166,7 @@ class GameController {
         blade.style.transitionDuration = "1s";
 
         evt.preventDefault();
-        if (window.TouchEvent && evt.originalEvent instanceof TouchEvent) {
+        if (window.TouchEvent && evt instanceof TouchEvent) {
         //if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
             this.topShiftTouch = blade.offsetHeight*1.5;
@@ -225,7 +225,7 @@ class GameController {
 
         evt.preventDefault();
 
-        if (window.TouchEvent && evt.originalEvent instanceof TouchEvent) {
+        if (window.TouchEvent && evt instanceof TouchEvent) {
         //if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
         }
@@ -397,7 +397,7 @@ class GameController {
     resizeWindow = function(evt) {
         var clientWidth = document.documentElement.clientWidth;
         var clientHeight = document.documentElement.clientHeight;
-        var canvasSize = (clientWidth/clientHeight>2/3)?clientHeight*0.6:clientWidth*0.9;
+        var canvasSize = (clientWidth/clientHeight>2/4)?clientHeight*0.6:clientWidth*0.9;
         this.myModel.setSizes(canvasSize);    
     }
 }

@@ -40,6 +40,7 @@ class Game {
             function(callback)
                 { window.setTimeout(callback, 1000 / 60); }
             ;
+        this.ballCoords = [];
     };
 
     setSizes = function(canvasSize) {
@@ -549,6 +550,10 @@ class Game {
                 return;
             }
         }
+        this.ballCoords.push({x:this.ball.x,y:this.ball.y});
+        if (this.ballCoords.length>20) {
+            this.ballCoords.shift();
+        }
 
         function hitSlit(elem,slit) {
             var r1x = elem.x - elem.radius;
@@ -599,7 +604,7 @@ class Game {
             for (var i = 0; i< this.cutInfo.arrNew.length; i++) {
                 arr = this.cutInfo.arrNew[i].concat(this.cutInfo.pointsNew);
                 rects = this.field.createRects(arr);
-                isBall = this.findActualRect(rects,this.ball.x,this.ball.y,this.ball.radius);
+                isBall = this.findActualRect(rects,ballX,ballY,this.ball.radius);
                 if (isBall) {
                     this.field.points = arr;
                     this.field.rects = this.field.createRects(this.field.points);
@@ -609,14 +614,15 @@ class Game {
                 } //else {
                     //debugger;
                 //}
-            }
-            if (!isBall) {
-                console.log("ball is NOT find!!!");
-                console.log(this.cutInfo.arrNew);
                 console.log(rects);
                 console.log(arr);
                 console.log(ballX);
                 console.log(ballY);
+            }
+            if (!isBall) {
+                console.log("ball is NOT find!!!");
+                console.log(this.cutInfo.arrNew);
+                console.log(this.ballCoords);
                 //alert("!!!")
                 debugger
             }
