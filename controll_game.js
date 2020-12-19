@@ -403,5 +403,17 @@ class GameController {
         //var canvasSize = clientHeight*0.6;
         this.myModel.setSizes(canvasSize); 
         //alert(canvasSize);
+        console.log(document.documentElement.requestFullscreen);
+        this.launchFullScreen(document.documentElement);
     }
+
+    launchFullScreen = function(element) {
+        if(element.requestFullScreen) {
+          element.requestFullScreen();
+        } else if(element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        }
+      }
 }

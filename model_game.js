@@ -519,6 +519,11 @@ class Game {
                 var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
                 if (!next2Rect) {
                     //debugger
+                    if (this.ball.speedX>0) {
+                        //this.ball.x = this.ball.actualRect.right - this.ball.radius;
+                    } else {
+                        //this.ball.x = this.ball.actualRect.left + this.ball.radius;
+                    }
                     this.ball.speedX =- this.ball.speedX;
                 }
                 this.ball.speedY =- this.ball.speedY;
@@ -535,6 +540,11 @@ class Game {
                 var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
                 if (!next2Rect) {
                     //debugger
+                    if (this.ball.speedX>0) {
+                        //this.ball.x = this.ball.actualRect.right - this.ball.radius;
+                    } else {
+                        //this.ball.x = this.ball.actualRect.left + this.ball.radius;
+                    }
                     this.ball.speedX =- this.ball.speedX;
                 }
                 this.ball.speedY =- this.ball.speedY;
