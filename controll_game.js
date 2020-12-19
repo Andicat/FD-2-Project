@@ -403,5 +403,7 @@ class GameController {
         //var canvasSize = clientHeight*0.6;
         this.myModel.setSizes(canvasSize); 
         //alert(canvasSize);
+        console.log(document.documentElement.requestFullscreen);
+       
     }
 }
