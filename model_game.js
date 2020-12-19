@@ -612,10 +612,10 @@ class Game {
             this.ball.x -= this.ball.speedX;
             this.ball.y -= this.ball.speedY;
             this.ball.actualRect = this.field.rects[this.scalingInfo.ballActualRectIndex];
-            var actualRectTest = this.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
-            if (actualRectTest===undefined) {
+            //var actualRectTest = this.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
+            /*if (actualRectTest===undefined) {
                 debugger
-            }
+            }*/
             this.startLevel();
             return;
         }
