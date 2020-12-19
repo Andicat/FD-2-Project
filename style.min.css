@@ -201,11 +201,13 @@ a {
   line-height: 100%;
   font-weight: 400;
   margin: 0.3em auto;
+  max-height: 18vh;
 }
 
 .game__score {
   box-sizing: border-box;
   margin: 0.6em auto;
+  max-height: 20vh;
   color: #ffffff;
   font-weight: 400;
 }
@@ -275,7 +277,8 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 1em 0;
+  margin: 1.5vh 0;
+  max-height: 20vh;
 }
 
 .game__progress-value {
@@ -294,7 +297,7 @@ a {
   flex-direction: column;
   align-items: stretch;
   background-color: rgba(255, 255, 255, 0.3);
-  height: 15px;
+  height: 2vh;
   transition-property: opacity;
   transition-duration: 1s;
 }
@@ -392,11 +395,13 @@ a {
 
 @media (max-aspect-ratio: 2 / 3) {
   .game__container {
-    padding: 5vw 5vw 12vw 5vw;
+    padding: 5vh 2vw;
   }
   .game__field {
     width: 90vw;
     height: 90vw;
+    max-width: 60vh;
+    max-height: 60vh;
   }
   .game__button--start {
     height: 70vw;
