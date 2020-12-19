@@ -319,6 +319,8 @@ a {
 .game__field {
   width: 60vh;
   height: 60vh;
+  max-width: calc(100vw - 4vh);
+  max-height: calc(100vw - 4vh);
   transition-property: opacity;
   transition-duration: 1s;
 }
@@ -391,27 +393,6 @@ a {
 .game__button--record {
   background-image: url("img/icon-table.svg");
   background-size: 60%;
-}
-
-@media (max-aspect-ratio: 2 / 3) {
-  .game__container {
-    padding: 5vh 2vw;
-  }
-  .game__field {
-    width: 90vw;
-    height: 90vw;
-    max-width: 60vh;
-    max-height: 60vh;
-  }
-  .game__button--start {
-    height: 70vw;
-    width: 70vw;
-  }
-  .game__button--small {
-    min-height: 25vw;
-    min-width: 25vw;
-    margin: auto 2.5vw;
-  }
 }
 
 .blade {

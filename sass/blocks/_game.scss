@@ -185,6 +185,8 @@
         //width: 100%;
         width: 60vh;
         height: 60vh;
+        max-width: calc(100vw - 4vh);
+        max-height: calc(100vw - 4vh);
         //display: flex;
         transition-property: opacity;
         transition-duration: 1s;
@@ -270,7 +272,7 @@
     //@media (orientation: portrait) {
     @media (max-aspect-ratio: 2/3) {
         &__container {
-            padding: 5vh 2vw;
+            //padding: 5vh 2vw;
         }
 
         &__progress {
@@ -278,21 +280,21 @@
         }
 
         &__field {
-            width: 90vw;
-            height: 90vw;
-            max-width: 60vh;
-            max-height: 60vh;
+            //width: 90vw;
+            //height: 90vw;
+            //max-width: 60vh;
+            //max-height: 60vh;
         }
 
         &__button {
             &--start {
-                height: 70vw;
-                width: 70vw;
+                //height: 70vw;
+                //width: 70vw;
             }
             &--small {
-                min-height: 25vw;
-                min-width: 25vw;
-                margin: auto 2.5vw;
+                //min-height: 25vw;
+                //min-width: 25vw;
+                //margin: auto 2.5vw;
             }
         }
     }
