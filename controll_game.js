@@ -397,7 +397,8 @@ class GameController {
     resizeWindow = function(evt) {
         var clientWidth = document.documentElement.clientWidth;
         var clientHeight = document.documentElement.clientHeight;
-        var canvasSize = (clientWidth/clientHeight>2/4)?clientHeight*0.6:clientWidth*0.9;
+        alert(clientHeight +  " " + clientWidth + " " + (clientWidth/clientHeight));
+        var canvasSize = (clientWidth/clientHeight>2/3)?clientHeight*0.6:clientWidth*0.9;
         this.myModel.setSizes(canvasSize);    
     }
 }
