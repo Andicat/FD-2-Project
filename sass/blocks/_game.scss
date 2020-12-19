@@ -50,6 +50,7 @@
         line-height: 100%;
         font-weight: 400;
         margin: 0.3em auto;
+        max-height: 18vh;
         //padding: 0.2em 0;
         //padding: 10px 0;
         //min-height: 60px;
@@ -61,6 +62,7 @@
         //height: 80px;
         //padding: 10px;
         margin: 0.6em auto;
+        max-height: 20vh;
         color: #ffffff;
         //line-height: normal;
         font-weight: 400;    
@@ -137,7 +139,8 @@
         justify-content: space-between;
         //height: 80px;
         //padding: 10px 0;
-        margin: 1em 0;
+        margin: 1.5vh 0;
+        max-height: 20vh;
 
         &-value {
             display: block;
@@ -158,7 +161,7 @@
             flex-direction: column;
             align-items: stretch;
             background-color: rgba(255, 255, 255, 0.3);
-            height: 15px;
+            height: 2vh;
             transition-property: opacity;
             transition-duration: 1s;
         }
@@ -267,7 +270,7 @@
     //@media (orientation: portrait) {
     @media (max-aspect-ratio: 2/3) {
         &__container {
-            padding: 5vw 5vw 12vw 5vw;
+            padding: 5vh 2vw;
         }
 
         &__progress {
@@ -277,6 +280,8 @@
         &__field {
             width: 90vw;
             height: 90vw;
+            max-width: 60vh;
+            max-height: 60vh;
         }
 
         &__button {
