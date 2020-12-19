@@ -265,14 +265,20 @@
     }
 
     //@media (orientation: portrait) {
-    @media (max-aspect-ratio: 2/3) {
+    @media (max-aspect-ratio: 2/4) {
         &__container {
             padding: 5vw 5vw 12vw 5vw;
         }
+
+        &__progress {
+            //margin: 0;
+        }
+
         &__field {
             width: 90vw;
             height: 90vw;
         }
+
         &__button {
             &--start {
                 height: 70vw;
