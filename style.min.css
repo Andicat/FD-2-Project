@@ -392,7 +392,7 @@ a {
 
 @media (max-aspect-ratio: 2 / 3) {
   .game__container {
-    padding: 5vw 5vw 12vw;
+    padding: 5vw 5vw 12vw 5vw;
   }
   .game__field {
     width: 90vw;

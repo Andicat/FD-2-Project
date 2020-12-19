@@ -267,7 +267,7 @@
     //@media (orientation: portrait) {
     @media (max-aspect-ratio: 2/3) {
         &__container {
-            padding: 5vw 5vw 12vw;
+            padding: 5vw 5vw 12vw 5vw;
         }
         &__field {
             width: 90vw;

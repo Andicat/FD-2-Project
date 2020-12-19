@@ -161,7 +161,7 @@ class Game {
     }
 
     tick = function() {
-        console.log(this.isCutting);
+        //console.log(this.isCutting);
         if (this.inProgress) {
             this.moveBall();
         }
@@ -181,6 +181,7 @@ class Game {
     }
 
     updateProgress = function() {
+        console.log("updateProgress");
         this.level.squareCurr = this.level.calculateSquare(this.field.rects);
         this.level.progress = Math.round((this.level.squareStart - this.level.squareCurr)/(this.level.squareStart/100*(100-this.level.percent))*100);
         this.myView.updateLevel();
@@ -262,6 +263,7 @@ class Game {
 
     //********************************************************LEVEL
     startLevel = function() {
+        console.log("startLevel");
         this.isScaling = false;
         this.inProgress = true;
         this.level.progress = 0;
@@ -275,6 +277,7 @@ class Game {
     }
 
     finishLevel = function() {
+        console.log("finishLevel");
         this.inProgress = false;
         this.isCutting = false;
         var levelColorPrev = this.level.color;
@@ -486,6 +489,7 @@ class Game {
     }
 
     updateBlade() {
+        console.log("updateBlade");
         this.blade.isActive = true;
         this.blade.isTurn = false;
         this.blade.update();
@@ -580,6 +584,7 @@ class Game {
 
     //********************************************************FIELD
     cutField = function() {
+        console.log("cutField");
         var slitInMove1 = this.slit1.move();
         var slitInMove2 = this.slit2.move();
         this.isCutting = slitInMove1||slitInMove2;
@@ -587,9 +592,13 @@ class Game {
             this.slit1 = null;
             this.slit2 = null;
             var isBall;
+            var arr;
+            var rects;
+            var ballX = this.ball.x;
+            var ballY = this.ball.y;
             for (var i = 0; i< this.cutInfo.arrNew.length; i++) {
-                var arr = this.cutInfo.arrNew[i].concat(this.cutInfo.pointsNew);
-                var rects = this.field.createRects(arr);
+                arr = this.cutInfo.arrNew[i].concat(this.cutInfo.pointsNew);
+                rects = this.field.createRects(arr);
                 isBall = this.findActualRect(rects,this.ball.x,this.ball.y,this.ball.radius);
                 if (isBall) {
                     this.field.points = arr;
@@ -602,12 +611,20 @@ class Game {
                 //}
             }
             if (!isBall) {
+                console.log("ball is NOT find!!!");
+                console.log(this.cutInfo.arrNew);
+                console.log(rects);
+                console.log(arr);
+                console.log(ballX);
+                console.log(ballY);
+                //alert("!!!")
                 debugger
             }
         }
     }
 
     scaleField = function() {
+        console.log("scaleField");
         if (this.scaleCount > 100) {
             this.ball.x -= this.ball.speedX;
             this.ball.y -= this.ball.speedY;
