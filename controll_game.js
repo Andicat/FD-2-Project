@@ -166,7 +166,8 @@ class GameController {
         blade.style.transitionDuration = "1s";
 
         evt.preventDefault();
-        if (evt instanceof TouchEvent) {
+        if (window.TouchEvent && evt.originalEvent instanceof TouchEvent) {
+        //if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
             this.topShiftTouch = blade.offsetHeight*1.5;
         }
@@ -223,7 +224,9 @@ class GameController {
         var blade = this.cntBlade;
 
         evt.preventDefault();
-        if (evt instanceof TouchEvent) {
+
+        if (window.TouchEvent && evt.originalEvent instanceof TouchEvent) {
+        //if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
         }
         //смещение мышки относительно начальных координат
