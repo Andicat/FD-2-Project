@@ -24,6 +24,8 @@
   // "роутинг" и есть "контроллер" из MVC - управление приложением через URL
   function switchToStateFromURLHash() {
     var URLHash=window.location.hash;
+    var clientWidth = document.documentElement.clientWidth;
+    var clientHeight = document.documentElement.clientHeight;
 
     var cntGame = document.querySelector(".game__container");
     var cntLoad = cntGame.querySelector('.game__loader');
@@ -54,7 +56,9 @@
         cntLoad.classList.add("hidden");
         cntPlay.classList.remove("hidden");
         cntMenu.classList.add("hidden");
-        launchFullScreen(document.documentElement);
+        if (clientWidth<clientHeight) {
+          launchFullScreen(document.documentElement);
+        }
         break;
       case 'Load':
         cntMenu.classList.add("hidden");
@@ -71,6 +75,8 @@
         element.mozRequestFullScreen();
       } else if(element.webkitRequestFullScreen) {
         element.webkitRequestFullScreen();
+      } else if (elem.webkitEnterFullScreen) {
+        elem.webkitEnterFullScreen();
       }
     }
 
