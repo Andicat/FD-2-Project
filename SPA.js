@@ -42,41 +42,45 @@
     }
     else
       SPAState={pagename:'Load'}; // иначе показываем главную страницу
-    
-    //console.log('Новое состояние приложения:');
-    //console.log(SPAState);
 
-    // обновляем вариабельную часть страницы под текущее состояние
-    // это реализация View из MVC - отображение состояния модели в HTML-код
     switch ( SPAState.pagename ) {
       case 'Menu':
         cntLoad.classList.add("hidden");  
         cntMenu.classList.remove("hidden");
         cntPlay.classList.add("hidden");
-        //pageHTML+="<h3>Главная страница</h3>";
-        //pageHTML+="<p>Щёлкайте по кнопкам!</p>";
+        cancelFullscreen();
         break;
       case 'Play':
         cntLoad.classList.add("hidden");
         cntPlay.classList.remove("hidden");
         cntMenu.classList.add("hidden");
-        
-        //var photo=photos[SPAState.photoid];
-        //pageHTML+="<h3>Фото</h3>";
-        //pageHTML+="<img src='"+photo.image+"'>";
-        //pageHTML+="<p><i>"+photo.comment+"</i></p>";
+        launchFullScreen(document.documentElement);
         break;
       case 'Load':
         cntMenu.classList.add("hidden");
         cntPlay.classList.add("hidden");
-        /*pageHTML+="<div class='load'>";
-        pageHTML+="<div class='load__circle load__circle-1'></div>";
-        pageHTML+="<div class='load__circle load__circle-2'></div>";
-        pageHTML+="<div class='load__circle load__circle-3'></div>";
-        pageHTML+="<div class='load__circle load__circle-4'></div>";
-        pageHTML+="<div class='load__circle load__circle-5'></div>";
-        pageHTML+="</div>";*/
+        cancelFullscreen();
         break;
     }
-    //document.getElementById('IPage').innerHTML=pageHTML;
+
+    
+    function launchFullScreen(element) {
+      if(element.requestFullScreen) {
+        element.requestFullScreen();
+      } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if(element.webkitRequestFullScreen) {
+        element.webkitRequestFullScreen();
+      }
+    }
+
+    function cancelFullscreen() {
+      if(document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if(document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if(document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
+    }
   }
