@@ -267,7 +267,7 @@
     //@media (orientation: portrait) {
     @media (max-aspect-ratio: 2/3) {
         &__container {
-            padding: 8vw 5vw;
+            padding: 5vw 5vw 12vw;
         }
         &__field {
             width: 90vw;
@@ -276,7 +276,7 @@
         &__button {
             &--start {
                 height: 70vw;
-                width: 70vw;
+                width: 50vw;
             }
             &--small {
                 min-height: 25vw;
