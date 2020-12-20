@@ -406,6 +406,7 @@ a {
 
 @media (max-width: 767px) {
   .game__name {
+    margin: 2vh auto 1vh;
     font-size: calc(1em + 3vh);
   }
   .game__score-title {

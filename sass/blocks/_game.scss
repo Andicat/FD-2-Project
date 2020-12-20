@@ -261,6 +261,7 @@
 
     @media (max-width: $tablet - 1px) {
         &__name {
+            margin: 2vh auto 1vh;
             font-size: calc(1em + 3vh);
         }
         &__score {
