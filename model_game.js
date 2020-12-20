@@ -116,11 +116,39 @@ class Game {
         this.setSizes(this.canvasSize);
         this.inProgress = true;
         this.recordTableMin = this.recordsTable.reduce(function (p, v) { return ( p > v.score ? v.score : p);},Infinity);
-        this.pointsStart = [
+        /*this.pointsStart = [
             {x:this.borderSize,y:this.borderSize},
             {x:this.borderSize + this.fieldSize,y:this.borderSize},
             {x:this.borderSize + this.fieldSize,y:this.fieldSize + this.borderSize},
-            {x:this.borderSize,y: this.borderSize + this.fieldSize}];
+            {x:this.borderSize,y: this.borderSize + this.fieldSize}];*/
+        this.pointsStart = [{x: 196, y: 199}
+            ,{x: 196, y: 168}
+            ,{x: 226, y: 168}
+            ,{x: 226, y: 146}
+            ,{x: 249, y: 146}
+            ,{x: 249, y: 139}
+            ,{x: 266, y: 124}
+            ,{x: 266, y: 139}
+            ,{x: 192, y: 276}
+            ,{x: 192, y: 256}
+            , {x: 177, y: 224}
+            , {x: 281, y: 124}
+            , {x: 281, y: 145}
+            , {x: 254, y: 276}
+            , {x: 254, y: 237}
+            , {x: 293, y: 145}
+            , {x: 293, y: 237}
+            , {x: 177, y: 208}
+            , {x: 192, y: 199}
+            , {x: 192, y: 208}
+            ,{x: 3, y: 243}
+            ,{x: 161, y: 243}
+            ,{x: 142, y: 228}
+            ,{x: 161, y: 256}
+            ,{x: 142, y: 224}
+            ,{x: 3, y: 240}
+            ,{x: 130, y: 228}
+            ,{x: 130, y: 240}];
         this.field = new Field(this.pointsStart,this.pointsStart);
         this.level = new Level(1,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
@@ -164,7 +192,7 @@ class Game {
     tick = function() {
         //console.log(this.isCutting);
         if (this.inProgress) {
-            this.moveBall();
+            this.moveBall2();
         }
         if (this.isCutting) {
             this.cutField();
@@ -342,6 +370,9 @@ class Game {
     //********************************************************BLADE
     dropBlade = function(pointX, pointY) {
         //проверим попали ли мы в игровое поле
+        if (!this.field) {
+            return
+        }
         var actualRect = this.findActualRect(this.field.rects,pointX,pointY,0);
         if (!actualRect) {
             this.blade.isTurn = true;
@@ -352,8 +383,8 @@ class Game {
             this.blade.isTurn = false;
             this.myView.updateBlade();
             this.cutInfo = takeCutInfo(this.field.points,this.blade.type,pointX,pointY);
-            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*4,this.slitWidth);
-            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*4,this.slitWidth);
+            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*3,this.slitWidth);
+            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*3,this.slitWidth);
             this.isCutting = true;
         }
 
@@ -473,6 +504,46 @@ class Game {
                     break;
             }
             arrNew = [pointsArrNew,pointsArrNew2];
+            for (var i=0; i<pointsNew.length; i++) {
+                if (pointsNew[i].x===undefined||pointsNew[i].y===undefined) {
+                    debugger;
+                }
+            }
+            //test 
+            /*var arr1 = [{x: 196, y: 199}
+            ,{x: 196, y: 168}
+            ,{x: 226, y: 168}
+            ,{x: 226, y: 146}
+            ,{x: 249, y: 146}
+            ,{x: 249, y: 139}
+            ,{x: 266, y: 124}
+            ,{x: 266, y: 139}
+            ,{x: 192, y: 276}
+            ,{x: 192, y: 256}
+            , {x: 177, y: 224}
+            , {x: 281, y: 124}
+            , {x: 281, y: 145}
+            , {x: 254, y: 276}
+            , {x: 254, y: 237}
+            , {x: 293, y: 145}
+            , {x: 293, y: 237}
+            , {x: 177, y: 208}
+            , {x: 192, y: 199}
+            , {x: 192, y: 208}];
+
+            var arr2 = [{x: 3, y: 243}
+                ,{x: 161, y: 243}
+                ,{x: 142, y: 228}
+                ,{x: 161, y: 256}
+                ,{x: 142, y: 224}
+                ,{x: 3, y: 240}
+                ,{x: 130, y: 228}
+                ,{x: 130, y: 240}];
+            
+            var horizontal = findHorizontal(arr1,arr2);
+            var vertical = findVertical(arr1,arr2);
+            debugger*/
+
             return {arrNew:arrNew, pointsNew:pointsNew};
         }
 
@@ -497,6 +568,149 @@ class Game {
     }
 
     //********************************************************BALL
+    moveBall2 = function() {
+        var nextRect;
+        var maxLeft;
+        var minRight;
+        var rectsWidth;
+        var maxBottom;
+        var minTop;
+        var deltaRight;
+        var deltaLeft;
+        var deltaTop;
+        var deltaBottom;
+
+        //текущие по высоте
+        var bT = this.ball.y - this.ball.radius;
+        var bB = this.ball.y + this.ball.radius;
+        var rectsHeight = this.field.rects.filter(r => {
+            if (r.top>=this.ball.y&&r.top<=bB) { return true };
+            if (r.top<=this.ball.y&&r.top>=bT) { return true };
+            if (r.bottom>=this.ball.y&&r.bottom<=bB) { return true };
+            if (r.bottom<=this.ball.y&&r.bottom>=bT) { return true };
+            if (r.top<=bT&&r.bottom>=bB) { return true };
+            return false;
+        });
+        
+        if (rectsHeight.length>0) {
+            maxBottom = rectsHeight.sort((a,b) => {return b.bottom-a.bottom})[0].bottom;
+            minTop = rectsHeight.sort((a,b) => {return a.top-b.top})[0].top;
+            rectsWidth = rectsHeight.filter(r => {
+                if (r.left>this.ball.x) { return false}
+                if (r.right<this.ball.x) { return false}
+                //if (r.right==this.ball.actualRect.right&&r.left==this.ball.actualRect.left) { return false}
+                //return(r.left<this.ball.x-this.ball.radius||r.right<this.ball.x+this.ball.radius)
+                return true;
+            });
+            if (rectsWidth.length>0) {
+                maxLeft = rectsWidth.sort((a,b) => {return b.left-a.left})[0].left;
+                minRight = rectsWidth.sort((a,b) => {return a.right-b.right})[0].right;
+            }
+        }
+        console.log("Top " + minTop + " Bottom " + maxBottom + " Left " + maxLeft + " Right " + minRight);
+        if (maxLeft===undefined||minRight===undefined) {
+            debugger
+        } 
+        
+        this.ball.x += this.ball.speedX;
+        this.ball.y += this.ball.speedY;   
+        this.ball.rotation += 5;   
+
+        //проверка областей
+        deltaRight = ((this.ball.x + this.ball.radius) - minRight).toFixed(2);
+        deltaLeft = (maxLeft - (this.ball.x - this.ball.radius)).toFixed(2);
+        deltaBottom = ((this.ball.y + this.ball.radius) - maxBottom).toFixed(2);
+        deltaTop = (minTop - (this.ball.y - this.ball.radius)).toFixed(2);
+    
+        console.log("Top-delta " + deltaTop + " Bottom-delta " + deltaBottom + " Left-delta " + deltaLeft + " Right-delta " + deltaRight);
+
+        if (((this.ball.x + this.ball.radius) > minRight)&&this.ball.speedX>0) {
+            //right
+            this.ball.speedX =- this.ball.speedX;
+            var delta = (this.ball.x + this.ball.radius) -  minRight;
+            this.ball.x = minRight - this.ball.radius;
+            this.ball.y = (this.ball.speedY>0)?(this.ball.y - delta):(this.ball.y + delta);
+        } else if (((this.ball.x - this.ball.radius) < maxLeft)&&this.ball.speedX<0) {
+            //left
+            this.ball.speedX =- this.ball.speedX;
+            var delta = maxLeft - (this.ball.x - this.ball.radius);
+            this.ball.x = maxLeft + this.ball.radius;
+            this.ball.y = (this.ball.speedY>0)?(this.ball.y - delta):(this.ball.y + delta);
+        } else if (((this.ball.y + this.ball.radius) > maxBottom)&&this.ball.speedY>0) { 
+            //bottom
+            var delta = (this.ball.y + this.ball.radius) - maxBottom;
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius,delta,"bottom",this.ball);
+            if (!nextRect) {
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.y = maxBottom - this.ball.radius;
+                this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
+            }
+        } else if (((this.ball.y - this.ball.radius) < minTop)&&this.ball.speedY<0) {
+            //top
+            var delta = minTop - (this.ball.y - this.ball.radius);
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius,delta,"top",this.ball);
+            if (!nextRect) {
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.y = minTop + this.ball.radius;
+                this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
+            }
+        } 
+        // проверка коллизии с линиями blade
+        if (this.isCutting) {
+            var hit = hitSlit(this.ball,this.slit1)||hitSlit(this.ball,this.slit2);
+            if (hit) {
+                this.finishGame();
+                return;
+            }
+        }
+        this.ballCoords.push({x:this.ball.x,y:this.ball.y});
+        if (this.ballCoords.length>20) {
+            this.ballCoords.shift();
+        }
+
+        function findNextRect(rects,posX,posY,radius,deltaX,direction,ball) {
+            var rectHeight = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
+            if (rectHeight.length==0) {
+                return;
+            }
+            var rectsWidth = rectHeight.filter(r => {return(r.left<=posX-radius+deltaX&&r.right>=posX+radius-deltaX)});
+            if (rectsWidth[0]) {
+                if ((rectsWidth[0].right-rectsWidth[0].left)<radius*2) {
+                    debugger
+                }
+            }
+            return rectsWidth[0];
+        }
+
+        function hitSlit(elem,slit) {
+            var r1x = elem.x - elem.radius;
+            var r1y = elem.y - elem.radius;
+            var r1w = elem.radius*2;
+            var r1h = elem.radius*2;
+    
+            if (slit.startX === slit.finishX) { // vertical
+                var r2w = slit.width;
+                var r2h = Math.abs(slit.startY - slit.currY);
+                var r2x = slit.startX - slit.width/2;
+                var r2y = Math.min(slit.startY,slit.currY);
+            }
+            if (slit.startY === slit.finishY) { // horizontal
+                var r2w = Math.abs(slit.startX - slit.currX);
+                var r2h = slit.width;
+                var r2x = Math.min(slit.startX,slit.currX)
+                var r2y = slit.startY - slit.width/2;;
+            }
+            if (r1x + r1w >= r2x &&    
+                r1x <= r2x + r2w &&    
+                r1y + r1h >= r2y &&    
+                r1y <= r2y + r2h) {    
+                return true;
+            }
+            return false;
+        }
+    }
+
+    //delete
     moveBall = function() {
 
         //console.log("x " + this.ball.x + " y " + this.ball.y + " speedX " + this.ball.speedX + " speedY " + this.ball.speedY + (this.ball.speedY>0?" bottom-":" top-") + (this.ball.speedX>0?"right":"left") + " radius " + this.ball.radius);
@@ -505,6 +719,33 @@ class Game {
         this.ball.y += this.ball.speedY;   
         this.ball.rotation += 5;      
         var nextRect;
+
+        //доп.проверка
+        var bT = this.ball.y - this.ball.radius;
+        var bB = this.ball.y + this.ball.radius;
+        var rectsHeight = this.field.rects.filter(r => {
+                if (r.top>=this.ball.y&&r.top<=bB) {
+                    return true
+                };
+                if (r.top<=this.ball.y&&r.top>=bT) {
+                    return true
+                };
+                if (r.bottom>=this.ball.y&&r.bottom<=bB) {
+                    return true
+                };
+                if (r.bottom<=this.ball.y&&r.bottom>=bT) {
+                    return true
+                };
+                return false;
+                //return(r.top<=posY&&r.bottom>=posY)
+            });
+            if (rectsHeight.length>0) {
+                var rectsWidth = rectsHeight.filter(r => {return(r.left>this.ball.x-this.ball.radius||r.right<this.ball.x+this.ball.radius)});
+                if (rectsWidth.length>0) {
+                    //debugger;
+                    //return;
+                }
+            }
 
         //проверка области
         if ((this.ball.x + this.ball.radius) > this.ball.actualRect.right) {
@@ -526,8 +767,9 @@ class Game {
             //console.log("--------------------ON BOTTOM");
             //nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius);
             var delta = (this.ball.y + this.ball.radius) - this.ball.actualRect.bottom;
+            //var delta = Math.abs(this.ball.actualRect.bottom - (this.ball.y + this.ball.radius));
             //var deltaX = (this.ball.speedX>0)?delta:-delta;
-            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius,delta,"bottom");
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius,delta,"bottom",this.ball);
             if (!nextRect) {
                 //console.log("-----------------------------------NEXT ISN'T FOUND" + deltaX);
                 /*var nextX = this.ball.x + this.ball.speedX;
@@ -548,7 +790,7 @@ class Game {
                 var nextX = this.ball.x + this.ball.speedX;
                 var nextY = this.ball.y + this.ball.speedY;
                 //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY-this.ball.radius,this.ball.radius);
-                var next2Rect = findNextRect(this.ball.field.rects,nextX,nextY-this.ball.radius,this.ball.radius,delta + this.ball.speedX,"bottom");
+                var next2Rect = findNextRect(this.ball.field.rects,nextX,nextY-this.ball.radius,this.ball.radius,delta + this.ball.speedX,"bottom",this.ball);
                 if (!next2Rect) {
                     //debugger
                     //if (this.ball.speedX>0) {
@@ -556,7 +798,7 @@ class Game {
                     //} else {
                         //this.ball.x = this.ball.actualRect.left + this.ball.radius;
                     //}
-                    this.ball.speedX =- this.ball.speedX;
+                    //this.ball.speedX =- this.ball.speedX;
                 }
             } else {
                 /*if ((nextRect.bottom - nextRect.top)<this.ball.radius*2) {
@@ -581,9 +823,10 @@ class Game {
             //top
             //console.log("--------------------ON TOP");
             var delta = this.ball.actualRect.top - (this.ball.y - this.ball.radius);
+            //var delta = Math.abs(this.ball.actualRect.top - (this.ball.y - this.ball.radius));
             //var deltaX = (this.ball.speedX>0)?delta:-delta;
             //nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius);
-            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius,delta,"top");
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius,delta,"top",this.ball);
             if (!nextRect) {
                 //console.log("-----------------------------------NEXT ISN'T FOUND" + deltaX);
                 /*var nextX = this.ball.x + this.ball.speedX;
@@ -596,7 +839,7 @@ class Game {
                 var nextX = this.ball.x + this.ball.speedX;
                 var nextY = this.ball.y + this.ball.speedY;
                 //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
-                var next2Rect = findNextRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius,delta + this.ball.speedX,"bottom");
+                var next2Rect = findNextRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius,delta + this.ball.speedX,"bottom",this.ball);
                 if (!next2Rect) {
                     //debugger
                     //if (this.ball.speedX>0) {
@@ -604,7 +847,7 @@ class Game {
                     //} else {
                         //this.ball.x = this.ball.actualRect.left + this.ball.radius;
                     //}
-                    this.ball.speedX =- this.ball.speedX;
+                    //this.ball.speedX =- this.ball.speedX;
                 }
             } else {
                 /*if ((nextRect.bottom - nextRect.top)<this.ball.radius*2) {
@@ -639,14 +882,65 @@ class Game {
             this.ballCoords.shift();
         }
 
-        function findNextRect(rects,posX,posY,radius,deltaX,direction) {
-            var rectsHeight = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
-            if (rectsHeight.length==0) {
+        function findNextRect(rects,posX,posY,radius,deltaX,direction,ball) {
+            var rectHeight = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
+            if (rectHeight.length==0) {
                 return;
             }
-            var rectsWidth = rectsHeight.filter(r => {return(r.left<=posX-radius+deltaX*1.5&&r.right>=posX+radius-deltaX*1.5)});
+            var bT = ball.y - ball.radius;
+            var bB = ball.y + ball.radius;
+            var rectsHeight = rects.filter(r => {
+                    if (r.top>=ball.y&&r.top<=bB) {
+                        return true
+                    };
+                    if (r.top<=ball.y&&r.top>=bT) {
+                        return true
+                    };
+                    if (r.bottom>=ball.y&&r.bottom<=bB) {
+                        return true
+                    };
+                    if (r.bottom<=ball.y&&r.bottom>=bT) {
+                        return true
+                    };
+                    return false;
+                    //return(r.top<=posY&&r.bottom>=posY)
+                });
+                if (rectsHeight.length>0) {
+                    var rectsWidth = rectsHeight.filter(r => {return(r.left>ball.x-ball.radius+deltaX||r.right<ball.x+ball.radius-deltaX)});
+                    if (rectsWidth.length>0) {
+                        //debugger;
+                        return;
+                    }
+                }
+            /*var rectBottom = rects[rects.indexOf(rectHeight[0])+1];
+            if (rectBottom) {
+                if (rectBottom.top<=posY-radius) {
+                    //var rectsWidthBottom = rectBottom.filter(r => {return(r.left<=posX-radius&&r.right>=posX+radius)});
+                    if (rectBottom.left>posX-radius||rectBottom.right<posX+radius) {
+                        //console.log("NOT FIND " + direction + " x " + posX + " y " + posY + " radius " + radius + " delta " + deltaX);
+                        console.log(rects);
+                        return;
+                    }    
+                }
+                
+            }*/
+            /*var rectTop = rects[rects.indexOf(rectHeight[0])-1];
+            if (rectTop) {
+                if (rectTop.top>=posY+radius) {
+                    //var rectsWidthTop = rectTop.filter(r => {return(r.left<=posX-radius&&r.right>=posX+radius)});
+                    if (rectTop.left>posX-radius||rectTop.right<posX+radius) {
+                        //console.log("NOT FIND " + direction + " x " + posX + " y " + posY + " radius " + radius + " delta " + deltaX);
+                        console.log(rects);
+                        return;
+                    }
+                }
+            }*/
+            
+            
+
+            var rectsWidth = rectHeight.filter(r => {return(r.left<=posX-radius+deltaX*1.5&&r.right>=posX+radius-deltaX*1.5)});
             if (rectsWidth.length==0) {
-                console.log("NOT FIND " + direction + " x " + posX + " y " + posY + " radius " + radius + " delta " + deltaX);
+                //console.log("NOT FIND " + direction + " x " + posX + " y " + posY + " radius " + radius + " delta " + deltaX);
                 console.log(rects);
             }
             return rectsWidth[0];
@@ -682,7 +976,7 @@ class Game {
 
     updateBallRect = function() {
         this.ball.actualRect = this.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
-        if (!this.findActualRect) {
+        if (!this.ball.actualRect) {
             debugger;
         }
     }
@@ -712,13 +1006,7 @@ class Game {
                     this.updateBallRect();
                     this.updateProgress();
                     return;
-                } //else {
-                    //debugger;
-                //}
-                //console.log(rects);
-                //console.log(arr);
-                //console.log(ballX);
-                //console.log(ballY);
+                }
             }
             if (!isBall) {
                 //console.log("ball is NOT find!!!");
@@ -843,7 +1131,9 @@ class Game {
             }
         }
         return nextRect;*/
-        return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
+        
+        //return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX-radius&&r.right>=posX+radius)})[0];
+        return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX&&r.right>=posX)})[0];
     };
 };
 
