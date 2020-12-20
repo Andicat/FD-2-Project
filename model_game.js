@@ -569,6 +569,7 @@ class Game {
 
     //********************************************************BALL
     moveBall2 = function() {
+        this.inProgress = false;
         var nextRect;
         var maxLeft;
         var minRight;
@@ -579,11 +580,12 @@ class Game {
         var deltaLeft;
         var deltaTop;
         var deltaBottom;
+        var rectsHeight;
 
         //текущие по высоте
         var bT = this.ball.y - this.ball.radius;
         var bB = this.ball.y + this.ball.radius;
-        var rectsHeight = this.field.rects.filter(r => {
+        rectsHeight = this.field.rects.filter(r => {
             if (r.top>=this.ball.y&&r.top<=bB) { return true };
             if (r.top<=this.ball.y&&r.top>=bT) { return true };
             if (r.bottom>=this.ball.y&&r.bottom<=bB) { return true };
@@ -607,11 +609,7 @@ class Game {
                 minRight = rectsWidth.sort((a,b) => {return a.right-b.right})[0].right;
             }
         }
-        console.log("Top " + minTop + " Bottom " + maxBottom + " Left " + maxLeft + " Right " + minRight);
-        if (maxLeft===undefined||minRight===undefined) {
-            debugger
-        } 
-        
+        //console.log("Top " + minTop + " Bottom " + maxBottom + " Left " + maxLeft + " Right " + minRight);
         this.ball.x += this.ball.speedX;
         this.ball.y += this.ball.speedY;   
         this.ball.rotation += 5;   
@@ -622,16 +620,22 @@ class Game {
         deltaBottom = ((this.ball.y + this.ball.radius) - maxBottom).toFixed(2);
         deltaTop = (minTop - (this.ball.y - this.ball.radius)).toFixed(2);
     
-        console.log("Top-delta " + deltaTop + " Bottom-delta " + deltaBottom + " Left-delta " + deltaLeft + " Right-delta " + deltaRight);
+        console.log("Td---" + deltaTop + "---Bt---" + deltaBottom + "---Lt---" + deltaLeft + "---Rt---" + deltaRight);
 
-        if (((this.ball.x + this.ball.radius) > minRight)&&this.ball.speedX>0) {
+        if (((this.ball.x + this.ball.radius) > minRight)&&this.ball.speedX>0&&(deltaTop<0||deltaTop<deltaRight)&&(deltaBottom<0||deltaBottom<deltaRight)) {
+            if ((deltaTop>0)||(deltaBottom>0)) {
+                console.log("right!")
+            }
             //right
             this.ball.speedX =- this.ball.speedX;
             var delta = (this.ball.x + this.ball.radius) -  minRight;
             this.ball.x = minRight - this.ball.radius;
             this.ball.y = (this.ball.speedY>0)?(this.ball.y - delta):(this.ball.y + delta);
-        } else if (((this.ball.x - this.ball.radius) < maxLeft)&&this.ball.speedX<0) {
+        } else if (((this.ball.x - this.ball.radius) < maxLeft)&&this.ball.speedX<0&&(deltaTop<0||deltaTop<deltaLeft)&&(deltaBottom<0||deltaBottom<deltaLeft)) {
             //left
+            if ((deltaTop>0)||(deltaBottom>0)) {
+                console.log("left!")
+            }
             this.ball.speedX =- this.ball.speedX;
             var delta = maxLeft - (this.ball.x - this.ball.radius);
             this.ball.x = maxLeft + this.ball.radius;
@@ -667,19 +671,21 @@ class Game {
         if (this.ballCoords.length>20) {
             this.ballCoords.shift();
         }
+        //console.log("end move ball");
+        this.inProgress = true;
 
         function findNextRect(rects,posX,posY,radius,deltaX,direction,ball) {
-            var rectHeight = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
-            if (rectHeight.length==0) {
+            var rectH = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
+            if (rectH.length==0) {
                 return;
             }
-            var rectsWidth = rectHeight.filter(r => {return(r.left<=posX-radius+deltaX&&r.right>=posX+radius-deltaX)});
-            if (rectsWidth[0]) {
-                if ((rectsWidth[0].right-rectsWidth[0].left)<radius*2) {
-                    debugger
+            var rectW = rectH.filter(r => {return(r.left<=posX-radius+deltaX&&r.right>=posX+radius-deltaX)});
+            if (rectW[0]) {
+                if ((rectW[0].right-rectW[0].left)<radius*2) {
+                   // debugger
                 }
             }
-            return rectsWidth[0];
+            return rectW[0];
         }
 
         function hitSlit(elem,slit) {
@@ -711,7 +717,7 @@ class Game {
     }
 
     //delete
-    moveBall = function() {
+    /*moveBall = function() {
 
         //console.log("x " + this.ball.x + " y " + this.ball.y + " speedX " + this.ball.speedX + " speedY " + this.ball.speedY + (this.ball.speedY>0?" bottom-":" top-") + (this.ball.speedX>0?"right":"left") + " radius " + this.ball.radius);
 
@@ -784,7 +790,7 @@ class Game {
                     }
                     this.ball.speedX =- this.ball.speedX;
                 }*/
-                this.ball.speedY =- this.ball.speedY;
+                /*this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
                 this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
                 var nextX = this.ball.x + this.ball.speedX;
@@ -816,7 +822,7 @@ class Game {
                     }
                 }*/
                 //this.ball.actualRect = (this.ball.y > this.ball.actualRect.bottom)?nextRect:this.ball.actualRect;
-                this.ball.actualRect = nextRect;
+               /* this.ball.actualRect = nextRect;
                 //this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
             }
         } else if (((this.ball.y - this.ball.radius) < this.ball.actualRect.top)&&this.ball.speedY<0) {
@@ -833,7 +839,7 @@ class Game {
                 var nextY = this.ball.actualRect.top + this.ball.radius - this.ball.speedY;
                 var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
                 */
-                this.ball.speedY =- this.ball.speedY;
+               /* this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.top + this.ball.radius;
                 this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
                 var nextX = this.ball.x + this.ball.speedX;
@@ -865,7 +871,7 @@ class Game {
                     }
                 }*/
                 //this.ball.actualRect = (this.ball.y < this.ball.actualRect.top)?nextRect:this.ball.actualRect;
-                this.ball.actualRect = nextRect;
+              /*  this.ball.actualRect = nextRect;
                 //this.ball.y = this.ball.actualRect.top + this.ball.radius;
             }
         }
@@ -938,7 +944,7 @@ class Game {
             
             
 
-            var rectsWidth = rectHeight.filter(r => {return(r.left<=posX-radius+deltaX*1.5&&r.right>=posX+radius-deltaX*1.5)});
+           /* var rectsWidth = rectHeight.filter(r => {return(r.left<=posX-radius+deltaX*1.5&&r.right>=posX+radius-deltaX*1.5)});
             if (rectsWidth.length==0) {
                 //console.log("NOT FIND " + direction + " x " + posX + " y " + posY + " radius " + radius + " delta " + deltaX);
                 console.log(rects);
@@ -972,7 +978,7 @@ class Game {
             }
             return false;
         }
-    }
+    }*/
 
     updateBallRect = function() {
         this.ball.actualRect = this.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
