@@ -184,7 +184,8 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100vh;
+  max-height: 100vh;
+  min-height: 90vh;
 }
 
 .game__menu {

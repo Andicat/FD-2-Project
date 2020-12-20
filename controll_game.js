@@ -403,7 +403,7 @@ class GameController {
         //var canvasSize = (clientWidth/clientHeight>2/3)?clientHeight*0.6:clientWidth*0.9;
         var canvasSize = Math.min(clientHeight*0.6,clientWidth - clientHeight*0.04);
         //var canvasSize = clientHeight*0.6;
-        this.myModel.setSizes(canvasSize); 
+        this.myModel.setSizes(canvasSize.toFixed(0)); 
         //alert(canvasSize);
         //console.log(document.documentElement.requestFullscreen);
        
