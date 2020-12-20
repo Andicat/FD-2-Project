@@ -410,13 +410,19 @@ a {
     font-size: calc(1em + 3vh);
   }
   .game__score-title {
-    font-size: calc(1em + 1vh);
+    font-size: calc(0.8em + 1vh);
   }
   .game__score-value {
-    font-size: calc(1em + 3vh);
+    font-size: calc(0.8em + 3vh);
+  }
+  .game__progress {
+    margin: 0 0 1.5vh 0;
   }
   .game__progress-value {
-    font-size: calc(1em + 3vh);
+    font-size: calc(0.8em + 3vh);
+  }
+  .game__progress-view {
+    height: 10px;
   }
 }
 

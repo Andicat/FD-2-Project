@@ -267,20 +267,24 @@
         &__score {
             &-title {
                 
-                font-size: calc(1em + 1vh);
+                font-size: calc(0.8em + 1vh);
                
             }
         
             &-value {
                 
-                font-size: calc(1em + 3vh);
+                font-size: calc(0.8em + 3vh);
                 
             }
         }
 
         &__progress {
+            margin: 0 0 1.5vh 0;
             &-value {
-                font-size: calc(1em + 3vh);
+                font-size: calc(0.8em + 3vh);
+            }
+            &-view {
+                height: 10px;
             }
         }
     }

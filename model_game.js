@@ -682,6 +682,9 @@ class Game {
 
     updateBallRect = function() {
         this.ball.actualRect = this.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
+        if (!this.findActualRect) {
+            debugger;
+        }
     }
 
     //********************************************************FIELD
