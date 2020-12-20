@@ -248,8 +248,10 @@ class GameController {
         blade.style.left = Math.min(leftShift, this.limits.right) + "px";
         
         var shiftTopMouse = this.mouseStart.y - blade.offsetTop;
-        if (shiftTopMouse < this.topShiftTouch) {
+        if ((shiftTopMouse < this.topShiftTouch)&&shiftTopMouse) {
+            //debugger;
             blade.style.top = "0px";
+            
             //console.log("shift between " + Math.round(shiftTopMouse) + " top shift " + Math.round(topShift) + " TOUCH " + Math.round(this.topShiftTouch));
         }
         
@@ -401,7 +403,7 @@ class GameController {
         //var canvasSize = (clientWidth/clientHeight>2/3)?clientHeight*0.6:clientWidth*0.9;
         var canvasSize = Math.min(clientHeight*0.6,clientWidth - clientHeight*0.04);
         //var canvasSize = clientHeight*0.6;
-        this.myModel.setSizes(canvasSize); 
+        this.myModel.setSizes(canvasSize.toFixed(0)); 
         //alert(canvasSize);
         //console.log(document.documentElement.requestFullscreen);
        

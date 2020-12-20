@@ -24,7 +24,8 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        height: 100vh;
+        max-height: 100vh;
+        min-height: 90vh;
     }
 
     &__menu {
@@ -260,6 +261,9 @@
     }
 
     @media (max-width: $tablet - 1px) {
+        &__container {
+            //padding: 5vh 2vw;
+        }
         &__name {
             margin: 2vh auto 1vh;
             font-size: calc(1em + 3vh);
