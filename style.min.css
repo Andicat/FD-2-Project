@@ -325,8 +325,8 @@ a {
 }
 
 .game__field {
-  width: 60vh;
-  height: 60vh;
+  width: 40vh;
+  height: 40vh;
   max-width: calc(100vw - 4vh);
   max-height: calc(100vw - 4vh);
   transition-property: opacity;
