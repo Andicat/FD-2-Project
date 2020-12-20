@@ -116,12 +116,12 @@ class Game {
         this.setSizes(this.canvasSize);
         this.inProgress = true;
         this.recordTableMin = this.recordsTable.reduce(function (p, v) { return ( p > v.score ? v.score : p);},Infinity);
-        /*this.pointsStart = [
+        this.pointsStart = [
             {x:this.borderSize,y:this.borderSize},
             {x:this.borderSize + this.fieldSize,y:this.borderSize},
             {x:this.borderSize + this.fieldSize,y:this.fieldSize + this.borderSize},
-            {x:this.borderSize,y: this.borderSize + this.fieldSize}];*/
-        this.pointsStart = [{x: 196, y: 199}
+            {x:this.borderSize,y: this.borderSize + this.fieldSize}];
+        /*this.pointsStart = [{x: 196, y: 199}
             ,{x: 196, y: 168}
             ,{x: 226, y: 168}
             ,{x: 226, y: 146}
@@ -148,7 +148,7 @@ class Game {
             ,{x: 142, y: 224}
             ,{x: 3, y: 240}
             ,{x: 130, y: 228}
-            ,{x: 130, y: 240}];
+            ,{x: 130, y: 240}];*/
         this.field = new Field(this.pointsStart,this.pointsStart);
         this.level = new Level(1,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
@@ -383,8 +383,8 @@ class Game {
             this.blade.isTurn = false;
             this.myView.updateBlade();
             this.cutInfo = takeCutInfo(this.field.points,this.blade.type,pointX,pointY);
-            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed*3,this.slitWidth);
-            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed*3,this.slitWidth);
+            this.slit1 = new Slit(pointX,pointY,this.cutInfo.pointsNew[0].x,this.cutInfo.pointsNew[0].y,this.speed,this.slitWidth);
+            this.slit2 = new Slit(pointX,pointY,this.cutInfo.pointsNew[1].x,this.cutInfo.pointsNew[1].y,this.speed,this.slitWidth);
             this.isCutting = true;
         }
 
