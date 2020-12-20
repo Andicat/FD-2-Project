@@ -404,6 +404,21 @@ a {
   background-size: 60%;
 }
 
+@media (max-width: 767px) {
+  .game__name {
+    font-size: calc(1em + 3vh);
+  }
+  .game__score-title {
+    font-size: calc(1em + 1vh);
+  }
+  .game__score-value {
+    font-size: calc(1em + 3vh);
+  }
+  .game__progress-value {
+    font-size: calc(1em + 3vh);
+  }
+}
+
 .blade {
   box-sizing: border-box;
   background-color: white;

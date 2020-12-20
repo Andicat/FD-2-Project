@@ -270,6 +270,31 @@
         }
     }
 
+    @media (max-width: $tablet - 1px) {
+        &__name {
+            font-size: calc(1em + 3vh);
+        }
+        &__score {
+            &-title {
+                
+                font-size: calc(1em + 1vh);
+               
+            }
+        
+            &-value {
+                
+                font-size: calc(1em + 3vh);
+                
+            }
+        }
+
+        &__progress {
+            &-value {
+                font-size: calc(1em + 3vh);
+            }
+        }
+    }
+
     //@media (orientation: portrait) {
     @media (max-aspect-ratio: 2/3) {
         &__container {

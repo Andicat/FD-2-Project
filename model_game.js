@@ -182,7 +182,7 @@ class Game {
     }
 
     updateProgress = function() {
-        console.log("updateProgress");
+        //console.log("updateProgress");
         this.level.squareCurr = this.level.calculateSquare(this.field.rects);
         this.level.progress = Math.round((this.level.squareStart - this.level.squareCurr)/(this.level.squareStart/100*(100-this.level.percent))*100);
         this.myView.updateLevel();
@@ -264,7 +264,7 @@ class Game {
 
     //********************************************************LEVEL
     startLevel = function() {
-        console.log("startLevel");
+        //console.log("startLevel");
         this.isScaling = false;
         this.inProgress = true;
         this.level.progress = 0;
@@ -278,7 +278,7 @@ class Game {
     }
 
     finishLevel = function() {
-        console.log("finishLevel");
+        //console.log("finishLevel");
         this.inProgress = false;
         this.isCutting = false;
         var levelColorPrev = this.level.color;
@@ -490,7 +490,7 @@ class Game {
     }
 
     updateBlade() {
-        console.log("updateBlade");
+        //console.log("updateBlade");
         this.blade.isActive = true;
         this.blade.isTurn = false;
         this.blade.update();
@@ -499,22 +499,38 @@ class Game {
     //********************************************************BALL
     moveBall = function() {
 
+        //console.log("x " + this.ball.x + " y " + this.ball.y + " speedX " + this.ball.speedX + " speedY " + this.ball.speedY + (this.ball.speedY>0?" bottom-":" top-") + (this.ball.speedX>0?"right":"left") + " radius " + this.ball.radius);
+
         this.ball.x += this.ball.speedX;
         this.ball.y += this.ball.speedY;   
         this.ball.rotation += 5;      
         var nextRect;
 
         //проверка области
-        if ((this.ball.x + this.ball.radius) > this.ball.actualRect.right) { //right
+        if ((this.ball.x + this.ball.radius) > this.ball.actualRect.right) {
+            //right
+            //console.log("--------------------ON RIGHT");
             this.ball.speedX =- this.ball.speedX;
+            var delta = (this.ball.x + this.ball.radius) -  this.ball.actualRect.right;
             this.ball.x = this.ball.actualRect.right - this.ball.radius;
-        } else if ((this.ball.x - this.ball.radius) < this.ball.actualRect.left) { //left
+            this.ball.y = (this.ball.speedY>0)?(this.ball.y - delta):(this.ball.y + delta);
+        } else if ((this.ball.x - this.ball.radius) < this.ball.actualRect.left) {
+            //left
+            //console.log("--------------------ON LEFT");
             this.ball.speedX =- this.ball.speedX;
+            var delta = this.ball.actualRect.left - (this.ball.x - this.ball.radius);
             this.ball.x = this.ball.actualRect.left + this.ball.radius;
-        } else if (((this.ball.y + this.ball.radius) > this.ball.actualRect.bottom)&&this.ball.speedY>0) { //bottom
-            nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius);
+            this.ball.y = (this.ball.speedY>0)?(this.ball.y - delta):(this.ball.y + delta);
+        } else if (((this.ball.y + this.ball.radius) > this.ball.actualRect.bottom)&&this.ball.speedY>0) { 
+            //bottom
+            //console.log("--------------------ON BOTTOM");
+            //nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius);
+            var delta = (this.ball.y + this.ball.radius) - this.ball.actualRect.bottom;
+            //var deltaX = (this.ball.speedX>0)?delta:-delta;
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius,delta,"bottom");
             if (!nextRect) {
-                var nextX = this.ball.x + this.ball.speedX;
+                //console.log("-----------------------------------NEXT ISN'T FOUND" + deltaX);
+                /*var nextX = this.ball.x + this.ball.speedX;
                 var nextY = this.ball.actualRect.bottom - this.ball.radius - this.ball.speedY;
                 var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
                 if (!next2Rect) {
@@ -525,32 +541,88 @@ class Game {
                         //this.ball.x = this.ball.actualRect.left + this.ball.radius;
                     }
                     this.ball.speedX =- this.ball.speedX;
-                }
+                }*/
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
-            } else {
-                this.ball.actualRect = (this.ball.y > this.ball.actualRect.bottom)?nextRect:this.ball.actualRect;
-               // this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
-            }
-        } else if (((this.ball.y - this.ball.radius) < this.ball.actualRect.top)&&this.ball.speedY<0) { //top
-            nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius);
-            if (!nextRect) {
+                this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
                 var nextX = this.ball.x + this.ball.speedX;
-                var nextY = this.ball.actualRect.top + this.ball.radius - this.ball.speedY;
-                var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                var nextY = this.ball.y + this.ball.speedY;
+                //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY-this.ball.radius,this.ball.radius);
+                var next2Rect = findNextRect(this.ball.field.rects,nextX,nextY-this.ball.radius,this.ball.radius,delta + this.ball.speedX,"bottom");
                 if (!next2Rect) {
                     //debugger
-                    if (this.ball.speedX>0) {
+                    //if (this.ball.speedX>0) {
                         //this.ball.x = this.ball.actualRect.right - this.ball.radius;
-                    } else {
+                    //} else {
                         //this.ball.x = this.ball.actualRect.left + this.ball.radius;
-                    }
+                    //}
                     this.ball.speedX =- this.ball.speedX;
                 }
+            } else {
+                /*if ((nextRect.bottom - nextRect.top)<this.ball.radius*2) {
+                    var nextX = this.ball.x + this.ball.speedX;
+                    var nextY = this.ball.actualRect.bottom - this.ball.radius - this.ball.speedY;
+                    var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                    if (!next2Rect) {
+                        //debugger
+                        if (this.ball.speedX>0) {
+                            //this.ball.x = this.ball.actualRect.right - this.ball.radius;
+                        } else {
+                            //this.ball.x = this.ball.actualRect.left + this.ball.radius;
+                        }
+                        this.ball.speedX =- this.ball.speedX;
+                    }
+                }*/
+                //this.ball.actualRect = (this.ball.y > this.ball.actualRect.bottom)?nextRect:this.ball.actualRect;
+                this.ball.actualRect = nextRect;
+                //this.ball.y = this.ball.actualRect.bottom - this.ball.radius;
+            }
+        } else if (((this.ball.y - this.ball.radius) < this.ball.actualRect.top)&&this.ball.speedY<0) {
+            //top
+            //console.log("--------------------ON TOP");
+            var delta = this.ball.actualRect.top - (this.ball.y - this.ball.radius);
+            //var deltaX = (this.ball.speedX>0)?delta:-delta;
+            //nextRect = this.findActualRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius);
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius,delta,"top");
+            if (!nextRect) {
+                //console.log("-----------------------------------NEXT ISN'T FOUND" + deltaX);
+                /*var nextX = this.ball.x + this.ball.speedX;
+                var nextY = this.ball.actualRect.top + this.ball.radius - this.ball.speedY;
+                var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                */
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.y = this.ball.actualRect.top + this.ball.radius;
+                this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
+                var nextX = this.ball.x + this.ball.speedX;
+                var nextY = this.ball.y + this.ball.speedY;
+                //var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius);
+                var next2Rect = findNextRect(this.ball.field.rects,nextX,nextY+this.ball.radius,this.ball.radius,delta + this.ball.speedX,"bottom");
+                if (!next2Rect) {
+                    //debugger
+                    //if (this.ball.speedX>0) {
+                        //this.ball.x = this.ball.actualRect.right - this.ball.radius;
+                    //} else {
+                        //this.ball.x = this.ball.actualRect.left + this.ball.radius;
+                    //}
+                    this.ball.speedX =- this.ball.speedX;
+                }
             } else {
-                this.ball.actualRect = (this.ball.y < this.ball.actualRect.top)?nextRect:this.ball.actualRect;
+                /*if ((nextRect.bottom - nextRect.top)<this.ball.radius*2) {
+                    var nextX = this.ball.x + this.ball.speedX;
+                    var nextY = this.ball.actualRect.bottom - this.ball.radius - this.ball.speedY;
+                    var next2Rect = this.findActualRect(this.ball.field.rects,nextX,nextY-this.ball.radius,this.ball.radius);
+                    if (!next2Rect) {
+                        //debugger
+                        if (this.ball.speedX>0) {
+                            //this.ball.x = this.ball.actualRect.right - this.ball.radius;
+                        } else {
+                            //this.ball.x = this.ball.actualRect.left + this.ball.radius;
+                        }
+                        this.ball.speedX =- this.ball.speedX;
+                    }
+                }*/
+                //this.ball.actualRect = (this.ball.y < this.ball.actualRect.top)?nextRect:this.ball.actualRect;
+                this.ball.actualRect = nextRect;
                 //this.ball.y = this.ball.actualRect.top + this.ball.radius;
             }
         }
@@ -565,6 +637,19 @@ class Game {
         this.ballCoords.push({x:this.ball.x,y:this.ball.y});
         if (this.ballCoords.length>20) {
             this.ballCoords.shift();
+        }
+
+        function findNextRect(rects,posX,posY,radius,deltaX,direction) {
+            var rectsHeight = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
+            if (rectsHeight.length==0) {
+                return;
+            }
+            var rectsWidth = rectsHeight.filter(r => {return(r.left<=posX-radius+deltaX*1.5&&r.right>=posX+radius-deltaX*1.5)});
+            if (rectsWidth.length==0) {
+                console.log("NOT FIND " + direction + " x " + posX + " y " + posY + " radius " + radius + " delta " + deltaX);
+                console.log(rects);
+            }
+            return rectsWidth[0];
         }
 
         function hitSlit(elem,slit) {
@@ -601,7 +686,7 @@ class Game {
 
     //********************************************************FIELD
     cutField = function() {
-        console.log("cutField");
+        //console.log("cutField");
         var slitInMove1 = this.slit1.move();
         var slitInMove2 = this.slit2.move();
         this.isCutting = slitInMove1||slitInMove2;
@@ -627,15 +712,15 @@ class Game {
                 } //else {
                     //debugger;
                 //}
-                console.log(rects);
-                console.log(arr);
-                console.log(ballX);
-                console.log(ballY);
+                //console.log(rects);
+                //console.log(arr);
+                //console.log(ballX);
+                //console.log(ballY);
             }
             if (!isBall) {
-                console.log("ball is NOT find!!!");
-                console.log(this.cutInfo.arrNew);
-                console.log(this.ballCoords);
+                //console.log("ball is NOT find!!!");
+                //console.log(this.cutInfo.arrNew);
+                //console.log(this.ballCoords);
                 //alert("!!!")
                 debugger
             }
@@ -643,7 +728,7 @@ class Game {
     }
 
     scaleField = function() {
-        console.log("scaleField");
+        //console.log("scaleField");
         if (this.scaleCount > 100) {
             this.ball.x -= this.ball.speedX;
             this.ball.y -= this.ball.speedY;
