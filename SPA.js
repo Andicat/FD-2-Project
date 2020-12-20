@@ -57,7 +57,7 @@
         cntPlay.classList.remove("hidden");
         cntMenu.classList.add("hidden");
         if (clientWidth<clientHeight) {
-          launchFullScreen(document.documentElement);
+          //launchFullScreen(document.documentElement);
         }
         break;
       case 'Load':
@@ -76,7 +76,7 @@
       } else if(element.webkitRequestFullScreen) {
         element.webkitRequestFullScreen();
       } else if (elem.webkitEnterFullScreen) {
-        elem.webkitEnterFullScreen();
+        //elem.webkitEnterFullScreen();
       }
     }
 
