@@ -70,7 +70,6 @@ class GameController {
         this.formName = document.forms.formName;
         this.formName.addEventListener("submit",this.checkName.bind(this));
         this.inputName = this.formName.querySelector('input[name="name"]');
-        //this.inputName.addEventListener("keypress", this.checkName.bind(this));
 
         window.addEventListener("mousedown", this.startMove.bind(this));
         window.addEventListener('touchstart', this.startMove.bind(this),{passive: false});
@@ -96,7 +95,7 @@ class GameController {
         this.resizeWindow();
     }
 
-    //обработка свайпа - пролистывание таблицы рекордовб списка мячиков
+    //обработка свайпа - пролистывание таблицы рекордов, списка мячиков
     startSwipe = function(evt) {
 
         if (!evt.touches) {
@@ -110,7 +109,6 @@ class GameController {
             return;
         }
 
-        //evt.preventDefault();
         this.mouseStart = { x:evt.touches[0].pageX, y:evt.touches[0].pageY };
         evt.currentTarget.addEventListener("mousemove",this.moveSwipe.bind(this));
         evt.currentTarget.addEventListener("touchmove",this.moveSwipe.bind(this));
@@ -126,6 +124,7 @@ class GameController {
         
         var HorzShift = Math.round(evt.touches[0].pageX - this.mouseStart.x);
         var VertShift = Math.round(evt.touches[0].pageY - this.mouseStart.y);
+
         //новые стартовые координаты мышки
         this.mouseStart = {
             x: evt.touches[0].pageX,
@@ -157,9 +156,7 @@ class GameController {
             return;
         }
 
-        //if (!this.fieldSizes) {
         this.fieldSizes = getElementCoords(this.cntField);
-        //}
 
         blade.classList.add("blade--work");
         blade.style.transitionProperty = "transform";
@@ -167,7 +164,6 @@ class GameController {
 
         evt.preventDefault();
         if (window.TouchEvent && evt instanceof TouchEvent) {
-        //if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
             this.topShiftTouch = blade.offsetHeight*1.5;
         }
@@ -226,7 +222,6 @@ class GameController {
         evt.preventDefault();
 
         if (window.TouchEvent && evt instanceof TouchEvent) {
-        //if (evt instanceof TouchEvent) {
             evt = evt.changedTouches[0];
         }
         //смещение мышки относительно начальных координат
@@ -249,12 +244,8 @@ class GameController {
         
         var shiftTopMouse = this.mouseStart.y - blade.offsetTop;
         if ((shiftTopMouse < this.topShiftTouch)&&shiftTopMouse) {
-            //debugger;
             blade.style.top = "0px";
-            
-            //console.log("shift between " + Math.round(shiftTopMouse) + " top shift " + Math.round(topShift) + " TOUCH " + Math.round(this.topShiftTouch));
         }
-        
     }
 
     endMove = function(evt) {
@@ -290,7 +281,7 @@ class GameController {
         this.modalBall.classList.add('modal--show');
         this.formBalls.innerHTML = "";
         //создаем мячики
-        var ballsArr = this.myModel.ballsImage;
+        var ballsArr = this.myModel.ballsImages;
         for (var i = 0; i < ballsArr.length; i++) {
             var ballItem = document.createElement("fieldset");
             ballItem.classList.add("balls__item");
@@ -399,13 +390,7 @@ class GameController {
     resizeWindow = function(evt) {
         var clientWidth = document.documentElement.clientWidth;
         var clientHeight = document.documentElement.clientHeight;
-        //alert(clientHeight +  " " + clientWidth + " " + (clientWidth/clientHeight));
-        //var canvasSize = (clientWidth/clientHeight>2/3)?clientHeight*0.6:clientWidth*0.9;
         var canvasSize = Math.min(clientHeight*0.6,clientWidth - clientHeight*0.04);
-        //var canvasSize = clientHeight*0.6;
-        this.myModel.setSizes(canvasSize.toFixed(0)); 
-        //alert(canvasSize);
-        //console.log(document.documentElement.requestFullscreen);
-       
+        this.myModel.setSizes(canvasSize.toFixed(0));
     }
 }
