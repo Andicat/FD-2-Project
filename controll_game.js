@@ -252,7 +252,7 @@ class GameController {
         var blade = this.cntBlade;
         var centerX = blade.offsetLeft + (blade.offsetWidth-1)/2 + 1;
         var centerY = blade.offsetTop + (blade.offsetHeight-1)/2 + 1;
-        var pointX = Math.round(centerX - this.fieldSizes.left - (this.fieldSizes.width-this.myModel.canvasSize));
+        var pointX = Math.round(centerX - this.fieldSizes.left - (this.fieldSizes.width-this.myModel.canvasSize)/2);
         var pointY = Math.round(centerY - this.fieldSizes.top);
         evt.preventDefault();
         /*alert("blade.offsetLeft:" + blade.offsetLeft + "blade.offsetWidth:" + blade.offsetWidth + " centerX:" + centerX);
@@ -401,7 +401,6 @@ class GameController {
         var clientWidth = document.documentElement.clientWidth;
         var clientHeight = document.documentElement.clientHeight;
         var canvasSize = Math.min(clientHeight*0.6,clientWidth - clientHeight*0.04);
-        //var canvasSize = Math.min(clientWidth - clientHeight*0.04,9999999);
         this.myModel.setSizes(canvasSize.toFixed(0));
     }
 }
