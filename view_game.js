@@ -28,6 +28,7 @@ class ViewCanvas {
         this.soundScale = new Audio('sound/scale.mp3');
     };
 
+    //инициализация отображения игры
     start = function(model) {
         this.myModel = model;
         //создаем канвас
@@ -41,6 +42,7 @@ class ViewCanvas {
         this.updateStartScore();
     }
 
+    //обновление стартовой страницы
     updateStartScore = function() {
         if (this.myModel.name) {
             this.formName.classList.add("hidden");
@@ -52,6 +54,7 @@ class ViewCanvas {
         }
     }
 
+    //инициализация звука
     initSound = function() {
         if (this.myModel.soundOff) {
             return;
@@ -83,6 +86,7 @@ class ViewCanvas {
         var playPromise = this.soundStart.play();
     }
 
+    //прогрывание звука, вибрация
     sound = function(type) {
         if (this.myModel.soundOff) {
             return;
@@ -101,10 +105,7 @@ class ViewCanvas {
         }
     }
 
-    setOpacity = function(val) {
-        this.field.style.opacity = val;
-    }
-
+    //отрисовка на канвасе
     draw = function(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball) {
         //очищаем канвас
         this.cnt.clearRect(0, 0, fieldSize + borderSize*2, fieldSize + borderSize*2);
@@ -158,6 +159,7 @@ class ViewCanvas {
         this.cnt.restore();
     }
 
+    //обновление отображения
     update = function() {
         if (this.myModel.isResizing) {
             this.updateSizes();
@@ -198,6 +200,7 @@ class ViewCanvas {
         this.draw(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball);
     }
 
+    //обновление размеров игры
     updateSizes = function() {
         this.canvas.setAttribute("width",this.myModel.canvasSize);
         this.canvas.setAttribute("height",this.myModel.canvasSize);
@@ -205,6 +208,7 @@ class ViewCanvas {
         this.blade.style.left = this.field.offsetLeft + this.field.offsetWidth/2 - this.blade.offsetWidth/2 + "px";
     }
 
+    //обновление уровня
     updateLevel = function() {
         this.progress.style.width = Math.min(this.myModel.level.progress,100) + "%";
         this.progress.style.backgroundColor = "rgb(" + this.myModel.level.color.red + "," + this.myModel.level.color.green + "," + this.myModel.level.color.blue + ")";
@@ -219,6 +223,7 @@ class ViewCanvas {
         }    
     }
 
+    //обновление фигурки-лезвия
     updateBlade = function() {
         if (this.myModel.blade.isActive) {
             this.blade.classList.remove("hidden");
@@ -244,6 +249,7 @@ class ViewCanvas {
         }
     }
 
+    //обновление настроек звука
     updateSound = function() {
         if (this.myModel.soundOff) {
             this.btnSound.classList.add("game__button--sound-off");
@@ -252,6 +258,7 @@ class ViewCanvas {
         }
     }
 
+    //обновление изображения мячика
     updateBallImage = function() {
         this.btnBall.style.backgroundImage = "url('img/" + this.myModel.ballImageSrc + "')";
     }
