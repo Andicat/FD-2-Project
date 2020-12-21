@@ -262,6 +262,8 @@ class GameController {
         alert("fieldSize.left:" + this.fieldSizes.left + "fieldSize.top:" + this.fieldSizes.top);
         alert("width:" + this.fieldSizes.width + " height:" + this.fieldSizes.height);
         alert("clienWidth:" + document.documentElement.clientWidth + " clientHeight:" + document.documentElement.clientHeight);
+        alert("canvas size:" + ( Math.min(document.documentElement.clientHeight*0.6,document.documentElement.clientWidth - document.documentElement.clientHeight*0.04)));
+        alert("canvas:" + this.myModel.canvasSize);
         this.myModel.dropBlade(pointX,pointY);
         blade.classList.remove("blade--work");
         window.removeEventListener('mousemove', this.moveBladeListener);
@@ -398,6 +400,7 @@ class GameController {
         var clientWidth = document.documentElement.clientWidth;
         var clientHeight = document.documentElement.clientHeight;
         var canvasSize = Math.min(clientHeight*0.6,clientWidth - clientHeight*0.04);
+        //var canvasSize = Math.min(clientWidth - clientHeight*0.04,9999999);
         this.myModel.setSizes(canvasSize.toFixed(0));
     }
 }
