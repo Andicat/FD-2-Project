@@ -252,19 +252,19 @@ class GameController {
         var blade = this.cntBlade;
         var centerX = blade.offsetLeft + (blade.offsetWidth-1)/2 + 1;
         var centerY = blade.offsetTop + (blade.offsetHeight-1)/2 + 1;
-        var pointX = Math.round(centerX - this.fieldSizes.left);
+        var pointX = Math.round(centerX - this.fieldSizes.left - (this.fieldSizes.width-this.myModel.canvasSize));
         var pointY = Math.round(centerY - this.fieldSizes.top);
         evt.preventDefault();
         /*alert("blade.offsetLeft:" + blade.offsetLeft + "blade.offsetWidth:" + blade.offsetWidth + " centerX:" + centerX);
         alert("blade.offsetTop:" + blade.offsetTop + "blade.offsetHeight:" + blade.offsetHeight + " centerY:" + centerY);
         alert("fieldSize.left:" + this.fieldSizes.left + " pointX:" + pointX);
         alert("fieldSize.top:" + this.fieldSizes.top + " pointY:" + pointY);*/
-        alert("fieldSize.left:" + this.fieldSizes.left + "fieldSize.top:" + this.fieldSizes.top);
+        /*alert("fieldSize.left:" + this.fieldSizes.left + "fieldSize.top:" + this.fieldSizes.top);
         alert("width:" + this.fieldSizes.width + " height:" + this.fieldSizes.height);
         alert("clienWidth:" + document.documentElement.clientWidth + " clientHeight:" + document.documentElement.clientHeight);
         alert("canvas size:" + ( Math.min(document.documentElement.clientHeight*0.6,document.documentElement.clientWidth - document.documentElement.clientHeight*0.04)));
         alert("canvas:" + this.myModel.canvasSize);
-        alert("delta:" + (this.fieldSizes.width-this.myModel.canvasSize));
+        alert("delta:" + (this.fieldSizes.width-this.myModel.canvasSize));*/
         this.myModel.dropBlade(pointX,pointY);
         blade.classList.remove("blade--work");
         window.removeEventListener('mousemove', this.moveBladeListener);
