@@ -30,6 +30,7 @@ class Game {
         this.lsName = data.lsName;
     };
 
+    //установка размеров: холст,обводка,мячик,скорость 
     setSizes = function(canvasSize) {
         var fieldSizePrev = this.fieldSize;
         this.canvasSize = canvasSize;
@@ -51,6 +52,7 @@ class Game {
             this.scaleCount = 0;
         }
 
+        //расчет показателей при ресайзе: новые координаты точек, мячика
         function resizeField(pointsStart, points, fieldSize, fieldSizePrev, ball) {
             var scale = fieldSize/fieldSizePrev;
             var center = fieldSizePrev/2;
@@ -72,6 +74,7 @@ class Game {
         }
     }
 
+    //инициализация игры, предзагрузка изображений мячика
     start = function(view) {
         this.myView = view;
         if (this.ballsImages) {
@@ -82,25 +85,28 @@ class Game {
         }
     }
         
-
+    //установка параметра звука в игры (on/off)
     setSound = function(value) {
         this.soundOff = value;
         this.myView.updateSound();
         this.saveLocalStorageData();
     }
 
+    //установка изображения мячика
     setBall = function(value) {
         this.ballImageSrc = value;
         this.myView.updateBallImage();
         this.saveLocalStorageData();
     }
 
+    //установка имени игрока
     setName = function(value) {
         this.name = value;
         this.saveLocalStorageData();
         this.myView.updateStartScore();
     }
 
+    //старт игры, начальное поле
     startGame = function() {
         this.setSizes(this.canvasSize);
         this.inProgress = true;
@@ -110,29 +116,6 @@ class Game {
             {x:this.borderSize + this.fieldSize,y:this.borderSize},
             {x:this.borderSize + this.fieldSize,y:this.fieldSize + this.borderSize},
             {x:this.borderSize,y: this.borderSize + this.fieldSize}];
-        /*this.pointsStart = [
-            {x: 204, y: 4},
-            {x: 204, y: 212},
-            {x: 357, y: 247},
-            {x: 232, y: 247},
-            {x: 173, y: 4},
-            {x: 173, y: 206},
-            {x: 257, y: 212},
-            {x: 257, y: 221},
-            {x: 136, y: 206},
-            {x: 136, y: 264},
-            {x: 357, y: 242},
-            {x: 274, y: 221},
-            {x: 274, y: 242},
-            {x: 92, y: 333},
-            {x: 167, y: 444},
-            {x: 167, y: 333},
-            {x: 92, y: 316},
-            {x: 125, y: 264},
-            {x: 125, y: 316},
-            {x: 232, y: 335},
-            {x: 189, y: 444},
-            {x: 189, y: 335}];*/
         this.field = new Field(this.pointsStart,this.pointsStart);
         this.level = new Level(1,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
@@ -142,6 +125,7 @@ class Game {
         this.myView.initSound();
     }
 
+    //очистка параметров игры
     clearGame = function() {
         this.inProgress = false;
         this.isCutting = false;
@@ -156,6 +140,7 @@ class Game {
         }
     }
 
+    //конец игры, сохранение рекорда, если он есть
     finishGame = function() {
         if (this.bestScore < this.level.count-1) {
             this.bestScore = this.level.count-1;
@@ -173,6 +158,7 @@ class Game {
         this.updateView();
     }
 
+    //таймер
     tick = function() {
         var RAF = window.requestAnimationFrame ||
                 window.webkitRequestAnimationFrame ||
@@ -199,6 +185,7 @@ class Game {
         }
     }
 
+    //обновление прогресса на уровне
     updateProgress = function() {
         this.level.squareCurr = this.level.calculateSquare(this.field.rects);
         this.level.progress = Math.round((this.level.squareStart - this.level.squareCurr)/(this.level.squareStart/100*(100-this.level.percent))*100);
@@ -211,12 +198,14 @@ class Game {
         }
     }
 
+    //обновление отображения
     updateView = function() {
         if (this.myView) {
             this.myView.update();
         }
     }
 
+    //сохранение докальных данных: имя игрока, его лучший результат, настройки звука, мячика
     saveLocalStorageData = function() {
         var gameData = {};
         gameData.name = this.name;
@@ -226,6 +215,7 @@ class Game {
         localStorage.setItem(this.lsName,JSON.stringify(gameData));
     }
 
+    //сохранение в таблицу рекордов, если результат туда попадает
     saveRecord = function(color) {
         if ((this.bestScore < this.recordTableMin)&&this.recordsTable.length>=20) {
             return
@@ -247,7 +237,12 @@ class Game {
             }
             else {
                 var recordsTable = JSON.parse(callresult.result);
-                recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
+                var yourRecord = recordsTable.findIndex((r) => r.name === this.name);
+                if (yourRecord!==-1) {
+                    recordsTable[yourRecord] = {name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"};
+                } else {
+                    recordsTable.push({name:this.name,score:this.bestScore,color:"rgb(" + color.red + "," + color.green + "," + color.blue + ")"});
+                }
                 this.recordsTable = recordsTable.sort((a,b) => b.score-a.score).slice(0,20);
                 $.ajax({
                     url : ajaxHandlerScript, type: 'POST', cache: false, dataType:'json',
@@ -268,7 +263,7 @@ class Game {
         }
     }
 
-    //********************************************************LEVEL
+    //старт уровня
     startLevel = function() {
         this.isScaling = false;
         this.inProgress = true;
@@ -282,6 +277,7 @@ class Game {
         this.myView.updateLevel();
     }
 
+    //конец уровня
     finishLevel = function() {
         this.inProgress = false;
         this.isCutting = false;
@@ -343,7 +339,7 @@ class Game {
         }
     }    
 
-    //********************************************************BLADE
+    //падение фигурки-лезвия
     dropBlade = function(pointX, pointY) {
         if (!this.field) { return };
         do {
@@ -504,14 +500,14 @@ class Game {
         };
     }
 
+    //обновление фигурки-лезвия рандомно
     updateBlade() {
-        //console.log("updateBlade");
         this.blade.isActive = true;
         this.blade.isTurn = false;
         this.blade.update();
     }
 
-    //********************************************************BALL
+    //движение мячика
     moveBall = function() {
         this.inProgress = false;
         var nextRect;
@@ -520,9 +516,7 @@ class Game {
         var shift;
         var delta;
         var limits = {};
-        
 
-        //текущие по высоте
         var bT = this.ball.y - this.ball.radius;
         var bB = this.ball.y + this.ball.radius;
         rectsHeight = this.field.rects.filter(r => {
@@ -548,7 +542,6 @@ class Game {
             }
         }
 
-        //console.log("Top " + limits.top + " Bottom " + limits.bottom + " Left " + limits.left + " Right " + limits.right);
         this.ball.x += this.ball.speedX;
         this.ball.y += this.ball.speedY;   
         this.ball.rotation += 5;   
@@ -560,40 +553,44 @@ class Game {
             console.log((delta.left>0?" shift left-" + delta.left:"") + (delta.right>0?" shift right-" + delta.right:"") + (delta.top>0?" shift top-" + delta.top:"") + (delta.bottom>0?" shift bottom-" + delta.bottom:""));
         }
 
+        if (delta.left>0&&delta.right>0) {
+            this.ball.speedY =- this.ball.speedY;
+        }
+
         if (delta.right>0&&this.ball.speedX>0) {
             //right
             shift = (this.ball.x + this.ball.radius) -  limits.right;
-            this.ball.speedX =- this.ball.speedX;
             this.ball.x = limits.right - this.ball.radius;
+            this.ball.speedX =- this.ball.speedX;
 
             //корректировка после смещения
             delta = getDelta(this.ball,limits);
 
             if (delta.left>0) {
-                console.log("vertical after moves--------------" + (delta.left>0?" shift left-" + delta.left:""));
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.x = limits.left + this.ball.radius;
             } else if (delta.top<0&&delta.bottom<0) {
                 this.ball.y = (this.ball.speedY>0)?(this.ball.y - shift):(this.ball.y + shift);
             }
-        } 
+        }
+        
         if (delta.left>0&&this.ball.speedX<0) {
             //left
             shift = limits.left - (this.ball.x - this.ball.radius);
-            this.ball.speedX =- this.ball.speedX;
             this.ball.x = limits.left + this.ball.radius;
+            this.ball.speedX =- this.ball.speedX;
             
             //корректировка после смещения
             delta = getDelta(this.ball,limits);
 
             if (delta.right>0) {
-                console.log("vertical after moves--------------" + (delta.right>0?" shift right-" + delta.right:""));
                 this.ball.speedY =- this.ball.speedY;
                 this.ball.x = limits.right - this.ball.radius;
             } else if (delta.top<0&&delta.bottom<0) {
                 this.ball.y = (this.ball.speedY>0)?(this.ball.y - shift):(this.ball.y + shift);
             }
         } 
+
         if (delta.bottom>0) { 
             //bottom
             shift = (this.ball.y + this.ball.radius) - limits.bottom;
@@ -676,11 +673,12 @@ class Game {
         }
     }
 
+    //обновление актуальной области у мячика
     updateBallRect = function() {
         this.ball.actualRect = this.findActualRect(this.field.rects,this.ball.x,this.ball.y,this.ball.radius);
     }
 
-    //********************************************************FIELD
+    //разрезание поля на части
     cutField = function() {
         var slitInMove1 = this.slit1.move();
         var slitInMove2 = this.slit2.move();
@@ -711,6 +709,7 @@ class Game {
         }
     }
 
+    //масштабирование поля перед началом нового уровня
     scaleField = function() {
         if (this.scaleCount > 100) {
             this.ball.x -= this.ball.speedX;
@@ -747,6 +746,7 @@ class Game {
         this.scaleCount = this.scaleCount + 4;
     }
 
+    //масштабирование поля при ресайзе окна браузера
     resizeField = function() {
         if (this.scaleCount > 100) {
             this.level.squareStart = this.level.calculateSquare(this.field.rectsBg);
@@ -792,12 +792,13 @@ class Game {
         this.scaleCount = this.scaleCount + 10;
     }
 
+    //нахождение актуальной области для мячика или фигурки-лезвия
     findActualRect = function(rects,posX,posY,radius) {
         return rects.filter(r => {return (r.top<=posY&&r.bottom>=posY&&r.left<=posX&&r.right>=posX)})[0];
     };
 };
 
-
+//класс: "Разрез" - хранит параметры разреза, управляет его движением
 class Slit {
 
     constructor(startX,startY,finishX,finishY,speed,width) {
@@ -851,6 +852,7 @@ class Slit {
     };
 }
 
+//класс: "Прямоугольник" - создает объект области
 class Rect {
     constructor(top,bottom,left,right) {
         this.top = top;
@@ -861,6 +863,7 @@ class Rect {
     };
 };
 
+//класс: "Поле" - хранит параметры игрового поля: координаты точек, массивы областей
 class Field {
     
     constructor(pointsBg,points) {
@@ -915,6 +918,7 @@ class Field {
     };
 };
 
+//класс: "Уровень" - хранит параметры текущего уровня: процент выигрыша, цвет, номер 
 class Level {
     constructor(count,field,percent,colors) {
         this.count = count;
@@ -943,6 +947,7 @@ class Level {
     };
 }
 
+//класс: "Мячик" - хранит параметры мячика: координаты, картинку, размер, скорости, актуальную область нахождения
 class Ball {
 
     constructor(fieldSize,field,imageSrc,speed) {
@@ -973,6 +978,7 @@ class Ball {
     }
 }
 
+//класс: "Лезвие" - хранит параметры фигурки-лезвия: тип, состояние
 class Blade {
 
     constructor() {

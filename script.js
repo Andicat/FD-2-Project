@@ -102,16 +102,17 @@
         resolve(true);
     });
 
+    //запускаем игру после загрузки всех данных
     Promise.all([prFPS,prAJAX,prAJAXRecords,prLS]).then( result => {setTimeout(renderGame,500)});
 
     function renderGame () {
-
+        //предзагрузка изображений
         var imagesPreload = ["sound-on.svg","sound-off.svg","icon-table.svg","blade-top-right.svg","blade-top-left.svg","blade-bottom-right.svg","blade-bottom-left.svg","blade-left-right.svg","blade-top-bottom.svg","icon-turn.svg","icon-back.svg"];
         imagesPreload.forEach( function(imgSrc) {
             var img = new Image();
             img.src = "img/" + imgSrc;
         });
-
+        //инициализация игры
         var myGame = new Game(data);
         var viewCanvas = new ViewCanvas(cntGame);
         var controller = new GameController();

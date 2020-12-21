@@ -17,6 +17,7 @@ class GameController {
         this.swipeShift = 0;
     }
     
+    //инициализация контроллера
     start = function(model,container) {
         this.myModel = model;
         this.myContainer = container;
@@ -29,7 +30,7 @@ class GameController {
         this.btnSound = container.querySelector('.game__button--sound');
         this.btnSound.addEventListener("click", this.changeSound.bind(this));
 
-        //старт игры
+        //кнопка старта
         this.btnStart = container.querySelector('.game__button--start');
         this.btnStart.addEventListener("click", this.startGame.bind(this));
         
@@ -396,7 +397,7 @@ class GameController {
         }
     }
 
-     //ресайз окна
+    //ресайз окна
     resizeWindow = function(evt) {
         var clientWidth = document.documentElement.clientWidth;
         var clientHeight = document.documentElement.clientHeight;

@@ -460,3 +460,240 @@ debugger*/
             }
         }
     }*/
+
+
+
+
+
+
+
+     //********************************************************BALL
+     moveBall = function() {
+        this.inProgress = false;
+        var nextRect;
+        var rectsWidth;
+        var rectsHeight;
+        var shift;
+        var delta;
+        var limits = {};
+        //var angle = false;
+
+        //Test
+        //var xxx = this.ball.x;
+        //var yyy = this.ball.y;
+
+        //текущие по высоте
+        var bT = this.ball.y - this.ball.radius;
+        var bB = this.ball.y + this.ball.radius;
+        rectsHeight = this.field.rects.filter(r => {
+            if (r.top>=this.ball.y&&r.top<=bB) { return true };
+            if (r.top<=this.ball.y&&r.top>=bT) { return true };
+            if (r.bottom>=this.ball.y&&r.bottom<=bB) { return true };
+            if (r.bottom<=this.ball.y&&r.bottom>=bT) { return true };
+            if (r.top<=bT&&r.bottom>=bB) { return true };
+            return false;
+        });
+        
+        if (rectsHeight.length>0) {
+            limits.bottom = rectsHeight.sort((a,b) => {return b.bottom-a.bottom})[0].bottom;
+            limits.top = rectsHeight.sort((a,b) => {return a.top-b.top})[0].top;
+            rectsWidth = rectsHeight.filter(r => {
+                if (r.left>this.ball.x) { return false}
+                if (r.right<this.ball.x) { return false}
+                return true;
+            });
+            if (rectsWidth.length>0) {
+                limits.left = rectsWidth.sort((a,b) => {return b.left-a.left})[0].left;
+                limits.right = rectsWidth.sort((a,b) => {return a.right-b.right})[0].right;
+            }
+        }
+
+        //console.log("Top " + limits.top + " Bottom " + limits.bottom + " Left " + limits.left + " Right " + limits.right);
+        //var nowX = 0+this.ball.x;
+        //var nowY = 0+this.ball.y;
+        this.ball.x += this.ball.speedX;
+        this.ball.y += this.ball.speedY;   
+        this.ball.rotation += 5;   
+
+        //проверка областей
+        delta = getDelta(this.ball,limits);
+
+        //if (delta.right>0&&delta.right>this.ball.radius/2&&this.ball.speedX>0) {debugger}
+        //if (delta.left>0&&delta.left>this.ball.radius/2&&this.ball.speedX<0) {debugger}
+        //if (delta.top>0&&delta.top>this.ball.radius/2) {debugger}
+        //if (delta.bottom>0&&delta.bottom>this.ball.radius/2) {debugger}
+
+        if (delta.left>0||delta.right>0||delta.top>0||delta.bottom>0) {
+            console.log((delta.left>0?" shift left-" + delta.left:"") + (delta.right>0?" shift right-" + delta.right:"") + (delta.top>0?" shift top-" + delta.top:"") + (delta.bottom>0?" shift bottom-" + delta.bottom:""));
+        }
+
+        if (delta.left>0&&delta.right>0) {
+            //this.ball.x -= this.ball.speedX;
+            //this.ball.y -= this.ball.speedY;
+            //this.ball.speedX =- this.ball.speedX;
+            this.ball.speedY =- this.ball.speedY;
+        }
+
+        if (delta.right>0&&this.ball.speedX>0) {
+            //right
+            shift = (this.ball.x + this.ball.radius) -  limits.right;
+            //if (shift<this.ball.radius/2) {
+                this.ball.x = limits.right - this.ball.radius;
+            //} else {
+            //    this.ball.x -= this.ball.speedX;
+            //    this.ball.y -= this.ball.speedY;
+            //}
+            this.ball.speedX =- this.ball.speedX;
+
+            //корректировка после смещения
+            delta = getDelta(this.ball,limits);
+
+            if (delta.left>0) {
+                console.log("vertical after moves--------------" + (delta.left>0?" shift left-" + delta.left:""));
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.x = limits.left + this.ball.radius;
+            //} else if (delta.top<0&&delta.bottom<0&&shift<this.ball.radius/2) {
+            } else if (delta.top<0&&delta.bottom<0) {
+                this.ball.y = (this.ball.speedY>0)?(this.ball.y - shift):(this.ball.y + shift);
+            }
+        }
+        
+        if (delta.left>0&&this.ball.speedX<0) {
+            //left
+            shift = limits.left - (this.ball.x - this.ball.radius);
+            //if (shift<this.ball.radius/2) {
+                this.ball.x = limits.left + this.ball.radius;
+            //} else {
+            //    this.ball.x -= this.ball.speedX;
+            //    this.ball.y -= this.ball.speedY;
+            //}
+            this.ball.speedX =- this.ball.speedX;
+            
+            
+            //корректировка после смещения
+            delta = getDelta(this.ball,limits);
+
+            if (delta.right>0) {
+                console.log("vertical after moves--------------" + (delta.right>0?" shift right-" + delta.right:""));
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.x = limits.right - this.ball.radius;
+            //} else if (delta.top<0&&delta.bottom<0&&shift<this.ball.radius/2) {
+            } else if (delta.top<0&&delta.bottom<0) {
+                this.ball.y = (this.ball.speedY>0)?(this.ball.y - shift):(this.ball.y + shift);
+            }
+        } 
+
+        if (delta.bottom>0) { 
+            //bottom
+            shift = (this.ball.y + this.ball.radius) - limits.bottom;
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius,shift,"bottom",this.ball);
+            if (!nextRect) {
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.y = limits.bottom - this.ball.radius;
+                if (delta.left<0&&delta.right<0) {
+                    this.ball.x = (this.ball.speedX>0)?(this.ball.x - shift):(this.ball.x + shift);
+                }
+            }
+        }
+        if (delta.top>0) {
+            //top
+            shift = limits.top - (this.ball.y - this.ball.radius);
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius,shift,"top",this.ball);
+            if (!nextRect) {
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.y = limits.top + this.ball.radius;
+                if (delta.left<0&&delta.right<0) {
+                    this.ball.x = (this.ball.speedX>0)?(this.ball.x - shift):(this.ball.x + shift);
+                }
+            }
+        }
+
+       /* var xxx2 = this.ball.x;
+        var yyy2 = this.ball.y;
+
+        if (Math.abs(xxx2-xxx)>this.ball.radius/2) {
+            debugger;
+        }
+        if (Math.abs(yyy2-yyy)>this.ball.radius/2) {
+            debugger;
+        }*/
+
+        
+        // проверка коллизии с линиями blade
+        if (this.isCutting) {
+            var hit = hitSlit(this.ball,this.slit1)||hitSlit(this.ball,this.slit2);
+            if (hit) {
+                this.finishGame();
+                return;
+            }
+        }
+        
+        this.inProgress = true;
+
+        function getDelta(ball,limits) {
+            var d = {};
+            d.right = ((ball.x + ball.radius) - limits.right).toFixed(2);
+            d.left = (limits.left - (ball.x - ball.radius)).toFixed(2);
+            d.bottom = ((ball.y + ball.radius) - limits.bottom).toFixed(2);
+            d.top = (limits.top - (ball.y - ball.radius)).toFixed(2);
+            return d;
+        }
+
+        function findNextRect(rects,posX,posY,radius,deltaX,direction,ball) {
+            var rectH = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
+            if (rectH.length==0) {
+                return;
+            }
+            var rectW = rectH.filter(r => {return(r.left<=posX-radius+deltaX&&r.right>=posX+radius-deltaX)});
+            return rectW[0];
+        }
+
+        function hitSlit(elem,slit) {
+            var r1x = elem.x - elem.radius;
+            var r1y = elem.y - elem.radius;
+            var r1w = elem.radius*2;
+            var r1h = elem.radius*2;
+    
+            if (slit.startX === slit.finishX) { // vertical
+                var r2w = slit.width;
+                var r2h = Math.abs(slit.startY - slit.currY);
+                var r2x = slit.startX - slit.width/2;
+                var r2y = Math.min(slit.startY,slit.currY);
+            }
+            if (slit.startY === slit.finishY) { // horizontal
+                var r2w = Math.abs(slit.startX - slit.currX);
+                var r2h = slit.width;
+                var r2x = Math.min(slit.startX,slit.currX)
+                var r2y = slit.startY - slit.width/2;;
+            }
+            if (r1x + r1w >= r2x &&    
+                r1x <= r2x + r2w &&    
+                r1y + r1h >= r2y &&    
+                r1y <= r2y + r2h) {    
+                return true;
+            }
+            return false;
+        }
+    }
+
+    this.pointsStart = [
+        {x: 333, y: 223}
+        ,{x: 366, y: 223}
+        ,{x: 237, y: 238}
+        ,{x: 211, y: 326}
+        ,{x: 258, y: 326}
+        ,{x: 258, y: 288}
+        ,{x: 130, y: 307}
+        ,{x: 186, y: 307}
+        ,{x: 130, y: 282}
+        ,{x: 200, y: 238}
+        ,{x: 200, y: 282}
+        ,{x: 237, y: 141}
+        ,{x: 366, y: 245}
+        ,{x: 326, y: 288}
+        ,{x: 326, y: 245}
+        ,{x: 186, y: 373}
+        ,{x: 211, y: 373}
+        ,{x: 333, y: 203}
+        ,{x: 292, y: 141}
+        ,{x: 292, y: 203}];
