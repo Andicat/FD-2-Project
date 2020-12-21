@@ -264,6 +264,7 @@ class GameController {
         alert("clienWidth:" + document.documentElement.clientWidth + " clientHeight:" + document.documentElement.clientHeight);
         alert("canvas size:" + ( Math.min(document.documentElement.clientHeight*0.6,document.documentElement.clientWidth - document.documentElement.clientHeight*0.04)));
         alert("canvas:" + this.myModel.canvasSize);
+        alert("delta:" + (this.fieldSizes.width-this.myModel.canvasSize));
         this.myModel.dropBlade(pointX,pointY);
         blade.classList.remove("blade--work");
         window.removeEventListener('mousemove', this.moveBladeListener);
