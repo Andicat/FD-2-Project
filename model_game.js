@@ -110,6 +110,29 @@ class Game {
             {x:this.borderSize + this.fieldSize,y:this.borderSize},
             {x:this.borderSize + this.fieldSize,y:this.fieldSize + this.borderSize},
             {x:this.borderSize,y: this.borderSize + this.fieldSize}];
+        /*this.pointsStart = [
+            {x: 204, y: 4},
+            {x: 204, y: 212},
+            {x: 357, y: 247},
+            {x: 232, y: 247},
+            {x: 173, y: 4},
+            {x: 173, y: 206},
+            {x: 257, y: 212},
+            {x: 257, y: 221},
+            {x: 136, y: 206},
+            {x: 136, y: 264},
+            {x: 357, y: 242},
+            {x: 274, y: 221},
+            {x: 274, y: 242},
+            {x: 92, y: 333},
+            {x: 167, y: 444},
+            {x: 167, y: 333},
+            {x: 92, y: 316},
+            {x: 125, y: 264},
+            {x: 125, y: 316},
+            {x: 232, y: 335},
+            {x: 189, y: 444},
+            {x: 189, y: 335}];*/
         this.field = new Field(this.pointsStart,this.pointsStart);
         this.level = new Level(1,this.field,50,this.levelColors);
         this.ball = new Ball(this.fieldSize,this.field,this.ballImageSrc,this.speed);
@@ -492,16 +515,12 @@ class Game {
     moveBall = function() {
         this.inProgress = false;
         var nextRect;
-        var maxLeft;
-        var minRight;
         var rectsWidth;
-        var maxBottom;
-        var minTop;
-        var deltaRight;
-        var deltaLeft;
-        var deltaTop;
-        var deltaBottom;
         var rectsHeight;
+        var shift;
+        var delta;
+        var limits = {};
+        
 
         //текущие по высоте
         var bT = this.ball.y - this.ball.radius;
@@ -516,73 +535,86 @@ class Game {
         });
         
         if (rectsHeight.length>0) {
-            maxBottom = rectsHeight.sort((a,b) => {return b.bottom-a.bottom})[0].bottom;
-            minTop = rectsHeight.sort((a,b) => {return a.top-b.top})[0].top;
+            limits.bottom = rectsHeight.sort((a,b) => {return b.bottom-a.bottom})[0].bottom;
+            limits.top = rectsHeight.sort((a,b) => {return a.top-b.top})[0].top;
             rectsWidth = rectsHeight.filter(r => {
                 if (r.left>this.ball.x) { return false}
                 if (r.right<this.ball.x) { return false}
                 return true;
             });
             if (rectsWidth.length>0) {
-                maxLeft = rectsWidth.sort((a,b) => {return b.left-a.left})[0].left;
-                minRight = rectsWidth.sort((a,b) => {return a.right-b.right})[0].right;
+                limits.left = rectsWidth.sort((a,b) => {return b.left-a.left})[0].left;
+                limits.right = rectsWidth.sort((a,b) => {return a.right-b.right})[0].right;
             }
         }
-        //console.log("Top " + minTop + " Bottom " + maxBottom + " Left " + maxLeft + " Right " + minRight);
+
+        //console.log("Top " + limits.top + " Bottom " + limits.bottom + " Left " + limits.left + " Right " + limits.right);
         this.ball.x += this.ball.speedX;
         this.ball.y += this.ball.speedY;   
         this.ball.rotation += 5;   
 
         //проверка областей
-        deltaRight = ((this.ball.x + this.ball.radius) - minRight).toFixed(2);
-        deltaLeft = (maxLeft - (this.ball.x - this.ball.radius)).toFixed(2);
-        deltaBottom = ((this.ball.y + this.ball.radius) - maxBottom).toFixed(2);
-        deltaTop = (minTop - (this.ball.y - this.ball.radius)).toFixed(2);
+        delta = getDelta(this.ball,limits);
 
-        if (deltaLeft>0||deltaRight>0||deltaTop>0||deltaBottom>0) {
-            console.log((deltaLeft>0?" shift left-" + deltaLeft:"") + (deltaRight>0?" shift right-" + deltaRight:"") + (deltaTop>0?" shift top-" + deltaTop:"") + (deltaBottom>0?" shift bottom-" + deltaBottom:""));
-            //debugger
+        if (delta.left>0||delta.right>0||delta.top>0||delta.bottom>0) {
+            console.log((delta.left>0?" shift left-" + delta.left:"") + (delta.right>0?" shift right-" + delta.right:"") + (delta.top>0?" shift top-" + delta.top:"") + (delta.bottom>0?" shift bottom-" + delta.bottom:""));
         }
 
-        if (deltaRight>0&&this.ball.speedX>0) {
+        if (delta.right>0&&this.ball.speedX>0) {
             //right
+            shift = (this.ball.x + this.ball.radius) -  limits.right;
             this.ball.speedX =- this.ball.speedX;
-            var delta = (this.ball.x + this.ball.radius) -  minRight;
-            this.ball.x = minRight - this.ball.radius;
-            if (deltaTop<0&&deltaBottom<0) {
-                this.ball.y = (this.ball.speedY>0)?(this.ball.y - delta):(this.ball.y + delta);
+            this.ball.x = limits.right - this.ball.radius;
+
+            //корректировка после смещения
+            delta = getDelta(this.ball,limits);
+
+            if (delta.left>0) {
+                console.log("vertical after moves--------------" + (delta.left>0?" shift left-" + delta.left:""));
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.x = limits.left + this.ball.radius;
+            } else if (delta.top<0&&delta.bottom<0) {
+                this.ball.y = (this.ball.speedY>0)?(this.ball.y - shift):(this.ball.y + shift);
             }
         } 
-        if (deltaLeft>0&&this.ball.speedX<0) {
+        if (delta.left>0&&this.ball.speedX<0) {
             //left
+            shift = limits.left - (this.ball.x - this.ball.radius);
             this.ball.speedX =- this.ball.speedX;
-            var delta = maxLeft - (this.ball.x - this.ball.radius);
-            this.ball.x = maxLeft + this.ball.radius;
-            if (deltaTop<0&&deltaBottom<0) {
-                this.ball.y = (this.ball.speedY>0)?(this.ball.y - delta):(this.ball.y + delta);
+            this.ball.x = limits.left + this.ball.radius;
+            
+            //корректировка после смещения
+            delta = getDelta(this.ball,limits);
+
+            if (delta.right>0) {
+                console.log("vertical after moves--------------" + (delta.right>0?" shift right-" + delta.right:""));
+                this.ball.speedY =- this.ball.speedY;
+                this.ball.x = limits.right - this.ball.radius;
+            } else if (delta.top<0&&delta.bottom<0) {
+                this.ball.y = (this.ball.speedY>0)?(this.ball.y - shift):(this.ball.y + shift);
             }
         } 
-        if (deltaBottom>0) { 
+        if (delta.bottom>0) { 
             //bottom
-            var delta = (this.ball.y + this.ball.radius) - maxBottom;
-            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius,delta,"bottom",this.ball);
+            shift = (this.ball.y + this.ball.radius) - limits.bottom;
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y+this.ball.radius,this.ball.radius,shift,"bottom",this.ball);
             if (!nextRect) {
                 this.ball.speedY =- this.ball.speedY;
-                this.ball.y = maxBottom - this.ball.radius;
-                if (deltaLeft<0&&deltaRight<0) {
-                    this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
+                this.ball.y = limits.bottom - this.ball.radius;
+                if (delta.left<0&&delta.right<0) {
+                    this.ball.x = (this.ball.speedX>0)?(this.ball.x - shift):(this.ball.x + shift);
                 }
             }
         }
-        if (deltaTop>0) {
+        if (delta.top>0) {
             //top
-            var delta = minTop - (this.ball.y - this.ball.radius);
-            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius,delta,"top",this.ball);
+            shift = limits.top - (this.ball.y - this.ball.radius);
+            nextRect = findNextRect(this.ball.field.rects,this.ball.x,this.ball.y-this.ball.radius,this.ball.radius,shift,"top",this.ball);
             if (!nextRect) {
                 this.ball.speedY =- this.ball.speedY;
-                this.ball.y = minTop + this.ball.radius;
-                if (deltaLeft<0&&deltaRight<0) {
-                    this.ball.x = (this.ball.speedX>0)?(this.ball.x - delta):(this.ball.x + delta);
+                this.ball.y = limits.top + this.ball.radius;
+                if (delta.left<0&&delta.right<0) {
+                    this.ball.x = (this.ball.speedX>0)?(this.ball.x - shift):(this.ball.x + shift);
                 }
             }
         }
@@ -597,6 +629,15 @@ class Game {
         }
         
         this.inProgress = true;
+
+        function getDelta(ball,limits) {
+            var d = {};
+            d.right = ((ball.x + ball.radius) - limits.right).toFixed(2);
+            d.left = (limits.left - (ball.x - ball.radius)).toFixed(2);
+            d.bottom = ((ball.y + ball.radius) - limits.bottom).toFixed(2);
+            d.top = (limits.top - (ball.y - ball.radius)).toFixed(2);
+            return d;
+        }
 
         function findNextRect(rects,posX,posY,radius,deltaX,direction,ball) {
             var rectH = rects.filter(r => {return(r.top<=posY&&r.bottom>=posY)});
