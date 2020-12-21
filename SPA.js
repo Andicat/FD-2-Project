@@ -1,9 +1,9 @@
   "use strict";
 
   // в закладке УРЛа будем хранить разделённые подчёркиваниями слова
-  // #Main - главная
-  // #Photo_55 - отобразить фото 55
-  // #About - о нас
+  // #Load - начальная страница - загрузка данных
+  // #Menu - страница настроек игры
+  // #Play - страницы игры (активной)
 
   // отслеживаем изменение закладки в УРЛе
   // оно происходит при любом виде навигации
@@ -23,10 +23,8 @@
   // частей кода в зависимости от формы URLа
   // "роутинг" и есть "контроллер" из MVC - управление приложением через URL
   function switchToStateFromURLHash() {
-    var URLHash=window.location.hash;
-    var clientWidth = document.documentElement.clientWidth;
-    var clientHeight = document.documentElement.clientHeight;
-
+    var URLHash = window.location.hash;
+    
     var cntGame = document.querySelector(".game__container");
     var cntLoad = cntGame.querySelector('.game__loader');
     var cntMenu = cntGame.querySelector('.game__menu');
@@ -34,59 +32,30 @@
 
     // убираем из закладки УРЛа решётку
     // (по-хорошему надо ещё убирать восклицательный знак, если есть)
-    var stateStr=URLHash.substr(1);
+    var stateStr = URLHash.substr(1);
 
-    if ( stateStr!="" ) { // если закладка непустая, читаем из неё состояние и отображаем
-      var parts=stateStr.split("_")
-      SPAState={ pagename: parts[0] }; // первая часть закладки - номер страницы
-      if ( SPAState.pagename=='Photo' )
-        SPAState.photoid=parts[1]; // для фото нужна ещё вторая часть закладки - номер фото
+    if ( stateStr != "" ) { // если закладка непустая, читаем из неё состояние и отображаем
+        var parts = stateStr.split("_");
+        SPAState = { pagename: parts[0] }; // первая часть закладки - номер страницы
     }
-    else
-      SPAState={pagename:'Load'}; // иначе показываем главную страницу
+    else {
+        SPAState={pagename:'Load'}; // иначе показываем главную страницу
+    }
 
     switch ( SPAState.pagename ) {
-      case 'Menu':
-        cntLoad.classList.add("hidden");  
-        cntMenu.classList.remove("hidden");
-        cntPlay.classList.add("hidden");
-        cancelFullscreen();
-        break;
-      case 'Play':
-        cntLoad.classList.add("hidden");
-        cntPlay.classList.remove("hidden");
-        cntMenu.classList.add("hidden");
-        if (clientWidth<clientHeight) {
-          //launchFullScreen(document.documentElement);
-        }
-        break;
-      case 'Load':
-        cntMenu.classList.add("hidden");
-        cntPlay.classList.add("hidden");
-        cancelFullscreen();
-        break;
+        case 'Menu':
+            cntLoad.classList.add("hidden");  
+            cntMenu.classList.remove("hidden");
+            cntPlay.classList.add("hidden");
+            break;
+        case 'Play':
+            cntLoad.classList.add("hidden");
+            cntPlay.classList.remove("hidden");
+            cntMenu.classList.add("hidden");
+            break;
+        case 'Load':
+            cntMenu.classList.add("hidden");
+            cntPlay.classList.add("hidden");
+            break;
     }
-
-    
-    function launchFullScreen(element) {
-      if(element.requestFullScreen) {
-        element.requestFullScreen();
-      } else if(element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if(element.webkitRequestFullScreen) {
-        element.webkitRequestFullScreen();
-      } else if (elem.webkitEnterFullScreen) {
-        //elem.webkitEnterFullScreen();
-      }
-    }
-
-    function cancelFullscreen() {
-      if(document.cancelFullScreen) {
-        document.cancelFullScreen();
-      } else if(document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if(document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen();
-      }
-    }
-  }
+}

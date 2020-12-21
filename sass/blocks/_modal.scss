@@ -1,107 +1,103 @@
 .modal {
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	justify-content: center;
-	overflow: auto;
-	box-sizing: border-box;
-	display: none;
-	z-index: 10;
-	background-color: rgba(0, 0, 0, 0.5);
-	padding: 20px;
-	max-width: 100vw;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    overflow: auto;
+    box-sizing: border-box;
+    display: none;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    max-width: 100vw;
 
-	&__inner {
-		//width: 750px;
-		width: 70vh;
-		background-color: rgba($color: white, $alpha: 0.5);
-		border-radius: 10px;
-		position: relative;
-		display: flex;
-		margin-bottom: auto;
-		overflow: hidden;
-		margin: auto;
-		padding: 40px 10px 10px;
-	}
+    &__inner {
+        width: 70vh;
+        background-color: rgba($color: white, $alpha: 0.5);
+        border-radius: 10px;
+        position: relative;
+        display: flex;
+        margin-bottom: auto;
+        overflow: hidden;
+        margin: auto;
+        padding: 40px 10px 10px;
+    }
 
-	&__button-close {
-		@include transition (all);
-		position: absolute;
-		width: 30px;
-		height: 30px;
-		font-size: 0;
-		background-color: transparent;
-		background-image: url("img/icon-turn.svg");
-		background-size: cover;
-		border: none;
-		padding: 0;
-		left: 14px;
-		top: 5px;
-		cursor: pointer;
+    &__button-close {
+        @include transition (all);
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        font-size: 0;
+        background-color: transparent;
+        background-image: url("img/icon-turn.svg");
+        background-size: cover;
+        border: none;
+        padding: 0;
+        left: 14px;
+        top: 5px;
+        cursor: pointer;
 
-		&:hover,
-		&:focus {
-			transform: scale(1.1);
-			outline: none;
-			opacity: 0.8;
-		}
-	}
+        &:hover,
+        &:focus {
+            transform: scale(1.1);
+            outline: none;
+            opacity: 0.8;
+        }
+    }
 
-	&__container {
-		width: 100%;
-	}
+    &__container {
+        width: 100%;
+    }
 
-	&--records { 
-		.modal__inner {
-			//width: 450px;
-			width: 50vh;
-			padding-top: 30px;
-		}
+    &--records { 
+        .modal__inner {
+            width: 50vh;
+            padding-top: 30px;
+        }
 
-		.modal__button-close {
-			background-image: url("img/icon-back.svg");
-			width: 20px;
-			height: 20px;
-			right: 10px;
-			top: 10px;
-			left: unset;
-		}
-	}
+        .modal__button-close {
+            background-image: url("img/icon-back.svg");
+            width: 20px;
+            height: 20px;
+            right: 10px;
+            top: 10px;
+            left: unset;
+        }
+    }
 
-	@include tablet {
-		&__inner {
-			//width: 550px;
-			width: 80vh;
-		}
-	}
+    @include tablet {
+        &__inner {
+            width: 80vh;
+        }
+    }
 
-	@include mobile {
-		padding: 0;
-		&__inner {
-			margin-top: 0;
-			width: 100%;
-			border-radius: 0;
-			margin-bottom: 0;
-			padding: 20px 0 0 0;
-		}
+    @include mobile {
+        padding: 0;
+        &__inner {
+            margin-top: 0;
+            width: 100%;
+            border-radius: 0;
+            margin-bottom: 0;
+            padding: 20px 0 0 0;
+        }
 
-		&__button-close {
-			left: 5px;
-			top: 5px;
-			width: 20px;
-			height: 20px;
-			z-index: 1;
-		}
+        &__button-close {
+            left: 5px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            z-index: 1;
+        }
 
-		&--records { 
-			.modal__inner {
-				//width: 450px;
-				width: 100%;
-			}
-		}
-	}
+        &--records { 
+            .modal__inner {
+                width: 100%;
+            }
+        }
+    }
 }
 
 .modal--show {

@@ -1,9 +1,8 @@
 .game {
     margin: auto;
-    //background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%);
     background-color: #303641;
-	background-image: linear-gradient(135deg, rgba(0,0,0, 0.2) 0%, rgba(0,0,0, 0.1) 25%, rgba(0,0,0, 0.2) 50%, rgba(0,0,0, 0.1) 75%, rgba(0,0,0, 0.2) 100%);
-	background-size: 8px 8px, 100%;
+    background-image: linear-gradient(135deg, rgba(0,0,0, 0.2) 0%, rgba(0,0,0, 0.1) 25%, rgba(0,0,0, 0.2) 50%, rgba(0,0,0, 0.1) 75%, rgba(0,0,0, 0.2) 100%);
+    background-size: 8px 8px, 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -19,7 +18,6 @@
 
     &__container {
         box-sizing: border-box;
-        //padding: 10px;
         padding: 2vh;
         display: flex;
         flex-direction: column;
@@ -46,48 +44,37 @@
         box-sizing: border-box;
         color: #ffffff;
         margin: 0;
-        //font-size: 36px;
         font-size: calc(1em + 4vh);
         line-height: 100%;
         font-weight: 400;
         margin: 5vh auto 1vh;
         max-height: 18vh;
-        //padding: 0.2em 0;
-        //padding: 10px 0;
-        //min-height: 60px;
-        //height: 10vh;
     }
 
     &__score {
         box-sizing: border-box;
-        //height: 80px;
-        //padding: 10px;
         margin: 0.6em auto;
         max-height: 20vh;
         color: #ffffff;
-        //line-height: normal;
         font-weight: 400;    
-        //height: 15vh;
 
         &-title {
             display: block;
-            //font-size: 20px;
             font-size: calc(1em + 2vh);
             line-height: 100%;
             text-transform: lowercase;
         }
-    
+
         &-value {
             display: block;
             font-size: calc(1em + 4vh);
             line-height: 110%;
-            //font-size: 40px;
         }
     }
 
     &__player-name {
         box-sizing: border-box;
-        margin: 5em auto 1em;
+        margin: auto;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -146,7 +133,7 @@
             transition-property: opacity;
             transition-duration: 1s;
         }
-        
+
         &-view {
             display: flex;
             width: 100%;
@@ -183,7 +170,6 @@
     }
 
     &__settings {
-        //height: 100px;
         height: 16vh;
         margin-bottom: 4vh;
         display: flex;
@@ -192,18 +178,14 @@
     }
 
     &__blade {
-        //height: 100px;
         height: 16vh;
         min-width: 100%;
     }
 
     &__button {
         @include transition(all);
-        //font-size: 42px;
         text-transform: uppercase;
-        //margin: auto 20px;
         margin: auto 2vh;
-        //padding: 10px;
         border-radius: 5px;
         border: none;
         background-color: rgba($color: white, $alpha: 0.2);
@@ -232,7 +214,7 @@
             min-height: 150px;
             margin: auto;
         }
-    
+
         &--colors {
             position: absolute;
             bottom: 0;
@@ -240,8 +222,6 @@
         }
 
         &--small {
-            //min-height: 70px;
-            //min-width: 70px;
             min-height: 10vh;
             min-width: 10vh;
         }
@@ -261,24 +241,18 @@
     }
 
     @media (max-width: $tablet - 1px) {
-        &__container {
-            //padding: 5vh 2vw;
-        }
         &__name {
             margin: 2vh auto 1vh;
             font-size: calc(1em + 3vh);
         }
+
         &__score {
             &-title {
-                
                 font-size: calc(0.8em + 1vh);
-               
             }
-        
+
             &-value {
-                
                 font-size: calc(0.8em + 3vh);
-                
             }
         }
 
@@ -289,36 +263,6 @@
             }
             &-view {
                 height: 10px;
-            }
-        }
-    }
-
-    //@media (orientation: portrait) {
-    @media (max-aspect-ratio: 2/3) {
-        &__container {
-            //padding: 5vh 2vw;
-        }
-
-        &__progress {
-            //margin: 0;
-        }
-
-        &__field {
-            //width: 90vw;
-            //height: 90vw;
-            //max-width: 60vh;
-            //max-height: 60vh;
-        }
-
-        &__button {
-            &--start {
-                //height: 70vw;
-                //width: 70vw;
-            }
-            &--small {
-                //min-height: 25vw;
-                //min-width: 25vw;
-                //margin: auto 2.5vw;
             }
         }
     }

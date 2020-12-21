@@ -81,12 +81,6 @@ class ViewCanvas {
             })
         }
         var playPromise = this.soundStart.play();
-        if (playPromise !== undefined) {
-            playPromise.then(_ => {
-            //this.soundStart.volume = 0.6;
-            //this.soundStart.pause();
-            })
-        }
     }
 
     sound = function(type) {
@@ -107,45 +101,15 @@ class ViewCanvas {
         }
     }
 
-    //drawFinish = function(fieldSize,borderSize,levels) {
-        //this.cnt.save();
-        //this.cnt.translate(this.field.offsetWidth/2,this.field.offsetHeight/2);
-        //this.cnt.restore();
-        //this.cnt.setTransform(1.00,0.20,-1.00,0.30,200,200);
-        //this.cnt.setTransform(0.47,0.18,-0.83,0.22,this.field.offsetWidth/2,this.field.offsetHeight/2);
-        //текущее игровое поле
-        //this.cnt.clearRect(0, 0, fieldSize + borderSize*2, fieldSize + borderSize*2);
-        /*this.cnt.globalAlpha = 0.9;
-        for (var j = 0; j < levels.length; j++) {
-            this.cnt.save();
-            this.cnt.setTransform(0.47,0.18,-0.61,0.19,fieldSize/2,fieldSize/2-(fieldSize/2/levels.length)*j);
-            this.cnt.fillStyle = "rgb(" + levels[j].color.red + "," + levels[j].color.green + "," + levels[j].color.blue + ")";
-            for (var i = 0; i < levels[j].rects.length; i++) {
-                var rect = levels[j].rects[i];
-                this.cnt.fillRect(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
-            };
-            this.cnt.restore();
-        }*/
-        /*var gradient = "";
-        for (var j = 0; j < levels.length; j++) {
-            var count = 100/(levels.length-1);
-            console.log(count*j);
-            gradient = gradient + ", rgb(" + levels[j].color.red + "," + levels[j].color.green + "," + levels[j].color.blue + ") " + (count*j) + "%";
-        }*/
-        //"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,129,255,0.8) 100%)"
-        //this.field.style.background = "linear-gradient(180deg" + gradient  + ")";
-        //this.setOpacity(0);  
-    //}
-
     setOpacity = function(val) {
         this.field.style.opacity = val;
     }
 
     draw = function(fieldSize,borderSize,slitWidth,rectsBg,rects,slits,ball) {
-        //****************************************очищаем канвас
+        //очищаем канвас
         this.cnt.clearRect(0, 0, fieldSize + borderSize*2, fieldSize + borderSize*2);
 
-        //****************************************игровое поле
+        //игровое поле
         //подложка
         this.cnt.fillStyle = this.colorBg;
         for (var i = 0; i < rectsBg.length; i++) {
@@ -162,10 +126,10 @@ class ViewCanvas {
         this.cnt.fillStyle = "rgb(" + this.myModel.level.color.red + "," + this.myModel.level.color.green + "," + this.myModel.level.color.blue + ")";
         for (var i = 0; i < rects.length; i++) {
             rect = rects[i];
-            this.cnt.fillRect(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
+            this.cnt.fillRect(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top+0.1);
         };
         
-        //****************************************слайсеры
+        //слайсеры
         this.cnt.strokeStyle = this.slitColor;
         this.cnt.fillStyle = this.slitColor;    
         slits.forEach(slit => {
@@ -185,7 +149,7 @@ class ViewCanvas {
             this.cnt.closePath();
         });
         
-        //****************************************мячик
+        //мячик
         this.cnt.shadowBlur = 0;
         this.cnt.save();
         this.cnt.translate(ball.x,ball.y);

@@ -3,12 +3,9 @@
 }
 
 .load__circle {
-    //width: 20px;
-    //height: 20px;
     width: 3vh;
     height: 3vh;
     border-radius: 50%;
-    //margin: 7px;
     margin: 1vh;
     display: flex;
     justify-content: center;
@@ -16,8 +13,6 @@
 
     &:before {
         content: "";
-        //width: 20px;
-        //height: 20px;
         width: 3vh;
         height: 3vh;
         border-radius: 50%;
