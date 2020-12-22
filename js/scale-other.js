@@ -697,3 +697,10 @@ debugger*/
         ,{x: 333, y: 203}
         ,{x: 292, y: 141}
         ,{x: 292, y: 203}];
+
+
+
+
+        if (delta.left>0||delta.right>0||delta.top>0||delta.bottom>0) {
+            console.log((delta.left>0?" shift left-" + delta.left:"") + (delta.right>0?" shift right-" + delta.right:"") + (delta.top>0?" shift top-" + delta.top:"") + (delta.bottom>0?" shift bottom-" + delta.bottom:""));
+        }

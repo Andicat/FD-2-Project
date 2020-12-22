@@ -517,6 +517,7 @@ class Game {
         var delta;
         var limits = {};
 
+        //находим области, где присутсвует мячик, пределы по четырем сторонам
         var bT = this.ball.y - this.ball.radius;
         var bB = this.ball.y + this.ball.radius;
         rectsHeight = this.field.rects.filter(r => {
@@ -546,13 +547,10 @@ class Game {
         this.ball.y += this.ball.speedY;   
         this.ball.rotation += 5;   
 
-        //проверка областей
+        //посчитаем на сколько мячик вылетает за пределы по четырем сторонам
         delta = getDelta(this.ball,limits);
 
-        if (delta.left>0||delta.right>0||delta.top>0||delta.bottom>0) {
-            console.log((delta.left>0?" shift left-" + delta.left:"") + (delta.right>0?" shift right-" + delta.right:"") + (delta.top>0?" shift top-" + delta.top:"") + (delta.bottom>0?" shift bottom-" + delta.bottom:""));
-        }
-
+        //проверка лимитов и корректировка направления и положения мячика
         if (delta.left>0&&delta.right>0) {
             this.ball.speedY =- this.ball.speedY;
         }
@@ -702,9 +700,6 @@ class Game {
                     this.updateProgress();
                     return;
                 }
-            }
-            if (!isBall) {
-                debugger
             }
         }
     }
