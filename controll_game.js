@@ -256,16 +256,6 @@ class GameController {
         var pointX = Math.round(centerX - this.fieldSizes.left - (this.fieldSizes.width-this.myModel.canvasSize)/2);
         var pointY = Math.round(centerY - this.fieldSizes.top);
         evt.preventDefault();
-        /*alert("blade.offsetLeft:" + blade.offsetLeft + "blade.offsetWidth:" + blade.offsetWidth + " centerX:" + centerX);
-        alert("blade.offsetTop:" + blade.offsetTop + "blade.offsetHeight:" + blade.offsetHeight + " centerY:" + centerY);
-        alert("fieldSize.left:" + this.fieldSizes.left + " pointX:" + pointX);
-        alert("fieldSize.top:" + this.fieldSizes.top + " pointY:" + pointY);*/
-        /*alert("fieldSize.left:" + this.fieldSizes.left + "fieldSize.top:" + this.fieldSizes.top);
-        alert("width:" + this.fieldSizes.width + " height:" + this.fieldSizes.height);
-        alert("clienWidth:" + document.documentElement.clientWidth + " clientHeight:" + document.documentElement.clientHeight);
-        alert("canvas size:" + ( Math.min(document.documentElement.clientHeight*0.6,document.documentElement.clientWidth - document.documentElement.clientHeight*0.04)));
-        alert("canvas:" + this.myModel.canvasSize);
-        alert("delta:" + (this.fieldSizes.width-this.myModel.canvasSize));*/
         this.myModel.dropBlade(pointX,pointY);
         blade.classList.remove("blade--work");
         window.removeEventListener('mousemove', this.moveBladeListener);
@@ -332,7 +322,6 @@ class GameController {
             if (this.myModel.name == recordsArr[i].name) {
                 rowTable.classList.add(".records__row--you");
             }
-            rowTable.style.background = "linear-gradient(90deg, " + recordsArr[i].color + " 0%, rgba(0,0,0,0) 100%)";
             this.recordsTable.appendChild(rowTable);
             var playerScore = document.createElement("span");
             playerScore.classList.add("records__score");
@@ -341,6 +330,7 @@ class GameController {
             rowTable.appendChild(playerScore);
             var playerName = document.createElement("span");
             playerName.classList.add("records__name");
+            playerName.style.background = "linear-gradient(90deg, " + recordsArr[i].color + " 0%, rgba(0,0,0,0) 100%)";
             playerName.textContent = recordsArr[i].name;
             rowTable.appendChild(playerName);
         }
@@ -402,6 +392,6 @@ class GameController {
         var clientWidth = document.documentElement.clientWidth;
         var clientHeight = document.documentElement.clientHeight;
         var canvasSize = Math.min(clientHeight*0.6,clientWidth - clientHeight*0.04);
-        this.myModel.setSizes(canvasSize.toFixed(0));
+        this.myModel.setSizes(Number(canvasSize.toFixed(0)));
     }
 }

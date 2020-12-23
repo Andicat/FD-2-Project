@@ -9,12 +9,10 @@
 
     &__row {
         display: flex;
-        align-items: center;
-        margin-bottom: 10px;
+        align-items: stretch;
         overflow: hidden;
-        min-height: calc(1em + 2vh);;
-        border-top-left-radius: 22.5px;
-        border-bottom-left-radius: 22.5px;
+        min-height: calc(1em + 2vh);
+        padding: 5px 0;
     }
 
     &__score {
@@ -22,13 +20,28 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: calc(1em + 2vh);
         min-width: calc(1em + 2vh);
         height: calc(1em + 2vh);
-        font-size: calc(1em + 1vh);
+        font-size: calc(1em + 0.7vh);
         border: 2px solid #020030;
         border-radius: 50%;
-        margin-right: 0.3em;
+        padding: 4px;
         font-style: normal;
+        z-index: 5;
+        box-shadow: 8px 0 8px -3px rgba(0, 0, 0, 0.25), 8px 0 8px -3px rgba(0, 0, 0, 0.22);
+    }
+
+    &__name {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        margin: 4px 0 4px -30px;
+        padding-left: 50px;
+    }
+
+    @include mobile {
+        &__name {
+            margin: 2px 0 2px -30px;
+        }
     }
 }
