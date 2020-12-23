@@ -37,7 +37,7 @@ class Game {
         this.borderSize = canvasSize*0.008;
         this.slitWidth = canvasSize*0.006;
         this.fieldSize = canvasSize - this.borderSize*2;
-        this.speed = Number(60*this.fieldSize*0.03/6/this.fps).toFixed(2);
+        this.speed = Number((60*this.fieldSize*0.03/6/this.fps).toFixed(2));
         if (this.inProgress) {
             this.inProgress = false;
             var resizingInfo = resizeField(this.field.pointsBg,this.field.points,this.fieldSize, fieldSizePrev,this.ball);
@@ -56,16 +56,16 @@ class Game {
         function resizeField(pointsStart, points, fieldSize, fieldSizePrev, ball) {
             var scale = fieldSize/fieldSizePrev;
             var center = fieldSizePrev/2;
-            var centerBallX = (fieldSize/2 + (ball.x - center)*scale).toFixed(2);
-            var centerBallY = (fieldSize/2 + (ball.y - center)*scale).toFixed(2);
+            var centerBallX = Number((fieldSize/2 + (ball.x - center)*scale).toFixed(2));
+            var centerBallY = Number((fieldSize/2 + (ball.y - center)*scale).toFixed(2));
             pointsStart = pointsStart.map(function(p) {
-                let newX = (fieldSize/2 + (p.x-center)*scale).toFixed(2);
-                let newY = (fieldSize/2 + (p.y-center)*scale).toFixed(2);
+                let newX = Number((fieldSize/2 + (p.x-center)*scale).toFixed(2));
+                let newY = Number((fieldSize/2 + (p.y-center)*scale).toFixed(2));
                 return {x:newX, y:newY};
             });
             points = points.map(function(p) {
-                let newX = (fieldSize/2 + (p.x-center)*scale).toFixed(2);
-                let newY = (fieldSize/2 + (p.y-center)*scale).toFixed(2);
+                let newX = Number((fieldSize/2 + (p.x-center)*scale).toFixed(2));
+                let newY = Number((fieldSize/2 + (p.y-center)*scale).toFixed(2));
                 return {x:newX, y:newY};
             });
     
@@ -284,7 +284,7 @@ class Game {
         var levelColorPrev = this.level.color;
         var scalingInfo = scaleField(this.field.points,this.fieldSize, this.borderSize,this.ball);
         this.level = new Level(this.level.count + 1, this.field, 50, this.levelColors);
-        this.field.rectsBg = [];
+        this.field.rectsBg = []; 
         this.scalingInfo = {
             colorPrev: levelColorPrev,
             colorNew: {red:this.level.color.red,green:this.level.color.green,blue:this.level.color.blue},
@@ -627,10 +627,10 @@ class Game {
 
         function getDelta(ball,limits) {
             var d = {};
-            d.right = ((ball.x + ball.radius) - limits.right).toFixed(2);
-            d.left = (limits.left - (ball.x - ball.radius)).toFixed(2);
-            d.bottom = ((ball.y + ball.radius) - limits.bottom).toFixed(2);
-            d.top = (limits.top - (ball.y - ball.radius)).toFixed(2);
+            d.right = Number(((ball.x + ball.radius) - limits.right).toFixed(2));
+            d.left = Number((limits.left - (ball.x - ball.radius)).toFixed(2));
+            d.bottom = Number(((ball.y + ball.radius) - limits.bottom).toFixed(2));
+            d.top = Number((limits.top - (ball.y - ball.radius)).toFixed(2));
             return d;
         }
 
@@ -710,6 +710,8 @@ class Game {
             this.ball.x -= this.ball.speedX;
             this.ball.y -= this.ball.speedY;
             this.ball.actualRect = this.field.rects[this.scalingInfo.ballActualRectIndex];
+            this.ball.speedX = Number((this.ball.speedX*1.05).toFixed(2));
+            this.ball.speedY = Number((this.ball.speedY*1.05).toFixed(2));
             this.startLevel();
             return;
         }
@@ -950,6 +952,7 @@ class Ball {
         this.radius = fieldSize*0.03;
         this.speedX = this.randomSign()*speed;
         this.speedY = this.randomSign()*speed;
+        this.speedUp = 0;
         this.x;
         this.y;
         this.actualRect;
