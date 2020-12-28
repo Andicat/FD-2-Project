@@ -704,3 +704,12 @@ debugger*/
         if (delta.left>0||delta.right>0||delta.top>0||delta.bottom>0) {
             console.log((delta.left>0?" shift left-" + delta.left:"") + (delta.right>0?" shift right-" + delta.right:"") + (delta.top>0?" shift top-" + delta.top:"") + (delta.bottom>0?" shift bottom-" + delta.bottom:""));
         }
+
+
+
+        //debugger
+                //recordsTable[0].score = 25;
+                //recordsTable.splice(10, 1);
+                //recordsTable.splice(5, 1);
+                //recordsTable.splice(2, 1);
+                

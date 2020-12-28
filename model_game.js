@@ -218,7 +218,7 @@ class Game {
     //сохранение в таблицу рекордов, если результат туда попадает
     saveRecord = function(color) {
         if ((this.bestScore < this.recordTableMin)&&this.recordsTable.length>=20) {
-            return
+            //return
         }
         var ajaxHandlerScript="https://fe.it-academy.by/AjaxStringStorage2.php";
         var updatePassword;
