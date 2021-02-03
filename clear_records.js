@@ -42,4 +42,4 @@
     }
 }
 
-//setTimeout(clearRecordScale,3000);
+setTimeout(clearRecordScale,3000);
